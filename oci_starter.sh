@@ -272,7 +272,6 @@ mandatory "db_password" $TF_VAR_db_password
 
 export |grep TF_VAR > variables.sh
 chmod +x variables.sh
-exit
 
 fi  
 echo MODE=$MODE
