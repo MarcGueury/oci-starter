@@ -2,7 +2,7 @@
 resource "oci_core_instance" "starter_instance" {
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = var.compartment_ocid
-  display_name        = "${var.service_name}-instance"
+  display_name        = "${var.prefix}-instance"
   shape               = "VM.Standard.E4.Flex"
 
   shape_config {
@@ -15,7 +15,7 @@ resource "oci_core_instance" "starter_instance" {
     display_name              = "Primaryvnic"
     assign_public_ip          = true
     assign_private_dns_record = true
-    hostname_label            = "${var.service_name}-instance"
+    hostname_label            = "${var.prefix}-instance"
   }
 
   metadata = {

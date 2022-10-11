@@ -11,7 +11,7 @@ variable current_user_ocid {}
 # variable "fingerprint" {}
 # variable "private_key_path" {}
 
-variable "service_name" {
+variable "prefix" {
   default     = "starter"
   description = "Application name. Will be used as prefix to identify resources"
 }
@@ -31,14 +31,12 @@ variable "java_framework" {default="SpringBoot"}
 variable "java_vm" {default="JDK"}
 variable "java_version" {}
 variable "vcn_strategy" {}
-variable "vcn_name" {default=""}
 variable "vcn_ocid" {default=""}
 variable "subnet_ocid" {default=""}
 variable "ui_strategy" {}
 variable "deploy_strategy" {}
 variable "kubernetes_strategy" {default=""}
 variable "oke_strategy" {default=""}
-variable "oke_name" {default=""}
 variable "oke_ocid" {default=""}
 variable "db_strategy" {}
 variable "db_existing_strategy" {}

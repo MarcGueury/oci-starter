@@ -25,7 +25,7 @@ resource "oci_functions_function" "function" {
 
 resource oci_apigateway_gateway starter_apigw {
   compartment_id = var.compartment_ocid
-  display_name  = "${var.service_name}-apigw"
+  display_name  = "${var.prefix}-apigw"
   endpoint_type = "PUBLIC"
   subnet_id = oci_core_subnet.starter_subnet.id 
 }

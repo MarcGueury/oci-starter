@@ -20,7 +20,7 @@ variableGroups:
 - title: Starter Project
   visible: true  
   variables:
-  - service_name
+  - prefix
   - compartment_id
 
 - title: Application
@@ -42,14 +42,12 @@ variableGroups:
   variables:
   - kubernetes_strategy
   - oke_strategy
-  - oke_name
   - oke_ocid
 
 - title: Network
   visible: true  
   variables:
   - vcn_strategy
-  - vcn_name
   - vcn_ocid
   - subnet_ocid
 
@@ -86,7 +84,7 @@ variables:
 
 ###################### Starter Project
 
-  service_name:
+  prefix:
     type: string
     title: Resource Name Prefix
     description: The names of all compute and network resources will begin with this prefix. It can only contain letters or numbers and must begin with a letter.
@@ -206,20 +204,6 @@ variables:
     required: true
     default: "Use Existing VCN"
 
-  vcn_name:
-    visible:
-      eq:
-        - ${vcn_strategy}
-        - "Create New VCN"
-    type: string
-    default: ''
-    minLength: 1
-    maxLength: 255
-    pattern: "^[a-zA-Z_]\\w{0,254}$"
-    required: true
-    title: Virtual Cloud Network (VCN) Name
-    description: The name of the new Virtual Cloud Network (VCN) to create for this service
-
   vcn_ocid:
     visible:
       eq:
@@ -279,23 +263,6 @@ variables:
       - "Use Existing OKE"
     required: true
     default: "Use Existing OKE"
-
-  oke_name:
-    visible:
-      and:
-        - eq:
-          - ${deploy_strategy}
-          - "Kubernetes"      
-        - eq:
-          - ${kubernetes_strategy}
-          - "OKE"
-        - eq:
-          - ${oke_strategy}
-          - "Create New OKE"
-    type: string
-    title: OKE Name 
-    description: Name of the OKE cluster to be created.
-    required: true
 
   oke_ocid:
     visible:

@@ -5,7 +5,7 @@
 resource "oci_objectstorage_bucket" "tf_bucket" {
   compartment_id = var.compartment_ocid
   namespace      = local.ocir_namespace
-  name           = "${var.service_name}-terraform"
+  name           = "${var.prefix}-terraform"
   access_type    = "NoPublicAccess"
 }
 
@@ -84,7 +84,7 @@ locals {
 resource "oci_artifacts_container_repository" "oci_starter_container_repository" {
   #Required
   compartment_id = var.compartment_ocid
-  display_name   = "${var.service_name}-function-${random_id.tag.hex}"
+  display_name   = "${var.prefix}-function-${random_id.tag.hex}"
   #Optional
   is_public = true
 }

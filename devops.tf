@@ -10,7 +10,7 @@ resource "oci_logging_log_group" "test_log_group" {
 
 resource "oci_logging_log" "test_log" {
   #Required
-  display_name = "${var.service_name}-devops-log"
+  display_name = "${var.prefix}-devops-log"
   log_group_id = oci_logging_log_group.test_log_group.id
   log_type     = "SERVICE"
 
@@ -37,15 +37,15 @@ resource "oci_logging_log" "test_log" {
 
 resource "oci_ons_notification_topic" "test_notification_topic" {
   compartment_id = var.compartment_ocid
-  name           = "${var.service_name}-devops-topic-${random_string.id.result}"
+  name           = "${var.prefix}-devops-topic-${random_string.id.result}"
 }
 
 # Create devops project
 
 resource "oci_devops_project" "test_project" {
   compartment_id = var.compartment_ocid
-  name           = "${var.service_name}-devops"
-  description    = "${var.service_name}-devops"
+  name           = "${var.prefix}-devops"
+  description    = "${var.prefix}-devops"
 
   notification_config {
     #Required

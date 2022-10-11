@@ -10,7 +10,7 @@ variable "instance_shape_config_memory_in_gbs" {
 resource "oci_core_instance" "starter_bastion" {
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = var.compartment_ocid
-  display_name        = "${var.service_name}-bastion"
+  display_name        = "${var.prefix}-bastion"
   shape               = "VM.Standard.E4.Flex"
 
   shape_config {
@@ -23,7 +23,7 @@ resource "oci_core_instance" "starter_bastion" {
     display_name              = "Primaryvnic"
     assign_public_ip          = true
     assign_private_dns_record = true
-    hostname_label            = "${var.service_name}-bastion"
+    hostname_label            = "${var.prefix}-bastion"
   }
 
   metadata = {

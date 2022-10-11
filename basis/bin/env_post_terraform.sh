@@ -1,7 +1,7 @@
 if [-f terraform/tfstate.tf ]; then
   export STATE_FILE=terraform/tfstate.tf
 else 
-  oci os object get -bn ${TF_VAR_service_name}-terraform --name tfstate.tf --file /tmp/tfstate.tf
+  oci os object get -bn ${TF_VAR_prefix}-terraform --name tfstate.tf --file /tmp/tfstate.tf
   export STATE_FILE=/tmp/tfstate.tf
 fi
 
@@ -17,7 +17,7 @@ export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
 # Functions
 if [ "$deployment_strategy" == "Function" ]; then
   # APIGW URL
-  get_attribute_from_tfstate "APIGW_HOSTNAME" "${SERVICE_NAME}_apigw" "hostname"
+  get_attribute_from_tfstate "APIGW_HOSTNAME" "${TF_VAR_prefix}_apigw" "hostname"
 
   # Function URL
   get_attribute_from_tfstate "FUNCTION_ENDPOINT" "function" "invoke_endpoint"

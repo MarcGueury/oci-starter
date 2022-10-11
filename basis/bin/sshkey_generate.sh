@@ -11,6 +11,6 @@ else
     ssh-keygen -b 2048 -t rsa -f $FILE -q -N ""
     chmod 600 $FILE*
     echo "Uploading the ssh key to bucket xxx-terraform"
-    oci os object put --bucket-name=${SERVICE_NAME}-terraform --force --file $FILE
-    oci os object put --bucket-name=${SERVICE_NAME}-terraform --force --file $FILE.pub
+    oci os object put --bucket-name=${TF_VAR_prefix}-terraform --force --file $FILE
+    oci os object put --bucket-name=${TF_VAR_prefix}-terraform --force --file $FILE.pub
 fi
