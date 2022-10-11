@@ -1,3 +1,4 @@
+#!/bin/bash
 title() {
     echo "-- $1 --------------------------------------------------"
 }
@@ -16,6 +17,52 @@ cp_dir_db_src() {
     cp ../option/db_src/$1/* db_src/.
 }
 
+cp_dir_db_src() {
+    echo "cp_terraform $1"
+    cp ../option/db_src/$1/* db_src/.
+}
+
+mandatory() {
+  if [ -z "$2" ]; then
+    echo "Usage: oci-starter.sh [OPTIONS]"
+    echo "Error: missing option -$1"
+    exit
+  fi
+}
+
+unknown_value() {
+    echo "Usage: oci-starter.sh [OPTIONS]"
+    echo "Unknown value for parameter:  $1" 
+    echo "Allowed values: $2"
+    exit
+  fi
+}
+
+show_help() {
+  cat <<EOF
+oci-starter.sh
+   -prefix (default starter)
+   -compartment_ocid (mandatory)
+   -language (mandatory) java / node / python 
+   -deploy (mandatory) compute/kubernetes/function
+   -java_framework (springboot/helidon/tomcat)
+   -java_vm (jdk/graalvm)  
+   -java_version (8/11/17)
+   -kubernetes (oke/docker) 
+   -oke_ocid ()
+   -ui (default html/reactjs/none) 
+   -vnc_ocid()
+   -subnet_ocid()
+   -database atp/dbsystem/mysql (default atp)
+   -atp_ocid (optional)
+   -db_ocid (optional)
+   -mysql_ocid (optional)
+   -db_user (default admin)
+   -db_password( mandatory )
+EOF
+
+}
+
 title oci_starter.sh 
 
 if [ "$#" -eq 3 ]; then
@@ -26,6 +73,206 @@ if [ "$#" -eq 3 ]; then
   echo GIT_URL=$GIT_URL
 else
   export MODE=CLI
+  if [ "$#" -eq 0 ]; then
+    show_help
+  fi
+
+# Default
+# export TF_VAR_tenancy_ocid="${var.tenancy_ocid}"
+# export TF_VAR_region="${var.region}"
+# export TF_VAR_compartment_ocid="${var.compartment_id}"
+export TF_VAR_prefix="starter"
+# export TF_VAR_language="${var.language}"
+export TF_VAR_java_framework=helidon
+# export TF_VAR_java_vm=jdk
+# export TF_VAR_java_version=17
+export TF_VAR_vcn_strategy="Create New VCN"
+# export TF_VAR_vcn_ocid="${var.vcn_ocid}"
+# export TF_VAR_subnet_ocid="${var.subnet_ocid}"
+export TF_VAR_ui_strategy="HTML"
+# export TF_VAR_deploy_strategy="${var.deploy_strategy}"
+export TF_VAR_kubernetes_strategy="oke"
+export TF_VAR_oke_strategy="Create New OKE"
+# export TF_VAR_oke_ocid="${var.oke_ocid}"
+export TF_VAR_db_strategy="Autonomous Transaction Processing Database"
+export TF_VAR_db_existing_strategy="Create New DB"
+# export TF_VAR_atp_ocid="${var.atp_ocid}"
+# export TF_VAR_db_ocid="${var.db_ocid}"
+# export TF_VAR_mysql_ocid="${var.mysql_ocid}"
+export TF_VAR_db_user="admin"
+# XXXXXX export TF_VAR_vault_secret_authtoken_ocid=XXXXXXX
+# export TF_VAR_db_password="${var.db_password}"
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -p|-prefix)
+      export TF_VAR_prefix="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -compartment_ocid)
+      export TF_VAR_compartment_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -language)
+      if [ $2 == "java" ]; then 
+        export TF_VAR_language="Java"
+      elif [ $2 == "node" ]; then  
+        export TF_VAR_language="Node"
+      else
+        unknown_value "$1" "java/node"
+      fi
+      shift # past argument
+      shift # past value
+      ;;
+    -deploy)
+      if [ $2 == "compute" ]; then 
+        export TF_VAR_deployment_strategy="Virtual Machine"
+      elif [ $2 == "kubernetes" ]; then  
+        export TF_VAR_deployment_strategy="Kubernetes"
+      elif [ $2 == "function" ]; then  
+        export TF_VAR_deployment_strategy="Function"        
+      else
+        unknown_value "$1" "compute/kubernetes/function"
+      fi
+      shift # past argument
+      shift # past value
+      ;;      
+    -java_framework)
+      if [ $2 == "springboot" ]; then 
+        export TF_VAR_java_framework="SpringBoot"
+      elif [ $2 == "helidon" ]; then  
+        export TF_VAR_java_framework="Helidon"
+      elif [ $2 == "tomcat" ]; then  
+        export TF_VAR_java_framework="Tomcat"        
+      else
+        unknown_value "$1" "springboot/helidon/tomcat"
+      fi
+      shift # past argument
+      shift # past value
+      ;;   
+    -java_vm)
+      if [ $2 == "jdk" ]; then 
+        export TF_VAR_java_vm="JDK"
+      elif [ $2 == "graalvm" ]; then  
+        export TF_VAR_java_vm="GraalVM"
+      else
+        unknown_value "$1" "jdk/graalvm"
+      fi
+      shift # past argument
+      shift # past value
+      ;;
+    -java_version)
+      export TF_VAR_java_version=$1
+      if [ $1 != "8" ] && [ $1 != "11" ] &&[ $1 != "17" ]; then  
+        unknown_value "$1" "8/11/17"
+      fi
+      shift # past argument
+      shift # past value
+      ;;      
+    -kubernetes)
+      if [ $2 == "oke" ]; then 
+        export TF_VAR_kubernetes_strategy="OKE"
+      elif [ $2 == "docker" ]; then  
+        export TF_VAR_kubernetes_strategy="Docker image only"
+      else
+        unknown_value "$1" "oke/docker"
+      fi
+      shift # past argument
+      shift # past value
+      ;;          
+    -oke_ocid)
+      export TF_VAR_oke_strategy="Use Existing OKE"
+      export TF_VAR_oke_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -ui)
+      if [ $2 == "html" ]; then 
+        export TF_VAR_ui_strategy="HTML"
+      elif [ $2 == "reactjs" ]; then  
+        export TF_VAR_ui_strategy="ReactJS"
+      elif [ $2 == "none" ]; then  
+        export TF_VAR_ui_strategy="None"        
+      else
+        unknown_value "$1" "html/reactjs/none"
+      fi
+      shift # past argument
+      shift # past value
+      ;;   
+    -vnc_ocid)
+      export TF_VAR_vnc_strategy="Use Existing VCN"
+      export TF_VAR_vnc_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -subnet_ocid)
+      export TF_VAR_subnet_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;     
+    -database)
+      if [ $2 == "atp" ]; then 
+        export TF_VAR_db_strategy="Autonomous Transaction Processing Database"
+      elif [ $2 == "dbsystem" ]; then  
+        export TF_VAR_db_strategy="Database System"
+      elif [ $2 == "mysql" ]; then  
+        export TF_VAR_db_strategy="MySQL"        
+      else
+        unknown_value "$1" "atp/dbsystem/mysql"
+      fi
+      shift # past argument
+      shift # past value
+      ;;  
+    -atp_ocid)
+      export TF_VAR_db_existing_strategy="Use Existing DB"
+      export TF_VAR_atp_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;    
+    -db_ocid)
+      export TF_VAR_db_existing_strategy="Use Existing DB"
+      export TF_VAR_db_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;    
+    -mysql_ocid)
+      export TF_VAR_db_existing_strategy="Use Existing DB"
+      export TF_VAR_mysql_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;                            
+    -db_user)
+      export TF_VAR_db_user="$2"
+      shift # past argument
+      shift # past value
+      ;;                            
+    -db_password)
+      export TF_VAR_db_password="$2"
+      shift # past argument
+      shift # past value
+      ;;                            
+    -*|--*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+
+mandatory "compartment_ocid" $TF_VAR_compartment_ocid 
+mandatory "language" $TF_VAR_language
+mandatory "deploy" $TF_VAR_deployment_strategy
+mandatory "db_password" $TF_VAR_db_password
+
+export |grep TF_VAR > variables.sh
+chmod +x variables.sh
+exit
+
 fi  
 echo MODE=$MODE
 
