@@ -19,6 +19,13 @@ CONFIG_FILE=src/main/resources/META-INF/microprofile-config.properties
 sed -i "s/##DB_USER##/$TF_VAR_db_user/" $CONFIG_FILE
 sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
 
+# Check java version
+if [ $OCI_CLI_CLOUD_SHELL == true ]; then
+  ## XX Check Java Version in env variables
+  export JAVA_ID=`csruntimectl java list | grep jdk-17 | sed -e 's/^.*\(graal[^ ]*\) .*$/\1/'`
+  csruntimectl java set $JAVA_ID
+fi
+
 if [ $1 == "compute" ]; then
   mvn package
   mkdir ../compute/app

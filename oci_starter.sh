@@ -47,11 +47,10 @@ cat resource_manager_variables.sh
 
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
-  cd ./$REPOSITORY_NAME
 else 
-  mkdir output
-  cd output
+  export REPOSITORY_NAME="output"
 fi
+cd ./$REPOSITORY_NAME
 
 cp -r ../basis/* .
 cp ../resource_manager_variables.sh .
@@ -155,6 +154,9 @@ if [ $MODE == "GIT " ]; then
   git add .
   git commit -m "added latest files"
   git push origin main
+else
+  title "Done"
+  echo Directory $REPOSITORY_NAME created.
 fi
 
   
