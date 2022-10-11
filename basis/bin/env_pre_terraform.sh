@@ -1,7 +1,10 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+# Variables
+. $SCRIPT_DIR/../variables.sh
+
 # Yum
-yum install jq -y
+sudo yum install jq -y
 
 # Namespace
 export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_devops_rsa.pub)

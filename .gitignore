@@ -8,4 +8,4 @@ tfstate.tf
 id_devops_rsa
 id_devops_rsa.pub
 helper
-resource_manager_variables.sh
+variables.sh

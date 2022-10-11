@@ -290,8 +290,8 @@ title Command
 # ls -al helidon
 # ./helidon version
 
-chmod +x resource_manager_variables.sh
-cat resource_manager_variables.sh
+chmod +x variables.sh
+cat variables.sh
 
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
@@ -302,7 +302,7 @@ fi
 cd ./$REPOSITORY_NAME
 
 cp -r ../basis/* .
-cp ../resource_manager_variables.sh .
+cp ../variables.sh .
 
 #-- APP ---------------------------------------------------------------------
 
