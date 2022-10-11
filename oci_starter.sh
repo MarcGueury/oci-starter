@@ -48,7 +48,8 @@ cat resource_manager_variables.sh
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
 else 
-  export REPOSITORY_NAME="output"
+  export REPOSITORY_NAME=output
+  mkdir $REPOSITORY_NAME
 fi
 cd ./$REPOSITORY_NAME
 
