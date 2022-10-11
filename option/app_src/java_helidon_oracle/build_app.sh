@@ -1,0 +1,28 @@
+# Build_app.sh
+#
+# Parameter build or docker
+# Compute:
+# - build the code 
+# - create a $ROOT/app directory with the compiled files
+# - and a start.sh to start the program
+# Docker:
+# - build the image
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $SCRIPT_DIR
+if [ $1 != "compute" ] && [ $1 != "docker" ] ; then
+  echo 'Argument required: compute or docker'
+  exit
+fi
+
+# Replace the user and password in the configuration file (XXX)
+CONFIG_FILE=src/main/resources/META-INF/microprofile-config.properties
+sed -i "s/##DB_USER##/$TF_VAR_db_user/" $CONFIG_FILE
+sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
+
+if [ $1 == "compute" ]; then
+  mvn package
+  mkdir ../compute/app
+  cp -r target/* ../compute/app/.
+elif [ $1 == "docker" ]; then
+  docker build -t helidon .
+fi  
