@@ -31,11 +31,10 @@ mandatory() {
 }
 
 unknown_value() {
-    echo "Usage: oci-starter.sh [OPTIONS]"
-    echo "Unknown value for parameter:  $1" 
-    echo "Allowed values: $2"
-    exit
-  fi
+  echo "Usage: oci-starter.sh [OPTIONS]"
+  echo "Unknown value for parameter:  $1" 
+  echo "Allowed values: $2"
+  exit
 }
 
 show_help() {
