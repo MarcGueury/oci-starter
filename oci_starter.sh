@@ -44,15 +44,15 @@ oci-starter.sh
    -compartment_ocid (mandatory)
    -language (mandatory) java / node / python 
    -deploy (mandatory) compute/kubernetes/function
-   -java_framework (springboot/helidon/tomcat)
-   -java_vm (jdk/graalvm)  
-   -java_version (8/11/17)
-   -kubernetes (oke/docker) 
+   -java_framework (default helidon/springboot/tomcat)
+   -java_vm (default jdk/graalvm)  
+   -java_version (default 17/8/11)
+   -kubernetes (default oke/docker) 
    -oke_ocid ()
    -ui (default html/reactjs/none) 
    -vnc_ocid()
    -subnet_ocid()
-   -database atp/dbsystem/mysql (default atp)
+   -database (default atp/dbsystem/mysql)
    -atp_ocid (optional)
    -db_ocid (optional)
    -mysql_ocid (optional)
@@ -90,8 +90,8 @@ export TF_VAR_vcn_strategy="Create New VCN"
 # export TF_VAR_subnet_ocid="${var.subnet_ocid}"
 export TF_VAR_ui_strategy="HTML"
 # export TF_VAR_deploy_strategy="${var.deploy_strategy}"
-export TF_VAR_kubernetes_strategy="oke"
-export TF_VAR_oke_strategy="Create New OKE"
+#export TF_VAR_kubernetes_strategy="oke"
+# export TF_VAR_oke_strategy="Create New OKE"
 # export TF_VAR_oke_ocid="${var.oke_ocid}"
 export TF_VAR_db_strategy="Autonomous Transaction Processing Database"
 export TF_VAR_db_existing_strategy="Create New DB"
@@ -130,6 +130,8 @@ while [[ $# -gt 0 ]]; do
         export TF_VAR_deployment_strategy="Virtual Machine"
       elif [ $2 == "kubernetes" ]; then  
         export TF_VAR_deployment_strategy="Kubernetes"
+        export TF_VAR_kubernetes_strategy="oke"
+        export TF_VAR_oke_strategy="Create New OKE"
       elif [ $2 == "function" ]; then  
         export TF_VAR_deployment_strategy="Function"        
       else
