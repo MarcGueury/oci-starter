@@ -127,13 +127,13 @@ while [[ $# -gt 0 ]]; do
       ;;
     -deploy)
       if [ $2 == "compute" ]; then 
-        export TF_VAR_deployment_strategy="Virtual Machine"
+        export TF_VAR_deploy_strategy="Virtual Machine"
       elif [ $2 == "kubernetes" ]; then  
-        export TF_VAR_deployment_strategy="Kubernetes"
+        export TF_VAR_deploy_strategy="Kubernetes"
         export TF_VAR_kubernetes_strategy="oke"
         export TF_VAR_oke_strategy="Create New OKE"
       elif [ $2 == "function" ]; then  
-        export TF_VAR_deployment_strategy="Function"        
+        export TF_VAR_deploy_strategy="Function"        
       else
         unknown_value "$1" "compute/kubernetes/function"
       fi
@@ -267,7 +267,7 @@ done
 
 mandatory "compartment_ocid" $TF_VAR_compartment_ocid 
 mandatory "language" $TF_VAR_language
-mandatory "deploy" $TF_VAR_deployment_strategy
+mandatory "deploy" $TF_VAR_deploy_strategy
 mandatory "db_password" $TF_VAR_db_password
 
 export |grep TF_VAR > variables.sh
