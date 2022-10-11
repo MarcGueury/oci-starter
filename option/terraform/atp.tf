@@ -21,3 +21,9 @@ resource "oci_database_autonomous_database" "starter_atp" {
   whitelisted_ips                                = [ "0.0.0.0/0" ]
   is_mtls_connection_required                    = false
 }
+
+# Compatibility with atp_existing.tf 
+data "oci_database_autonomous_database" "starter_atp" {
+  #Required
+  id                       = oci_database_autonomous_database.starter_atp.id
+}

@@ -75,7 +75,7 @@ resource "oci_core_security_list" "starter_security_list" {
   }  
 }
 
-# Compatibility with network_existing.terraform 
+# Compatibility with network_existing.tf
 data "oci_core_vcn" "starter_vcn" {
   vcn_id = oci_core_vcn.starter_vcn.id
 }
