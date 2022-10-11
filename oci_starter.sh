@@ -50,7 +50,7 @@ oci-starter.sh
    -kubernetes (default oke/docker) 
    -oke_ocid ()
    -ui (default html/reactjs/none) 
-   -vnc_ocid()
+   -vcn_ocid()
    -subnet_ocid()
    -database (default atp/dbsystem/mysql)
    -atp_ocid (optional)
@@ -202,9 +202,9 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;   
-    -vnc_ocid)
-      export TF_VAR_vnc_strategy="Use Existing VCN"
-      export TF_VAR_vnc_ocid="$2"
+    -vcn_ocid)
+      export TF_VAR_vcn_strategy="Use Existing VCN"
+      export TF_VAR_vcn_ocid="$2"
       shift # past argument
       shift # past value
       ;;
@@ -344,7 +344,7 @@ fi
 
 #-- Network -----------------------------------------------------------------
 
-if [[ $TF_VAR_vnc_strategy == "Create New VCN" ]]; then
+if [[ $TF_VAR_vcn_strategy == "Create New VCN" ]]; then
   cp_terraform network.tf 
 else
   cp_terraform network_existing.tf 
