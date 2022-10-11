@@ -74,3 +74,12 @@ resource "oci_core_security_list" "starter_security_list" {
     }
   }  
 }
+
+# Compatibility with network_existing.terraform 
+data "oci_core_vcn" "starter_vcn" {
+  vcn_id = oci_core_vcn.starter_vcn.id
+}
+
+data "oci_core_subnet" "starter_subnet" {
+  subnet_id = oci_core_subnet.starter_subnet.id
+}
