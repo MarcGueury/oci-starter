@@ -6,6 +6,11 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # Yum
 sudo yum install jq -y
 
+if [ $OCI_CLI_CLOUD_SHELL == "True" ];  then
+  export TF_VAR_tenancy_ocid=$OCI_TENANCY
+  export TF_VAR_region=$OCI_REGION
+fi 
+
 # Namespace
 export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_devops_rsa.pub)
 export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_devops_rsa)
