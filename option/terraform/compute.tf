@@ -73,3 +73,7 @@ output "rest_url" {
   value = format("http://%s:8080/dept", oci_core_instance.starter_instance.public_ip) 
 }
 
+output "ui_url" {
+  value = format("http://%s/", oci_core_instance.starter_instance.public_ip) 
+}
+
