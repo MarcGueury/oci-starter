@@ -62,7 +62,7 @@ if [ -d ui ]; then
 
   # Copy the index file after the installation of nginx
  
-  sudo cp ui/* /usr/share/nginx/html/
+  sudo cp -r ui/* /usr/share/nginx/html/
 
   # Firewalld
   sudo firewall-cmd --zone=public --add-port=80/tcp --permanent

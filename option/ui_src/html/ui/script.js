@@ -34,7 +34,7 @@ function json2table(jsonValue) {
 
     for (let i = 0; i < col.length; i++) {
         let th = document.createElement("th");      // table header.
-        th.innerHTML = col[i];
+        th.innerHTML = col[i].toUpperCase();;
         tr.appendChild(th);
     }
 
