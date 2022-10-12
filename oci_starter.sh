@@ -265,7 +265,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-mandatory "compartment_ocid" $TF_VAR_compartment_ocid 
 mandatory "language" $TF_VAR_language
 mandatory "deploy" $TF_VAR_deploy_strategy
 mandatory "db_password" $TF_VAR_db_password
