@@ -20,5 +20,5 @@ cd output
 Then click on the UI_URL at then end of the build
 ```
 
-2. "Deploy to cloud button" button above. And follow the wizard.
+2. "Deploy to Oracle Cloud" button above. And follow the wizard.
 
