@@ -290,7 +290,7 @@ title Command
 # ./helidon version
 
 chmod +x variables.sh
-cat variables.sh
+# cat variables.sh
 
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
@@ -405,6 +405,10 @@ if [ $MODE == "GIT " ]; then
 else
   title "Done"
   echo Directory $REPOSITORY_NAME created.
+  echo
+  echo Next steps: 
+  echo   cd $REPOSITORY_NAME
+  echo   ./build.sh
 fi
 
   
