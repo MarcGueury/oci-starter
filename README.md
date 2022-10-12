@@ -3,7 +3,7 @@
 [ ![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/MarcGueury/oci-starter/archive/refs/heads/main.zip)
 
 Usage:
-1. CLI 
+1. Cloud Shell / Command Line 
 
 - Go to OCI Home page.
 - Go to menu "Identity & Security"
