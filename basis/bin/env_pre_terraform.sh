@@ -3,8 +3,12 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # Variables
 . $SCRIPT_DIR/../variables.sh
 
-# Yum
-sudo yum install jq -y
+if ! command -v jq &> /dev/null
+then
+    echo "Command jq could not be found. Please install it"
+    echo "Ex on linux: sudo yum install jq -y"
+    exit
+fi
 
 if [ $OCI_CLI_CLOUD_SHELL == "True" ];  then
   export TF_VAR_tenancy_ocid=$OCI_TENANCY

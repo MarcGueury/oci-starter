@@ -25,5 +25,5 @@ resource "oci_database_autonomous_database" "starter_atp" {
 # Compatibility with atp_existing.tf 
 data "oci_database_autonomous_database" "starter_atp" {
   #Required
-  id                       = oci_database_autonomous_database.starter_atp.id
+  autonomous_database_id = oci_database_autonomous_database.starter_atp.id
 }
