@@ -270,6 +270,11 @@ mandatory "language" $TF_VAR_language
 mandatory "deploy" $TF_VAR_deploy_strategy
 mandatory "db_password" $TF_VAR_db_password
 
+if [ -z "$2" ]; then
+  echo "WARNING: compartment_ocid is not defined."
+  echo "         The components will be created in the root compartment."
+fi
+
 export |grep TF_VAR > variables.sh
 chmod +x variables.sh
 

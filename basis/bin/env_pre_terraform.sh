@@ -15,6 +15,12 @@ if [ $OCI_CLI_CLOUD_SHELL == "True" ];  then
   export TF_VAR_region=$OCI_REGION
 fi 
 
+if [ -z "$TF_VAR_compartment_ocid" ]; then
+  echo "WARNING: compartment_ocid is not defined."
+  echo "         The components will be created in the root compartment."
+  export TF_VAR_compartment_ocid=$TF_VAR_tenancy_ocid
+fi
+
 # Namespace
 export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_devops_rsa.pub)
 export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_devops_rsa)
