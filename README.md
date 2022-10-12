@@ -1,9 +1,7 @@
 # oci-starter
 
-[ ![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/MarcGueury/oci-starter/archive/refs/heads/main.zip)
-
-Usage:
-1. Cloud Shell / Command Line 
+## Usage:
+### 1. Cloud Shell / Command Line 
 
 - Go to OCI Home page.
 - Go to menu "Identity & Security"
@@ -20,5 +18,9 @@ cd output
 Then click on the UI_URL at then end of the build
 ```
 
-2. "Deploy to Oracle Cloud" button above. And follow the wizard.
+## 2. "Deploy to Oracle Cloud"
+
+[ ![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/MarcGueury/oci-starter/archive/refs/heads/main.zip)
+
+Just follow the wizard.
 
