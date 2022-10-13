@@ -1,5 +1,6 @@
 # Build_app.sh
 #
+#!/bin/bash
 # Parameter build or docker
 # Compute:
 # - build the code 
@@ -9,7 +10,7 @@
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-if [ $1 != "compute" ] && [ $1 != "docker" ] ; then
+if [ $1!="compute" ] && [ $1!="docker" ] ; then
   echo 'Argument required: compute or docker'
   exit
 fi
@@ -20,16 +21,16 @@ sed -i "s/##DB_USER##/$TF_VAR_db_user/" $CONFIG_FILE
 sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
 
 # Check java version
-if [ $OCI_CLI_CLOUD_SHELL == true ]; then
+if [ $OCI_CLI_CLOUD_SHELL==true ]; then
   ## XX Check Java Version in env variables
   export JAVA_ID=`csruntimectl java list | grep jdk-17 | sed -e 's/^.*\(graal[^ ]*\) .*$/\1/'`
   csruntimectl java set $JAVA_ID
 fi
 
-if [ $1 == "compute" ]; then
+if [ $1=="compute" ]; then
   mvn package
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
-elif [ $1 == "docker" ]; then
+elif [ $1=="docker" ]; then
   docker build -t helidon .
 fi  
