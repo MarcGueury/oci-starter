@@ -20,7 +20,7 @@ To destroy:
 ```
 cd output
 ./destroy.sh
-> Confirm: yes
+> Do you really want to destroy all resources? yes
 ```
 
 
