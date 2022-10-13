@@ -1,3 +1,4 @@
+#!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Variables
@@ -10,7 +11,7 @@ then
     exit
 fi
 
-if [ $OCI_CLI_CLOUD_SHELL == "True" ];  then
+if [ $OCI_CLI_CLOUD_SHELL=="True" ];  then
   export TF_VAR_tenancy_ocid=$OCI_TENANCY
   export TF_VAR_region=$OCI_REGION
 fi 
