@@ -11,7 +11,7 @@
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-if [ $1!="compute" ] && [ $1!="docker" ] ; then
+if [ "$1" != "compute" ] && [ "$1" != "docker" ] ; then
   echo 'Argument required: compute or docker'
   exit
 fi
@@ -28,10 +28,10 @@ if [ $OCI_CLI_CLOUD_SHELL == true ]; then
   csruntimectl java set $JAVA_ID
 fi
 
-if [ $1 == "compute" ]; then
+if [ "$1" == "compute" ]; then
   mvn package
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
-elif [ $1 == "docker" ]; then
+elif [ "$1" == "docker" ]; then
   docker build -t helidon .
 fi  
