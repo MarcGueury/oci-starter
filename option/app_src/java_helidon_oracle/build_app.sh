@@ -1,3 +1,4 @@
+#!/bin/bash
 # Build_app.sh
 #
 #!/bin/bash

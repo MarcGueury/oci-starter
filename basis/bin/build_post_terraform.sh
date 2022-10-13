@@ -1,3 +1,4 @@
+#!/bin/bash
 # Autonomous 
 
 # Get the wallet
