@@ -8,14 +8,26 @@ if [[ -z "$TF_VAR_java_version" ]] || [[ -z "$JDBC_URL" ]]; then
   exit
 fi
 
-# Install the JDK
-# XXX GraalVM
-if [ $TF_VAR_java_version == 8 ]; then
-  yum install java-1.8.0-openjdk
-elif [ $TF_VAR_java_version == 11 ]; then
-  sudo yum install -y jdk-11.x86_64  
-elif [ $TF_VAR_java_version == 17 ]; then
-  sudo yum install -y jdk-17.x86_64  
+# -- App --------------------------------------------------------------------
+# Install the JVM (JDK or GraalVM)
+if [ $TF_VAR_java_vm == 'GraalVM' ]; then
+  # GraalVM
+  if [ $TF_VAR_java_version == 8 ]; then
+    sudo yum install -y graalvm21-ee-8-jdk.x86_64 
+  elif [ $TF_VAR_java_version == 11 ]; then
+    sudo yum install -y graalvm22-ee-11-jdk.x86_64
+  elif [ $TF_VAR_java_version == 17 ]; then
+    sudo yum install -y graalvm22-ee-17-jdk.x86_64 
+  fi
+else
+  # JDK 
+  if [ $TF_VAR_java_version == 8 ]; then
+    sudo yum install -y java-1.8.0-openjdk
+  elif [ $TF_VAR_java_version == 11 ]; then
+    sudo yum install -y jdk-11.x86_64  
+  elif [ $TF_VAR_java_version == 17 ]; then
+    sudo yum install -y jdk-17.x86_64  
+  fi
 fi
 
 # Hardcode the connection to the DB in the start.sh
@@ -44,6 +56,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable app.service
 sudo systemctl start app.service
 
+# -- UI --------------------------------------------------------------------
 if [ -d ui ]; then
   # Install the yum repository containing nginx
   sudo rpm -Uvh http://nginx.org/packages/rhel/7/noarch/RPMS/nginx-release-rhel-7-0.el7.ngx.noarch.rpm
@@ -53,7 +66,7 @@ if [ -d ui ]; then
   #location /app/ { proxy_pass http://localhost:8080 }
   sudo sed -i '/#error_page.*/i location /app/ { proxy_pass http://localhost:8080/; }' /etc/nginx/conf.d/default.conf
 
-  # SE Linux
+  # SE Linux (for proxy_pass)
   sudo setsebool -P httpd_can_network_connect 1
 
   # Start it
@@ -61,7 +74,6 @@ if [ -d ui ]; then
   sudo systemctl start nginx
 
   # Copy the index file after the installation of nginx
- 
   sudo cp -r ui/* /usr/share/nginx/html/
 
   # Firewalld
