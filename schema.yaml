@@ -171,9 +171,14 @@ variables:
   java_version:
     visible:
       and: 
-        - eq:
-          - ${language}
-          - "Java"  
+        - and: 
+          - eq:
+            - ${language}
+            - "Java"  
+          - not:
+            - eq:
+              - ${java_framework}
+              - "Helidon"  
         - or:  
           - eq:
             - ${deploy_strategy}
