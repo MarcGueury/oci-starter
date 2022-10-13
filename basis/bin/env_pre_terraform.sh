@@ -11,7 +11,7 @@ then
     exit
 fi
 
-if [ $OCI_CLI_CLOUD_SHELL=="True" ];  then
+if [ $OCI_CLI_CLOUD_SHELL == "True" ];  then
   # Cloud Shell
   export TF_VAR_tenancy_ocid=$OCI_TENANCY
   export TF_VAR_region=$OCI_REGION
