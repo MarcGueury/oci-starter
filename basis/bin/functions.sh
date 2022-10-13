@@ -1,3 +1,4 @@
+#!/bin/bash
 fn list context
 fn use context eu-frankfurt-1
 fn update context $TF_VAR_compartment_ocid

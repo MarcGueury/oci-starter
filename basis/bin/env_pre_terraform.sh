@@ -12,12 +12,10 @@ then
 fi
 
 if [ $OCI_CLI_CLOUD_SHELL=="True" ];  then
+  # Cloud Shell
   export TF_VAR_tenancy_ocid=$OCI_TENANCY
   export TF_VAR_region=$OCI_REGION
-fi 
-
-# Get config from file
-if [ -f $HOME/.oci/config ]; then
+elif [ -f $HOME/.oci/config ]; then
   ## Get the [DEFAULT] config
   sed -n -e '/\[DEFAULT\]/,$p' $HOME/.oci/config > /tmp/ociconfig
   export TF_VAR_user_ocid=`sed -n 's/user=//p' /tmp/ociconfig |head -1`

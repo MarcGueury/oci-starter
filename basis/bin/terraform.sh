@@ -1,3 +1,4 @@
+#!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # This will create a file with a remote state and a oci provider with a resourcePrincipal

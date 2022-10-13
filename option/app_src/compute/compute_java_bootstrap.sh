@@ -1,3 +1,4 @@
+#!/bin/bash
 # compute_java_bootstrap 
 #
 # Script that is runned once during the setup of a 
