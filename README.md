@@ -9,7 +9,7 @@
 ```
 git clone https://github.com/MarcGueury/oci-starter 
 cd oci-starter
-./oci-starter.sh -prefix test -language java -deploy compute -db_password LiveLab__12345 
+./oci_starter.sh -prefix test -language java -deploy compute -db_password LiveLab__12345 
 cd output
 ./build.sh
 Then click on the UI_URL at then end of the build
@@ -30,7 +30,7 @@ Best practice:
         - Find or create your compartment_id
 ```
 ...
-./oci-starter.sh -compartment_ocid ocid1.compartment.oc1..xxx -prefix test -language java -deploy compute -db_password LiveLab__12345 
+./oci_starter.sh -compartment_ocid ocid1.compartment.oc1..xxx -prefix test -language java -deploy compute -db_password LiveLab__12345 
 ...
 ```
 
