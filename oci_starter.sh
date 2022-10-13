@@ -82,7 +82,7 @@ else
 # export TF_VAR_compartment_ocid="${var.compartment_id}"
 export TF_VAR_prefix="starter"
 # export TF_VAR_language="${var.language}"
-export TF_VAR_java_framework=helidon
+export TF_VAR_java_framework=Helidon
 # export TF_VAR_java_vm=jdk
 # export TF_VAR_java_version=17
 export TF_VAR_vcn_strategy="Create New VCN"
@@ -272,6 +272,13 @@ mandatory "db_password" $TF_VAR_db_password
 if [ -z "$TF_VAR_compartment_ocid" ]; then
   echo "WARNING: compartment_ocid is not defined."
   echo "         The components will be created in the root compartment."
+fi
+
+# To avoid issue, Helidon support only JDK 17
+if [ $TF_VAR_java_framework == "Helidon" ] && [ $TF_VAR_java_version != "17" ]; then  
+  echo "WARNING: Helidon supports only Java 17."
+  echo "         Forcing the version to 17"
+  export TF_VAR_java_version=17
 fi
 
 export |grep TF_VAR > variables.sh
