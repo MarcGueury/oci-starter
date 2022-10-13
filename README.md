@@ -9,7 +9,6 @@
 ```
 git clone https://github.com/MarcGueury/oci-starter 
 cd oci-starter
-./oci-starter.sh
 ./oci-starter.sh -prefix test -language java -deploy compute -db_password LiveLab__12345 
 cd output
 ./build.sh
@@ -20,7 +19,7 @@ To destroy:
 ```
 cd output
 ./destroy.sh
-> Confirm: yes
+> Do you really want to destroy all resources? yes
 ```
 
 
