@@ -30,6 +30,7 @@ fi
 
 if [ "$1" == "compute" ]; then
   mvn package
+  cp start.sh target/.
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
 elif [ "$1" == "docker" ]; then
