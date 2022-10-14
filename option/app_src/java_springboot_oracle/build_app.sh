@@ -16,11 +16,6 @@ if [ "$1" != "compute" ] && [ "$1" != "docker" ] ; then
   exit
 fi
 
-# Replace the user and password in the configuration file (XXX)
-CONFIG_FILE=src/main/resources/META-INF/microprofile-config.properties
-sed -i "s/##DB_USER##/$TF_VAR_db_user/" $CONFIG_FILE
-sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
-
 # Check java version
 if [ "$OCI_CLI_CLOUD_SHELL" == "true" ]; then
   ## XX Check Java Version in env variables
@@ -32,6 +27,12 @@ if [ "$1" == "compute" ]; then
   mvn package
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
+
+  # Replace the user and password
+  cp start.sh target/.
+  sed -i "s/##DB_USER##/$TF_VAR_db_user/" target/start.sh
+  sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" target/start.sh
+
 elif [ "$1" == "docker" ]; then
   docker build -t app .
 fi  
