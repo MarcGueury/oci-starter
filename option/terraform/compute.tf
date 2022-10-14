@@ -1,5 +1,7 @@
 # Defines the number of instances to deploy
 resource "oci_core_instance" "starter_instance" {
+  depends_on = [local.jdbc_url]
+
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = var.compartment_ocid
   display_name        = "${var.prefix}-instance"
@@ -21,43 +23,34 @@ resource "oci_core_instance" "starter_instance" {
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
   }
-    
+
   source_details {
     source_type = "image"
     source_id   = data.oci_core_images.oraclelinux.images.0.id
   }
-}
 
-resource "null_resource" "starter_instance_install" {
-    depends_on = [oci_core_instance.starter_instance, local.jdbc_url ]
-  
-    provisioner "file" {
-      connection {
-        agent       = false
-        host        = "${oci_core_instance.starter_instance.public_ip}"
-        user        = "opc"
-        private_key = var.ssh_private_key
-      }
-      source = "../compute"
-      destination = "."
-    }
+  connection {
+    agent       = false
+    host        = oci_core_instance.starter_instance.public_ip
+    user        = "opc"
+    private_key = var.ssh_private_key
+  }
 
-    provisioner "remote-exec" {
-      on_failure = continue
-      connection {
-        agent       = false
-        host        = "${oci_core_instance.starter_instance.public_ip}"
-        user        = "opc"
-        private_key = var.ssh_private_key
-      }
-      inline = [
-        "export TF_VAR_java_version=${var.java_version}",
-        "export JDBC_URL='${local.jdbc_url}'",
-        "mv compute/* .",
-        "rmdir compute",
-        "bash compute_bootstrap.sh > compute_bootstrap.log 2>&1"
-      ]
-    }
+  provisioner "file" {
+    source      = "../compute"
+    destination = "."
+  }
+
+  provisioner "remote-exec" {
+    on_failure = continue
+    inline = [
+      "export TF_VAR_java_version=${var.java_version}",
+      "export JDBC_URL='${local.jdbc_url}'",
+      "mv compute/* .",
+      "rmdir compute",
+      "bash compute_bootstrap.sh > compute_bootstrap.log 2>&1"
+    ]
+  }
 }
 
 # Output the private and public IPs of the instance
@@ -70,10 +63,10 @@ output "instance_public_ips" {
 }
 
 output "rest_url" {
-  value = format("http://%s:8080/dept", oci_core_instance.starter_instance.public_ip) 
+  value = format("http://%s:8080/dept", oci_core_instance.starter_instance.public_ip)
 }
 
 output "ui_url" {
-  value = format("http://%s/", oci_core_instance.starter_instance.public_ip) 
+  value = format("http://%s/", oci_core_instance.starter_instance.public_ip)
 }
 

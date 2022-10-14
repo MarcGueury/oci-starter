@@ -279,7 +279,7 @@ if [ -z "$TF_VAR_compartment_ocid" ]; then
 fi
 
 # To avoid issue, Helidon support only JDK 17
-if [ $TF_VAR_java_framework=="Helidon" ] && [ $TF_VAR_java_version!="17" ]; then  
+if [ "$TF_VAR_java_framework" == "Helidon" ] && [ "$TF_VAR_java_version" != "17" ]; then  
   echo "WARNING: Helidon supports only Java 17."
   echo "         Forcing the version to 17"
   export TF_VAR_java_version=17

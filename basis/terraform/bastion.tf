@@ -8,6 +8,8 @@ variable "instance_shape_config_memory_in_gbs" {
 }
 
 resource "oci_core_instance" "starter_bastion" {
+  depends_on = [local.connect_string]
+
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = var.compartment_ocid
   display_name        = "${var.prefix}-bastion"
@@ -29,45 +31,34 @@ resource "oci_core_instance" "starter_bastion" {
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
   }
-    
+
   source_details {
     source_type = "image"
     source_id   = data.oci_core_images.oraclelinux.images.0.id
   }
+
+  connection {
+    agent       = false
+    host        = oci_core_instance.starter_bastion.public_ip
+    user        = "opc"
+    private_key = var.ssh_private_key
+  }
+
+  provisioner "file" {
+    source      = "../db_src"
+    destination = "db_src"
+  }
+
+  provisioner "remote-exec" {
+    on_failure = continue
+    inline = [
+      "export DB_USER=${var.db_user}",
+      "export DB_PASSWORD='${var.db_password}'",
+      "export DB_URL='${local.connect_string}'",
+      "bash db_src/db_init.sh > db_src/db_init.log 2>&1"
+    ]
+  }
 }
-
-resource "null_resource" "starter_bastion_install" {
-    depends_on = [oci_core_instance.starter_bastion, local.connect_string ]
-
-    provisioner "file" {
-      connection {
-        agent       = false
-        host        = "${oci_core_instance.starter_bastion.public_ip}"
-        user        = "opc"
-        private_key = var.ssh_private_key
-      }
-      source = "../db_src"
-      destination = "db_src"
-    }
-
-    provisioner "remote-exec" {
-      on_failure = continue
-      connection {
-        agent       = false
-        host        = "${oci_core_instance.starter_bastion.public_ip}"
-        user        = "opc"
-        private_key = var.ssh_private_key
-      }
-
-      inline = [
-        "export DB_USER=${var.db_user}",
-        "export DB_PASSWORD='${var.db_password}'",
-        "export DB_URL='${local.connect_string}'",
-        "bash db_src/db_init.sh > db_src/db_init.log 2>&1"
-      ]
-    }
-}
-
 
 # Output the private and public IPs of the instance
 output "bastion_private_ips" {
