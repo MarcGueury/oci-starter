@@ -25,13 +25,14 @@ fi
 
 if [ "$1" == "compute" ]; then
   mvn package
-  mkdir ../compute/app
-  cp -r target/* ../compute/app/.
 
   # Replace the user and password
   cp start.sh target/.
   sed -i "s/##DB_USER##/$TF_VAR_db_user/" target/start.sh
   sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" target/start.sh
+
+  mkdir ../compute/app
+  cp -r target/* ../compute/app/.
 
 elif [ "$1" == "docker" ]; then
   docker build -t app .

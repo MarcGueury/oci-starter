@@ -8,7 +8,6 @@ variable "instance_shape_config_memory_in_gbs" {
 }
 
 resource "oci_core_instance" "starter_bastion" {
-  depends_on = [local.connect_string]
 
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = var.compartment_ocid

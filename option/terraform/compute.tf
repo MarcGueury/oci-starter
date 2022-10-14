@@ -1,6 +1,5 @@
 # Defines the number of instances to deploy
 resource "oci_core_instance" "starter_instance" {
-  depends_on = [local.jdbc_url]
 
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = var.compartment_ocid
