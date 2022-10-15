@@ -218,9 +218,9 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;     
     -d|-database)
-      if [ $2 == "atp" ]; then 
+      if [ $2 == "atp" ] || [ $2 == "autonomous" ]; then 
         export TF_VAR_db_strategy="Autonomous Transaction Processing Database"
-      elif [ $2 == "dbsystem" ]; then  
+      elif [ $2 == "dbsystem" ] || [ $2 == "database" ]; then  
         export TF_VAR_db_strategy="Database System"
       elif [ $2 == "mysql" ]; then  
         export TF_VAR_db_strategy="MySQL"        
