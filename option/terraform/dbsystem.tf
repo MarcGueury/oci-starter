@@ -27,7 +27,8 @@ resource "oci_database_db_system" "starter_dbsystem" {
       pdb_name       = "PDB1"
     }
 
-    db_version   = "21" // "21.7.0.0.0"
+    // XXX The last version should be dynamic
+    db_version   = "21.7.0.0"
     display_name = "${var.prefix}home"
   }
 
