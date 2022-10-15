@@ -11,9 +11,9 @@ variable "character_set" {
 }
 
 # BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
-# variable license_model{
-#   default="BRING_YOUR_OWN_LICENSE"
-# }
+variable license_model{
+  default="BRING_YOUR_OWN_LICENSE"
+}
 
 resource "oci_database_db_system" "starter_dbsystem" {
   availability_domain = data.oci_identity_availability_domain.ad.name
