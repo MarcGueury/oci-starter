@@ -8,7 +8,7 @@ data "oci_database_pluggable_databases" "starter_pdbs" {
 }
 
 locals {
-  connect_string = data.oci_database_pluggable_databases.starter_pdbs.pluggable_databases.0.connection_strings.pdb_ip_default
+  connect_string = data.oci_database_pluggable_databases.starter_pdbs.pluggable_databases.0.connection_strings.0.pdb_ip_default
   jdbc_url = format("jdbc:oracle:thin:@%s", local.connect_string)
 }
 
