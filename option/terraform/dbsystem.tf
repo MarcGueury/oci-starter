@@ -22,8 +22,7 @@ resource "oci_database_db_system" "starter_dbsystem" {
 
   db_home {
     database {
-//      admin_password = var.db_password
-      admin_password = LiveLab__12345
+      admin_password = var.db_password
       db_name        = "${var.prefix}"
       pdb_name       = "PDB1"
     }
