@@ -217,7 +217,7 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;     
-    -database)
+    -d|-database)
       if [ $2 == "atp" ]; then 
         export TF_VAR_db_strategy="Autonomous Transaction Processing Database"
       elif [ $2 == "dbsystem" ]; then  
@@ -395,6 +395,7 @@ if [[ $TF_VAR_db_strategy == "Autonomous Transaction Processing Database" ]]; th
     cp_terraform atp_existing.tf
   fi   
 elif [[ $TF_VAR_db_strategy == "Database System" ]]; then
+  cp_terraform db_common.tf
   cp_dir_db_src oracle
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
     cp_terraform dbsystem.tf 
