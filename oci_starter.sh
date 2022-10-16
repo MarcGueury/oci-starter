@@ -269,6 +269,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# XXXX The check should be placed somewhere else such that they are applied in all modes !!!
 mandatory "language" $TF_VAR_language
 mandatory "deploy" $TF_VAR_deploy_strategy
 mandatory "db_password" $TF_VAR_db_password
@@ -284,6 +285,14 @@ if [ "$TF_VAR_java_framework" == "Helidon" ] && [ "$TF_VAR_java_version" != "17"
   echo "         Forcing the version to 17"
   export TF_VAR_java_version=17
 fi
+
+# To avoid issue, Helidon support only JDK 17
+if [ $TF_VAR_db_strategy == "Database System" ] && [ $TF_VAR_db_user == "admin" ]; then  
+  echo "WARNING: Default user is Oracle Database System is SYSTEM"
+  echo "         Forcing the db_user to SYSTEM"
+  export TF_VAR_db_user="SYSTEM"
+fi
+
 
 export |grep TF_VAR > variables.sh
 chmod +x variables.sh
