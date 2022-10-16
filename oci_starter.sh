@@ -288,9 +288,9 @@ fi
 
 # To avoid issue, Helidon support only JDK 17
 if [ $TF_VAR_db_strategy == "Database System" ] && [ $TF_VAR_db_user == "admin" ]; then  
-  echo "WARNING: Default user is Oracle Database System is SYSTEM"
-  echo "         Forcing the db_user to SYSTEM"
-  export TF_VAR_db_user="SYSTEM"
+  echo "WARNING: Default user in Oracle Database System is system"
+  echo "         Forcing the db_user to system"
+  export TF_VAR_db_user="system"
 fi
 
 
