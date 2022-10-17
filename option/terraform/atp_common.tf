@@ -22,8 +22,8 @@ locals {
   list_profiles = [for v in data.oci_database_autonomous_database.starter_atp.connection_strings[0].profiles : format("%s/%s",v.protocol,v.consumer_group)]
   # Get index for 'name' equal to "Dan"
   index_profile = index(local.list_profiles, "TCPS/MEDIUM")
-  connect_string = data.oci_database_autonomous_database.starter_atp.connection_strings[0].profiles[local.index_profile].value
-  jdbc_url = format("jdbc:oracle:thin:@%s", local.connect_string)
+  db_url = data.oci_database_autonomous_database.starter_atp.connection_strings[0].profiles[local.index_profile].value
+  jdbc_url = format("jdbc:oracle:thin:@%s", local.db_url)
 }
 
 output "jdbc_url" {

@@ -53,7 +53,7 @@ resource "oci_core_instance" "starter_bastion" {
     inline = [
       "export DB_USER=${var.db_user}",
       "export DB_PASSWORD='${var.db_password}'",
-      "export DB_URL='${local.connect_string}'",
+      "export DB_URL='${local.db_url}'",
       "bash db_src/db_init.sh > db_src/db_init.log 2>&1"
     ]
   }
