@@ -9,10 +9,10 @@ create table dept
         dname varchar(64),
         loc varchar(64) );
 
-insert into dept values (10, 'ACCOUNTING', 'NEW YORK');
-insert into dept values (20, 'RESEARCH',   'DALLAS');
-insert into dept values (30, 'SALES',      'CHICAGO');
-insert into dept values (40, 'OPERATIONS', 'BOSTON');
+insert into dept values (10, 'ACCOUNTING', 'BRUSSELS');
+insert into dept values (20, 'RESEARCH',   'PARIS');
+insert into dept values (30, 'SALES',      'ROME');
+insert into dept values (40, 'OPERATIONS', 'MADRID');
 select * from dept;
 
 

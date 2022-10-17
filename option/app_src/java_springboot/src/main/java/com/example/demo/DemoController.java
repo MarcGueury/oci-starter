@@ -37,13 +37,9 @@ public class DemoController {
     return depts;
   }
 
-  @RequestMapping(value = "/info", method = RequestMethod.GET })  
+  @RequestMapping(value = "/info", method = RequestMethod.GET, produces ={ "text/plain" })  
   public String info() {
-    String db = "Oracle";
-    if (dbUrl.indexOf("mysql") > 0) {
-      db = "MySQL";      
-    } 
-    return "Java / SpringBoot / " + db; 
+    return "Java / SpringBoot"; 
   }  
 
   @RequestMapping(value = "/static", method = RequestMethod.GET, produces = { "application/json" })  
