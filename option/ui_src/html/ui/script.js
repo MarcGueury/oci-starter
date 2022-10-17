@@ -11,6 +11,16 @@ function loadRest() {
     };
     xhttp.open("GET", "/app/dept", true);
     xhttp.send();
+
+    var xhttp2 = new XMLHttpRequest();
+    xhttp2.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("info").innerHTML =
+                this.responseText;
+        }
+    };
+    xhttp2.open("GET", "/app/info", true);
+    xhttp2.send();
 }
 
 // Convert the json in a HTML Table 

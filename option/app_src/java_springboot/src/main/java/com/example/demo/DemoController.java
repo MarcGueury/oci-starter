@@ -10,30 +10,22 @@ import java.util.List;
 @RestController
 
 public class DemoController {
-  private String dbUrl = null;
+  private String dbUrl;
+  private String dbUser;
+  private String dbPassword;
 
   @Autowired
   public DemoController(DbProperties properties) {
-    String baseUrl = "" + properties.getUrl();
-    String username = System.getenv("DB_USER");
-    String password = System.getenv("DB_PASSWORD");
-    if (baseUrl == null) {
-      return;
-    }
-
-    if (baseUrl.indexOf("mysql") > 0) {
-      this.dbUrl = baseUrl + "?user=" + username + "&password=" + password;
-    } else if (baseUrl.indexOf("oracle") > 0) {
-      this.dbUrl = baseUrl.replace("@", username + "/" + password + "@");
-    }
-    System.err.println(this.dbUrl);
+    dbUrl = properties.getUrl();
+    dbUser = System.getenv("DB_USER");
+    dbPassword = System.getenv("DB_PASSWORD");
   }
 
   @RequestMapping(value = "/dept", method = RequestMethod.GET, produces = { "application/json" })  
   public List<Dept> query() {
     List<Dept> depts = new ArrayList<Dept>();
     try {
-      Connection conn = DriverManager.getConnection(this.dbUrl);
+      Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT * FROM dept");
       while (rs.next()) {
@@ -44,6 +36,15 @@ public class DemoController {
     }
     return depts;
   }
+
+  @RequestMapping(value = "/info", method = RequestMethod.GET })  
+  public String info() {
+    String db = "Oracle";
+    if (dbUrl.indexOf("mysql") > 0) {
+      db = "MySQL";      
+    } 
+    return "Java / SpringBoot / " + db; 
+  }  
 
   @RequestMapping(value = "/static", method = RequestMethod.GET, produces = { "application/json" })  
   public List<Dept> listDept() {
@@ -57,6 +58,6 @@ public class DemoController {
     depts.add(new Dept(7, "Fernando", "cc"));
     depts.add(new Dept(8, "Christophe", "cc"));    
     return depts;
-}
+  }
 
 }
