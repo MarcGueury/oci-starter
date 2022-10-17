@@ -17,6 +17,7 @@ resource "oci_database_autonomous_database" "starter_atp" {
   is_auto_scaling_enabled                        = "false"
   license_model                                  = var.license_model
   is_preview_version_with_service_terms_accepted = "false"
+# XXXXX  
 #  whitelisted_ips                                = [ data.oci_core_vcn.starter_vcn.id ]
   whitelisted_ips                                = [ "0.0.0.0/0" ]
   is_mtls_connection_required                    = false
