@@ -14,12 +14,7 @@ cp_terraform() {
 }
 
 cp_dir_db_src() {
-    echo "cp_terraform $1"
-    cp ../option/db_src/$1/* db_src/.
-}
-
-cp_dir_db_src() {
-    echo "cp_terraform $1"
+    echo "cp_dir_db_src $1"
     cp ../option/db_src/$1/* db_src/.
 }
 
@@ -354,14 +349,20 @@ case $TF_VAR_db_strategy in
 esac
 
 APP=${APP_LANG}_${APP_FRAMEWORK}_${APP_DB}
+APP_DB=${APP_LANG}_${APP_FRAMEWORK}_${APP_DB}
 echo APP=$APP
 mkdir app_src
 mkdir db_src
+# Generic version for Oracle DB
 if [ -d "../option/app_src/$APP" ]; then
   cp -r ../option/app_src/$APP/* app_src/.
-else
-  todo
 fi
+
+# Overwrite the generic version (ex for mysql)
+if [ -d "../option/app_src/$APP_DB" ]; then
+  cp -r ../option/app_src/$APP_DB/* app_src/.
+fi
+
 
 #-- User Interface ----------------------------------------------------------
 

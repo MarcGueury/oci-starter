@@ -1,7 +1,10 @@
 #!/bin/bash
-if [-f terraform/tfstate.tf ]; then
-  export STATE_FILE=terraform/tfstate.tf
-else 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $SCRIPT_DIR/..
+
+if [ -f terraform/terraform.tfstate ]; then
+  export STATE_FILE=terraform/terraform.tfstate
+else
   oci os object get -bn ${TF_VAR_prefix}-terraform --name tfstate.tf --file /tmp/tfstate.tf
   export STATE_FILE=/tmp/tfstate.tf
 fi
@@ -16,7 +19,7 @@ get_attribute_from_tfstate () {
 export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
 
 # Functions
-if [ "$deployment_strategy" == "Function" ]; then
+if [ "$TF_VAR_deploy_strategy" == "Function" ]; then
   # APIGW URL
   get_attribute_from_tfstate "APIGW_HOSTNAME" "${TF_VAR_prefix}_apigw" "hostname"
 
@@ -26,9 +29,9 @@ if [ "$deployment_strategy" == "Function" ]; then
   export FUNCTION_URL=$FUNCTION_ENDPOINT/20181201/functions/$FUNCTION_ID
 fi
 
-if [ "$deployment_strategy" == "Virtual Machine" ]; then
+if [ "$TF_VAR_deploy_strategy" == "Virtual Machine" ]; then
   get_attribute_from_tfstate "COMPUTE_IP" "starter_instance" "public_ip"
 fi
 
-
-
+# Bastion 
+get_attribute_from_tfstate "BASTION_IP" "starter_bastion" "public_ip"
