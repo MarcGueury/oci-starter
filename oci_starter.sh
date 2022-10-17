@@ -348,7 +348,7 @@ case $TF_VAR_db_strategy in
     APP_DB="mysql"
 esac
 
-APP=${APP_LANG}_${APP_FRAMEWORK}_${APP_DB}
+APP=${APP_LANG}_${APP_FRAMEWORK}
 APP_DB=${APP_LANG}_${APP_FRAMEWORK}_${APP_DB}
 echo APP=$APP
 mkdir app_src
