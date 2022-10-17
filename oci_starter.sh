@@ -286,11 +286,18 @@ if [ "$TF_VAR_java_framework" == "Helidon" ] && [ "$TF_VAR_java_version" != "17"
   export TF_VAR_java_version=17
 fi
 
-# To avoid issue, Helidon support only JDK 17
+# Default user of Database System
 if [ "$TF_VAR_db_strategy" == "Database System" ] && [ "$TF_VAR_db_user" == "admin" ]; then  
   echo "WARNING: Default user in Oracle Database System is system"
   echo "         Forcing the db_user to system"
   export TF_VAR_db_user="system"
+fi
+
+# Default user of MySQL
+if [ "$TF_VAR_db_strategy" == "MySQL" ] && [ "$TF_VAR_db_user" == "admin" ]; then  
+  echo "WARNING: Default user in MySQL is root"
+  echo "         Forcing the db_user to root"
+  export TF_VAR_db_user="root"
 fi
 
 
@@ -412,6 +419,7 @@ elif [[ $TF_VAR_db_strategy == "Database System" ]]; then
     cp_terraform dbsystem_existing.tf 
   fi   
 elif [[ $TF_VAR_db_strategy == "MySQL" ]]; then  
+  cp_terraform mysql_common.tf
   cp_dir_db_src mysql
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
     cp_terraform mysql.tf 
