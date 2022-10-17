@@ -4,15 +4,15 @@ create database db1;
 use db1;
 
 -- DROP TABLE DEPT;
-CREATE TABLE DEPT
-       (DEPTNO INTEGER PRIMARY KEY,
-        DNAME VARCHAR(64),
-        LOC VARCHAR(64) );
+create table dept
+       (deptno integer primary key,
+        dname varchar(64),
+        loc varchar(64) );
 
-INSERT INTO DEPT VALUES (10, 'ACCOUNTING', 'NEW YORK');
-INSERT INTO DEPT VALUES (20, 'RESEARCH',   'DALLAS');
-INSERT INTO DEPT VALUES (30, 'SALES',      'CHICAGO');
-INSERT INTO DEPT VALUES (40, 'OPERATIONS', 'BOSTON');
-select * from DEPT;
+insert into dept values (10, 'ACCOUNTING', 'NEW YORK');
+insert into dept values (20, 'RESEARCH',   'DALLAS');
+insert into dept values (30, 'SALES',      'CHICAGO');
+insert into dept values (40, 'OPERATIONS', 'BOSTON');
+select * from dept;
 
 
