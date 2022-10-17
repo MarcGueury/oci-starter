@@ -74,6 +74,7 @@ resource "oci_core_security_list" "starter_security_list" {
     }
   }  
 
+  // Oracle TNS Listener port: XXX optional ?
   ingress_security_rules {
     protocol  = "6" // tcp
     source    = "10.0.0.0/8"
@@ -84,6 +85,32 @@ resource "oci_core_security_list" "starter_security_list" {
       max = 1521
     }
   }  
+
+  // MySQL listener port: XXX optional ?
+  ingress_security_rules {
+    protocol  = "6" // tcp
+    source    = "10.0.0.0/8"
+    stateless = false
+
+    tcp_options {
+      min = 3306
+      max = 3306
+    }
+  }  
+
+  // MySQL listener port_x: XXX optional ?
+  ingress_security_rules {
+    protocol  = "6" // tcp
+    source    = "10.0.0.0/8"
+    stateless = false
+
+    tcp_options {
+      min = 33306
+      max = 33306
+    }
+  }  
+
+
 }
 
 # Compatibility with network_existing.tf
