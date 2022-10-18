@@ -129,7 +129,7 @@ while [[ $# -gt 0 ]]; do
         export TF_VAR_deploy_strategy="Virtual Machine"
       elif [ $2 == "kubernetes" ]; then  
         export TF_VAR_deploy_strategy="Kubernetes"
-        export TF_VAR_kubernetes_strategy="oke"
+        export TF_VAR_kubernetes_strategy="OKE"
         export TF_VAR_oke_strategy="Create New OKE"
       elif [ $2 == "function" ]; then  
         export TF_VAR_deploy_strategy="Function"        
