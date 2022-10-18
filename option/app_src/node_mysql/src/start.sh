@@ -4,5 +4,5 @@ cd $SCRIPT_DIR
 
 export DB_USER="##DB_USER##"
 export DB_PASSWORD="##DB_PASSWORD##"
-export DB_SHORT_URL="##DB_SHORT_URL##"
-node main.js
+export DB_HOST="##DB_HOST##"
+node rest.js

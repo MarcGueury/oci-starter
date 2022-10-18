@@ -45,6 +45,7 @@ resource "oci_core_instance" "starter_instance" {
     inline = [
       "export TF_VAR_java_version=${var.java_version}",
       "export JDBC_URL='${local.jdbc_url}'",
+      "export DB_HOST='${local.db_host}'",      
       "mv compute/* .",
       "rmdir compute",
       "bash compute_bootstrap.sh > compute_bootstrap.log 2>&1"

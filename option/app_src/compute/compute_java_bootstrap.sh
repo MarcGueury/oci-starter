@@ -15,6 +15,9 @@ if [ "$TF_VAR_language" == "NodeJS" ]; then
   # Install last version of NodeJS
   sudo yum install -y oracle-nodejs-release-el7 oracle-release-el7
   sudo yum install -y nodejs
+  cd app
+  npm install
+  cd $HOME
 else
   # Install the JVM (JDK or GraalVM)
   if [ "$TF_VAR_java_vm" == "GraalVM" ]; then
@@ -26,6 +29,7 @@ else
     elif [ "$TF_VAR_java_version" == 17 ]; then
       sudo yum install -y graalvm22-ee-17-jdk.x86_64 
     fi
+    
   else
     # JDK 
     if [ "$TF_VAR_java_version" == 8 ]; then
@@ -40,6 +44,7 @@ fi
 
 # Hardcode the connection to the DB in the start.sh
 sed -i "s!##JDBC_URL##!$JDBC_URL!" app/start.sh 
+sed -i "s!##DB_HOST##!$DB_HOST!" app/start.sh 
 chmod +x app/start.sh
 
 # Create an "app.service" that starts when the machine starts.
@@ -91,3 +96,6 @@ fi
 # Firewalld
 sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
 sudo firewall-cmd --reload
+
+# -- Util -------------------------------------------------------------------
+sudo yum install -y psmisc

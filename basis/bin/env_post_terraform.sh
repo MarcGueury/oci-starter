@@ -1,5 +1,9 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+# Variables
+. $SCRIPT_DIR/../variables.sh
+
 cd $SCRIPT_DIR/..
 
 if [ -f terraform/terraform.tfstate ]; then
