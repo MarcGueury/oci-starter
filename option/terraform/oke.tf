@@ -80,7 +80,7 @@ resource "oci_core_subnet" "starter_nodepool_subnet" {
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
-  security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
+  security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id,oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-nodepool-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
@@ -92,7 +92,7 @@ resource "oci_core_subnet" "starter_api_subnet" {
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
-  security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
+  security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id,oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-api-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
