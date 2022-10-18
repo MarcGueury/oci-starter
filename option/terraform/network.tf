@@ -110,7 +110,29 @@ resource "oci_core_security_list" "starter_security_list" {
     }
   }  
 
+  // External access to Kubernetes API endpoint
+  ingress_security_rules {
+    protocol  = "6" // tcp
+    source    = "0.0.0.0/0"
+    stateless = false
 
+    tcp_options {
+      min = 6443
+      max = 6443
+    }
+  }  
+
+  // 	Kubernetes worker to control plane communication
+  ingress_security_rules {
+    protocol  = "6" // tcp
+    source    = "10.0.0.0/8"
+    stateless = false
+
+    tcp_options {
+      min = 12250
+      max = 12250
+    }
+  }  
 }
 
 # Compatibility with network_existing.tf

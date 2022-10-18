@@ -385,6 +385,7 @@ fi
 #-- Deployment --------------------------------------------------------------
 if [[ $TF_VAR_deploy_strategy == "Kubernetes" ]]; then
   if [[ $TF_VAR_kubernetes_strategy == "OKE" ]]; then
+    cp_terraform oke_common.tf 
     if [[ $TF_VAR_oke_strategy == "Create New OKE" ]]; then
       cp_terraform oke.tf 
     else
