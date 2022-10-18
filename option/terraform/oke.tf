@@ -46,7 +46,7 @@ locals {
 
 #----------------------------------------------------------------------------
 
-resource "oci_core_subnet" "starter_lbSubNet1" {
+resource "oci_core_subnet" "starter_lb_subnet1" {
   #Required
   availability_domain = data.oci_identity_availability_domain.ad1.name
   cidr_block          = "10.0.20.0/24"
@@ -55,24 +55,24 @@ resource "oci_core_subnet" "starter_lbSubNet1" {
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
-  display_name      = "${var.prefix}-oke-lbSubNet1"
+  display_name      = "${var.prefix}-oke-lb-subnet1"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
 
-resource "oci_core_subnet" "starter_lbSubNet2" {
+resource "oci_core_subnet" "starter_lb_subnet2" {
   #Required
   availability_domain = data.oci_identity_availability_domain.ad2.name
   cidr_block          = "10.0.21.0/24"
   compartment_id      = var.compartment_ocid
   vcn_id              = oci_core_vcn.starter_vcn.id
-  display_name        = "${var.prefix}-oke-lbSubNet2"
+  display_name        = "${var.prefix}-oke-lb-subnet2"
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
 
-resource "oci_core_subnet" "starter_nodePoolSubnet" {
+resource "oci_core_subnet" "starter_nodepool_subnet" {
   #Required
   availability_domain = data.oci_identity_availability_domain.ad1.name
   cidr_block          = "10.0.22.0/24"
@@ -81,11 +81,11 @@ resource "oci_core_subnet" "starter_nodePoolSubnet" {
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
-  display_name      = "${var.prefix}-oke-nodePoolSubnet"
+  display_name      = "${var.prefix}-oke-nodepool-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
 
-resource "oci_core_subnet" "starter_apiEndpointSubnet" {
+resource "oci_core_subnet" "starter_api_subnet" {
   #Required
   cidr_block          = "10.0.23.0/24"
   compartment_id      = var.compartment_ocid
@@ -93,7 +93,7 @@ resource "oci_core_subnet" "starter_apiEndpointSubnet" {
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
-  display_name      = "${var.prefix}-oke-apiEndpointSubnet"
+  display_name      = "${var.prefix}-oke-api-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
 
@@ -108,12 +108,12 @@ resource "oci_containerengine_cluster" "starter_oke" {
 
   #Optional
   endpoint_config {
-    subnet_id             = oci_core_subnet.starter_apiEndpointSubnet.id
+    subnet_id             = oci_core_subnet.starter_api_subnet.id
     is_public_ip_enabled  = "true"
   }
 
   options {
-    service_lb_subnet_ids = [oci_core_subnet.starter_lbSubNet1.id, oci_core_subnet.starter_lbSubNet2.id]
+    service_lb_subnet_ids = [oci_core_subnet.starter_lb_subnet1.id, oci_core_subnet.starter_lb_subnet2.id]
 
     #Optional
     add_ons {
@@ -154,7 +154,7 @@ resource "oci_containerengine_node_pool" "starter_node_pool" {
     placement_configs {
       #Required
       availability_domain = data.oci_identity_availability_domain.ad1.name
-      subnet_id           = oci_core_subnet.starter_nodePoolSubnet.id
+      subnet_id           = oci_core_subnet.starter_nodepool_subnet.id
       #optional
       fault_domains = ["FAULT-DOMAIN-1", "FAULT-DOMAIN-3"]
     }
