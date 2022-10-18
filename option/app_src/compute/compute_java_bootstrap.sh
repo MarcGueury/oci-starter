@@ -10,24 +10,31 @@ if [[ -z "$TF_VAR_java_version" ]] || [[ -z "$JDBC_URL" ]]; then
 fi
 
 # -- App --------------------------------------------------------------------
-# Install the JVM (JDK or GraalVM)
-if [ "$TF_VAR_java_vm" == "GraalVM" ]; then
-  # GraalVM
-  if [ "$TF_VAR_java_version" == 8 ]; then
-    sudo yum install -y graalvm21-ee-8-jdk.x86_64 
-  elif [ "$TF_VAR_java_version" == 11 ]; then
-    sudo yum install -y graalvm22-ee-11-jdk.x86_64
-  elif [ "$TF_VAR_java_version" == 17 ]; then
-    sudo yum install -y graalvm22-ee-17-jdk.x86_64 
-  fi
+
+if [ "$TF_VAR_language" == "NodeJS" ]; then
+  # Install last version of NodeJS
+  sudo yum install -y oracle-nodejs-release-el7 oracle-release-el7
+  sudo yum install -y nodejs
 else
-  # JDK 
-  if [ "$TF_VAR_java_version" == 8 ]; then
-    sudo yum install -y java-1.8.0-openjdk
-  elif [ "$TF_VAR_java_version" == 11 ]; then
-    sudo yum install -y jdk-11.x86_64  
-  elif [ "$TF_VAR_java_version" == 17 ]; then
-    sudo yum install -y jdk-17.x86_64  
+  # Install the JVM (JDK or GraalVM)
+  if [ "$TF_VAR_java_vm" == "GraalVM" ]; then
+    # GraalVM
+    if [ "$TF_VAR_java_version" == 8 ]; then
+      sudo yum install -y graalvm21-ee-8-jdk.x86_64 
+    elif [ "$TF_VAR_java_version" == 11 ]; then
+      sudo yum install -y graalvm22-ee-11-jdk.x86_64
+    elif [ "$TF_VAR_java_version" == 17 ]; then
+      sudo yum install -y graalvm22-ee-17-jdk.x86_64 
+    fi
+  else
+    # JDK 
+    if [ "$TF_VAR_java_version" == 8 ]; then
+      sudo yum install -y java-1.8.0-openjdk
+    elif [ "$TF_VAR_java_version" == 11 ]; then
+      sudo yum install -y jdk-11.x86_64  
+    elif [ "$TF_VAR_java_version" == 17 ]; then
+      sudo yum install -y jdk-17.x86_64  
+    fi
   fi
 fi
 

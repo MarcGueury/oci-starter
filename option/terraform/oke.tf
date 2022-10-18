@@ -1,5 +1,5 @@
 variable "oke_shape" {
-  default = "VM.Standard.E4.Flex"
+  default = "VM.Standard2.1"
 }
 
 variable "node_pool_node_config_details_size" {
@@ -46,20 +46,7 @@ locals {
 
 #----------------------------------------------------------------------------
 
-resource "oci_core_subnet" "nodePool_Subnet" {
-  #Required
-  availability_domain = data.oci_identity_availability_domain.ad1.name
-  cidr_block          = "10.0.22.0/24"
-  compartment_id      = var.compartment_ocid
-  vcn_id              = oci_core_vcn.starter_vcn.id
-
-  # Provider code tries to maintain compatibility with old versions.
-  security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
-  display_name      = "oke-nodePoolSubnet"
-  route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
-}
-
-resource "oci_core_subnet" "clusterSubnet_1" {
+resource "oci_core_subnet" "starter_lbSubNet1" {
   #Required
   availability_domain = data.oci_identity_availability_domain.ad1.name
   cidr_block          = "10.0.20.0/24"
@@ -68,20 +55,45 @@ resource "oci_core_subnet" "clusterSubnet_1" {
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
-  display_name      = "oke-lbSubNet1"
+  display_name      = "${var.prefix}-oke-lbSubNet1"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
 
-resource "oci_core_subnet" "clusterSubnet_2" {
+resource "oci_core_subnet" "starter_lbSubNet2" {
   #Required
   availability_domain = data.oci_identity_availability_domain.ad2.name
   cidr_block          = "10.0.21.0/24"
   compartment_id      = var.compartment_ocid
   vcn_id              = oci_core_vcn.starter_vcn.id
-  display_name        = "oke-lbSubNet2"
+  display_name        = "${var.prefix}-oke-lbSubNet2"
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
+  route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
+}
+
+resource "oci_core_subnet" "starter_nodePoolSubnet" {
+  #Required
+  availability_domain = data.oci_identity_availability_domain.ad1.name
+  cidr_block          = "10.0.22.0/24"
+  compartment_id      = var.compartment_ocid
+  vcn_id              = oci_core_vcn.starter_vcn.id
+
+  # Provider code tries to maintain compatibility with old versions.
+  security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
+  display_name      = "${var.prefix}-oke-nodePoolSubnet"
+  route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
+}
+
+resource "oci_core_subnet" "starter_apiEndpointSubnet" {
+  #Required
+  cidr_block          = "10.0.23.0/24"
+  compartment_id      = var.compartment_ocid
+  vcn_id              = oci_core_vcn.starter_vcn.id
+
+  # Provider code tries to maintain compatibility with old versions.
+  security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id]
+  display_name      = "${var.prefix}-oke-apiEndpointSubnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
 
@@ -94,8 +106,14 @@ resource "oci_containerengine_cluster" "starter_oke" {
   name               = "${var.prefix}-oke"
   vcn_id             = oci_core_vcn.starter_vcn.id
 
+  #Optional
+  endpoint_config {
+    subnet_id             = oci_core_subnet.starter_apiEndpointSubnet.id
+    is_public_ip_enabled  = "true"
+  }
+
   options {
-    service_lb_subnet_ids = [oci_core_subnet.clusterSubnet_1.id, oci_core_subnet.clusterSubnet_2.id]
+    service_lb_subnet_ids = [oci_core_subnet.starter_lbSubNet1.id, oci_core_subnet.starter_lbSubNet2.id]
 
     #Optional
     add_ons {
@@ -136,7 +154,7 @@ resource "oci_containerengine_node_pool" "starter_node_pool" {
     placement_configs {
       #Required
       availability_domain = data.oci_identity_availability_domain.ad1.name
-      subnet_id           = oci_core_subnet.nodePool_Subnet.id
+      subnet_id           = oci_core_subnet.starter_nodePoolSubnet.id
       #optional
       fault_domains = ["FAULT-DOMAIN-1", "FAULT-DOMAIN-3"]
     }
