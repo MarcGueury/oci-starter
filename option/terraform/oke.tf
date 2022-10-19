@@ -287,29 +287,15 @@ resource "oci_core_subnet" "starter_nodepool_subnet" {
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
 
-resource "oci_core_subnet" "starter_lb_subnet1" {
+resource "oci_core_subnet" "starter_lb_subnet" {
   #Required
-  availability_domain = data.oci_identity_availability_domain.ad1.name
   cidr_block          = "10.0.20.0/24"
   compartment_id      = var.compartment_ocid
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id, oci_core_security_list.starter_security_list.id]
-  display_name      = "${var.prefix}-oke-lb-subnet1"
-  route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
-}
-
-resource "oci_core_subnet" "starter_lb_subnet2" {
-  #Required
-  availability_domain = data.oci_identity_availability_domain.ad2.name
-  cidr_block          = "10.0.21.0/24"
-  compartment_id      = var.compartment_ocid
-  vcn_id              = oci_core_vcn.starter_vcn.id
-  display_name        = "${var.prefix}-oke-lb-subnet2"
-
-  # Provider code tries to maintain compatibility with old versions.
-  security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id, oci_core_security_list.starter_security_list.id]
+  display_name      = "${var.prefix}-oke-lb-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
 
@@ -341,7 +327,7 @@ resource "oci_containerengine_cluster" "starter_oke" {
   }
 
   options {
-    service_lb_subnet_ids = [oci_core_subnet.starter_lb_subnet1.id, oci_core_subnet.starter_lb_subnet2.id]
+    service_lb_subnet_ids = [oci_core_subnet.starter_lb_subnet.id]
 
     #Optional
     add_ons {
