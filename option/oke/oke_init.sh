@@ -1,0 +1,1 @@
+kubectl create secret docker-registry ocirsecret --docker-server=$TF_VAR_ocir --docker-username="$TF_VAR_namespace/$TF_VAR_username" --docker-password="$TF_VAR_token" --docker-email="$TF_VAR_email"
