@@ -77,7 +77,8 @@ kind: Ingress
 metadata:
   name: app-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2    
 spec:
   rules:
     - http:
@@ -89,7 +90,7 @@ spec:
                 name: ui-service
                 port:
                   number: 80
-          - path: /app
+          - path: /app(/|$)(.*)
             pathType: Prefix
             backend:
               service:
