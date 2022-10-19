@@ -253,8 +253,8 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;   
-    -token)
-      export TF_VAR_token="$2"
+    -auth_token)
+      export TF_VAR_auth_token="$2"
       shift # past argument
       shift # past value
       ;;                                 
@@ -274,10 +274,10 @@ mandatory "language" $TF_VAR_language
 mandatory "deploy" $TF_VAR_deploy_strategy
 mandatory "db_password" $TF_VAR_db_password
 
-if [ "$TF_VAR_deploy_strategy" != "compute" ] && [ -z "$TF_VAR_token" ]; then
+if [ "$TF_VAR_deploy_strategy" != "compute" ] && [ -z "$TF_VAR_auth_token" ]; then
   echo "WARNING: token is not defined."
   echo "         You will need to define it in variables.sh"
-  export TF_VAR_token="--MISSING--"
+  export TF_VAR_auth_token="--MISSING--"
 fi
 
 if [ -z "$TF_VAR_compartment_ocid" ]; then
