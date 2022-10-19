@@ -122,7 +122,7 @@ resource "oci_core_security_list" "starter_security_list" {
     }
   }  
 
-  // 	Kubernetes worker to control plane communication
+  // Kubernetes worker to control plane communication
   ingress_security_rules {
     protocol  = "6" // tcp
     source    = "10.0.0.0/8"
@@ -131,6 +131,18 @@ resource "oci_core_security_list" "starter_security_list" {
     tcp_options {
       min = 12250
       max = 12250
+    }
+  }  
+
+  // K8S Ingress-Controller
+  ingress_security_rules {
+    protocol  = "6" // tcp
+    source    = "10.0.0.0/8"
+    stateless = false
+
+    tcp_options {
+      min = 8443
+      max = 8443
     }
   }  
 }

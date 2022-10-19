@@ -14,12 +14,12 @@ docker push $DOCKER_PREFIX/ui:1.0
 
 export KUBECONFIG=terraform/starter_cluster_kubeconfig
 
-if[ ! -f deploy.yaml ]; then
+if [ ! -f deploy.yaml ]; then
   # Using & as separator
   sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" oke/template.yaml > deploy.yaml
-  helm install my-release nginx-stable/nginx-ingress
+  helm install ingress nginx-stable/nginx-ingress
   kubectl create secret docker-registry ocirsecret --docker-server=$TF_VAR_ocir --docker-username="$TF_VAR_namespace/$TF_VAR_username" --docker-password="$TF_VAR_auth_token" --docker-email="$TF_VAR_email"
-  kubectl create secret generic db-secret --from-literal=db_user=$TF_VAR_db_user --from-literal=db_password=$TF_VAR_db_password --from-literal=jdbc_url=$TF_VAR_jdbc_url
+  kubectl create secret generic db-secret --from-literal=db_user=$TF_VAR_db_user --from-literal=db_password=$TF_VAR_db_password --from-literal=jdbc_url=$JDBC_URL
 fi
 
 kubectl create -f deploy.yaml

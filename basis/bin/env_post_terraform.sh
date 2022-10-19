@@ -16,13 +16,13 @@ fi
 get_attribute_from_tfstate () {
   RESULT=`jq -r '.resources[] | select(.name=="'$2'") | .instances[0].attributes.'$3'' $STATE_FILE`
   echo "$1=$RESULT"
-  export $1=$RESULT
+  export $1="$RESULT"
 }
 
 get_output_from_tfstate () {
-  RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE`
+  RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE | sed "s/ //"`
   echo "$1=$RESULT"
-  export $1=$RESULT
+  export $1="$RESULT"
 }
 
 # OBJECT_STORAGE_URL
@@ -47,4 +47,4 @@ fi
 get_attribute_from_tfstate "BASTION_IP" "starter_bastion" "public_ip"
 
 # JDBC_URL
-get_output_from_tfstate "jdbc_url" "jdbc_url"
+get_output_from_tfstate "JDBC_URL" "jdbc_url"

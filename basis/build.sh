@@ -11,6 +11,7 @@ ui_src/build_ui.sh $TF_VAR_deploy_strategy
 bin/terraform.sh
 
 if [ -d oke ]; then
+  . bin/env_post_terraform.sh
   oke/oke_deploy.sh
 fi
 
