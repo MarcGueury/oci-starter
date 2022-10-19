@@ -253,7 +253,7 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;   
-    -authtoken|token)
+    -token)
       export TF_VAR_token="$2"
       shift # past argument
       shift # past value
