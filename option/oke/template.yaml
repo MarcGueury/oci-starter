@@ -12,7 +12,7 @@ spec:
     - containerPort: 8080
       name: app-port
     env:
-    - name: JDBC_URL
+    - name: JAVAX_SQL_DATASOURCE_DS1_DATASOURCE_URL
       valueFrom:
         secretKeyRef:
           name: db-secret
