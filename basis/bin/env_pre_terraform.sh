@@ -51,7 +51,7 @@ if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   echo TF_VAR_namespace=$TF_VAR_namespace
   export TF_VAR_username=`oci iam user get --user-id $TF_VAR_user_ocid | jq -r '.data.name'`
   echo TF_VAR_username=$TF_VAR_username
-  export TF_VAR_email=spam@domain.com
+  export TF_VAR_email=mail@domain.com
   echo TF_VAR_email=$TF_VAR_email
   export TF_VAR_ocir=${TF_VAR_region}.ocir.io
   echo TF_VAR_ocir=$TF_VAR_ocir

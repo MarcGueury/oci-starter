@@ -10,14 +10,14 @@
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-if [ $1 != "compute" ] && [ $1 != "docker" ] ; then
-  echo 'Argument required: build or docker'
+if [ $1 != "compute" ] && [ $1 != "kubernetes" ] ; then
+  echo 'Argument required: build or kubernetes'
   exit
 fi
 
 if [ $1 == "compute" ]; then
   mkdir ../compute/ui
   cp -r ui/* ../compute/ui/.
-elif [ $1 == "docker" ]; then
+elif [ $1 == "kubernetes" ]; then
   docker build -t ui:1.0 .
 fi  
