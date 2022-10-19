@@ -46,4 +46,5 @@ fi
 # Bastion 
 get_attribute_from_tfstate "BASTION_IP" "starter_bastion" "public_ip"
 
-get_output_from_tfstate "XXX" "autonomous_database_wallet"
+# JDBC_URL
+get_output_from_tfstate "jdbc_url" "jdbc_url"

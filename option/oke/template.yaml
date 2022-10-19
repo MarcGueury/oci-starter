@@ -9,8 +9,26 @@ spec:
   - name: app
     image: ##DOCKER_PREFIX##/app:1.0
     ports:
-      - containerPort: 8080
-        name: app-port
+    - containerPort: 8080
+      name: app-port
+    env:
+    - name: JDBC_URL
+      valueFrom:
+        secretKeyRef:
+          name: db-secret
+          key: jdbc_url
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: db-secret
+          key: db_user
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: db-secret
+          key: db_password
+  imagePullSecrets:
+  - name: ocirsecret        
 ---
 apiVersion: v1
 kind: Pod
@@ -25,6 +43,8 @@ spec:
     ports:
       - containerPort: 80
         name: http-port
+  imagePullSecrets:
+  - name: ocirsecret        
 ---
 apiVersion: v1
 kind: Service
