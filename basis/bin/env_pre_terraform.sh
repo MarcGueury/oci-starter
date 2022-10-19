@@ -46,7 +46,7 @@ echo TF_VAR_compartment_name=$TF_VAR_compartment_name
 echo TF_VAR_region=$TF_VAR_region
 
 # Kubernetes and OCIR
-if [ "$TF_VAR_deploy_stategy" == "kubernetes" ]; then
+if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   export TF_VAR_namespace=`oci os ns get | jq -r .data`
   echo TF_VAR_namespace=$TF_VAR_namespace
   export TF_VAR_username=`oci iam user get --user-id $TF_VAR_user_ocid | jq -r '.data.name'`
