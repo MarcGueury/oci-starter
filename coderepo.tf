@@ -25,15 +25,15 @@ resource "null_resource" "clonerepo" {
       export TF_VAR_region="${var.region}"
       export TF_VAR_compartment_ocid="${var.compartment_id}"
       export TF_VAR_prefix="${var.prefix}"
-      export TF_VAR_language="${var.language}"
-      export TF_VAR_java_framework="${var.java_framework}"
+      export TF_VAR_language="${local.language}"
+      export TF_VAR_java_framework="${local.java_framework}"
       export TF_VAR_java_vm="${var.java_vm}"
       export TF_VAR_java_version="${var.java_version}"
       export TF_VAR_vcn_strategy="${var.vcn_strategy}"
       export TF_VAR_vcn_ocid="${var.vcn_ocid}"
       export TF_VAR_subnet_ocid="${var.subnet_ocid}"
       export TF_VAR_ui_strategy="${var.ui_strategy}"
-      export TF_VAR_deploy_strategy="${var.deploy_strategy}"
+      export TF_VAR_deploy_strategy="${local.deploy_strategy}"
       export TF_VAR_kubernetes_strategy="${var.kubernetes_strategy}"
       export TF_VAR_oke_strategy="${var.oke_strategy}"
       export TF_VAR_oke_ocid="${var.oke_ocid}"
@@ -66,4 +66,9 @@ locals {
   encode_user = urlencode("${data.oci_identity_tenancy.tenant_details.name}/${local.username}")
   encode_token  = urlencode(var.oci_token)
   git_url = "https://${local.encode_user}:${local.encode_token}@devops.scmservice.${var.region}.oci.oraclecloud.com/namespaces/${local.ocir_namespace}/projects/${oci_devops_project.test_project.name}/repositories/${oci_devops_repository.test_repository.name}"
+
+  # Simplify the parameter values
+  deploy_strategy = lookup({"Virtual Machine": "compute", "Kubernetes": "kubernetes", "Function": "function"}, var.deploy_strategy, "error" )
+  java_framework = lower(var.java_framework)
+  language = lower(var.language)
 }

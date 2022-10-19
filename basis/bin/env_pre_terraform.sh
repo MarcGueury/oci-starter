@@ -45,4 +45,14 @@ echo TF_VAR_compartment_ocid=$TF_VAR_compartment_ocid
 echo TF_VAR_compartment_name=$TF_VAR_compartment_name
 echo TF_VAR_region=$TF_VAR_region
 
-
+# Kubernetes and OCIR
+if [ "$TF_VAR_deploy_stategy" == "kubernetes" ]; then
+  export TF_VAR_namespace=`oci os ns get | jq -r .data`
+  echo TF_VAR_namespace=$TF_VAR_namespace
+  export TF_VAR_username=`oci iam user get --user-id $TF_VAR_user_ocid | jq -r '.data.name'`
+  echo TF_VAR_username=$TF_VAR_username
+  export TF_VAR_email=spam@domain.com
+  echo TF_VAR_email=$TF_VAR_email
+  export TF_VAR_ocir=${TF_VAR_region}.ocir.io
+  echo TF_VAR_ocir=$TF_VAR_ocir
+fi

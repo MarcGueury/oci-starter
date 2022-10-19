@@ -19,11 +19,17 @@ get_attribute_from_tfstate () {
   export $1=$RESULT
 }
 
+get_output_from_tfstate () {
+  RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE`
+  echo "$1=$RESULT"
+  export $1=$RESULT
+}
+
 # OBJECT_STORAGE_URL
 export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
 
 # Functions
-if [ "$TF_VAR_deploy_strategy" == "Function" ]; then
+if [ "$TF_VAR_deploy_strategy" == "function" ]; then
   # APIGW URL
   get_attribute_from_tfstate "APIGW_HOSTNAME" "${TF_VAR_prefix}_apigw" "hostname"
 
@@ -33,9 +39,11 @@ if [ "$TF_VAR_deploy_strategy" == "Function" ]; then
   export FUNCTION_URL=$FUNCTION_ENDPOINT/20181201/functions/$FUNCTION_ID
 fi
 
-if [ "$TF_VAR_deploy_strategy" == "Virtual Machine" ]; then
+if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   get_attribute_from_tfstate "COMPUTE_IP" "starter_instance" "public_ip"
 fi
 
 # Bastion 
 get_attribute_from_tfstate "BASTION_IP" "starter_bastion" "public_ip"
+
+get_output_from_tfstate "XXX" "autonomous_database_wallet"

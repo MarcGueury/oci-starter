@@ -6,8 +6,11 @@ cd $SCRIPT_DIR
 . variables.sh
 . bin/sshkey_generate.sh
 . bin/env_pre_terraform.sh
-app_src/build_app.sh compute
-ui_src/build_ui.sh compute
+app_src/build_app.sh $TF_VAR_deploy_strategy
+ui_src/build_ui.sh $TF_VAR_deploy_strategy
 bin/terraform.sh
 
+if [ -d oke ]; then
+  oke/oke_deploy.sh
+fi
 

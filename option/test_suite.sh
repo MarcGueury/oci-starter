@@ -8,6 +8,7 @@ cd $SCRIPT_DIR
 # export EX_ATP_OCID=
 # export EX_DB_OCID=
 # export EX_MYSQL_OCID=
+# export OCI_TOKEN=
 # export TEST_DB_PASSWORD=
 . $HOME/bin/env_oci_starter_testsuite.sh
 
@@ -19,14 +20,21 @@ start_test () {
   cd $TEST_NAME
 }
 
+get_output_from_tfstate () {
+  RESULT=`jq -r '.outputs."'$2'".value' terraform/terraform.tfstate`
+  echo "$1=$RESULT"
+  export $1=$RESULT
+}
+
 build_test_destroy () {
   echo "-- Build test $TEST_NAME ---------------------------------------"   
   cd $SCRIPT_DIR/test/$TEST_NAME/output
-  ./build.sh  
-  XXXXXX
+  ./build.sh > build.log 2>&1  
+  get_output_from_tfstate UI_URL ui_url  
+  get_output_from_tfstate REST_URL rest_url  
   wget $UI_URL   -o $SCRIPT_DIR/test/${TEST_NAME}_result.html
   wget $REST_URL -o $SCRIPT_DIR/test/${TEST_NAME}_result.json
-  ./destroy.sh
+  ./destroy.sh > destroy.log 2>&1  
 }
 
 if [ -d test ]; then
@@ -75,4 +83,9 @@ build_test_destroy
 # Mysql + Helidon
 start_test JAVA_HELIDON_COMPUTE_MYSQL
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -database mysql -deploy compute -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+# OKE + Helidon
+start_test JAVA_HELIDON_OKE_ATP
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy kubernetes -token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy

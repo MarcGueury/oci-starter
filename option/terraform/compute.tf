@@ -44,6 +44,7 @@ resource "oci_core_instance" "starter_instance" {
     on_failure = continue
     inline = [
       "export TF_VAR_java_version=${var.java_version}",
+      "export TF_VAR_language=${var.language}",      
       "export JDBC_URL='${local.jdbc_url}'",
       "export DB_HOST='${local.db_host}'",      
       "mv compute/* .",

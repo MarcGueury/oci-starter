@@ -34,5 +34,5 @@ if [ "$1" == "compute" ]; then
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
 elif [ "$1" == "docker" ]; then
-  docker build -t app .
+  docker build -t app:1.0 .
 fi  

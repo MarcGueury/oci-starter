@@ -81,7 +81,7 @@ else
 # export TF_VAR_compartment_ocid="${var.compartment_id}"
 export TF_VAR_prefix="starter"
 # export TF_VAR_language="${var.language}"
-export TF_VAR_java_framework=Helidon
+export TF_VAR_java_framework=helidon
 # export TF_VAR_java_vm=jdk
 # export TF_VAR_java_version=17
 export TF_VAR_vcn_strategy="Create New VCN"
@@ -115,9 +115,9 @@ while [[ $# -gt 0 ]]; do
       ;;
     -language)
       if [ $2 == "java" ]; then 
-        export TF_VAR_language="Java"
+        export TF_VAR_language=$2
       elif [ $2 == "node" ]; then  
-        export TF_VAR_language="Node"
+        export TF_VAR_language=$2
       else
         unknown_value "$1" "java/node"
       fi
@@ -126,13 +126,13 @@ while [[ $# -gt 0 ]]; do
       ;;
     -deploy)
       if [ $2 == "compute" ]; then 
-        export TF_VAR_deploy_strategy="Virtual Machine"
+        export TF_VAR_deploy_strategy=$2
       elif [ $2 == "kubernetes" ]; then  
-        export TF_VAR_deploy_strategy="Kubernetes"
+        export TF_VAR_deploy_strategy=$2
         export TF_VAR_kubernetes_strategy="OKE"
         export TF_VAR_oke_strategy="Create New OKE"
       elif [ $2 == "function" ]; then  
-        export TF_VAR_deploy_strategy="Function"        
+        export TF_VAR_deploy_strategy=$2
       else
         unknown_value "$1" "compute/kubernetes/function"
       fi
@@ -141,11 +141,11 @@ while [[ $# -gt 0 ]]; do
       ;;      
     -java_framework)
       if [ $2 == "springboot" ]; then 
-        export TF_VAR_java_framework="SpringBoot"
+        export TF_VAR_java_framework=$2
       elif [ $2 == "helidon" ]; then  
-        export TF_VAR_java_framework="Helidon"
+        export TF_VAR_java_framework=$2
       elif [ $2 == "tomcat" ]; then  
-        export TF_VAR_java_framework="Tomcat"        
+        export TF_VAR_java_framework=$2        
       else
         unknown_value "$1" "springboot/helidon/tomcat"
       fi
@@ -252,7 +252,12 @@ while [[ $# -gt 0 ]]; do
       export TF_VAR_db_password="$2"
       shift # past argument
       shift # past value
-      ;;                            
+      ;;   
+    -authtoken|token)
+      export TF_VAR_token="$2"
+      shift # past argument
+      shift # past value
+      ;;                                 
     -*|--*)
       echo "Unknown option $1"
       exit 1
@@ -269,13 +274,19 @@ mandatory "language" $TF_VAR_language
 mandatory "deploy" $TF_VAR_deploy_strategy
 mandatory "db_password" $TF_VAR_db_password
 
+if [ "$TF_VAR_deploy_strategy" != "compute" ] && [ -z "$TF_VAR_token" ]; then
+  echo "WARNING: token is not defined."
+  echo "         You will need to define it in variables.sh"
+  export TF_VAR_token="--MISSING--"
+fi
+
 if [ -z "$TF_VAR_compartment_ocid" ]; then
   echo "WARNING: compartment_ocid is not defined."
   echo "         The components will be created in the root compartment."
 fi
 
 # To avoid issue, Helidon support only JDK 17
-if [ "$TF_VAR_java_framework" == "Helidon" ] && [ "$TF_VAR_java_version" != "17" ]; then  
+if [ "$TF_VAR_java_framework" == "helidon" ] && [ "$TF_VAR_java_version" != "17" ]; then  
   echo "WARNING: Helidon supports only Java 17."
   echo "         Forcing the version to 17"
   export TF_VAR_java_version=17
@@ -331,8 +342,8 @@ cp ../variables.sh .
 
 #-- APP ---------------------------------------------------------------------
 
-APP_LANG=`echo "$TF_VAR_language" | awk '{print tolower($0)}'`
-APP_FRAMEWORK=`echo "$TF_VAR_java_framework" | awk '{print tolower($0)}'`
+APP_LANG=$TF_VAR_language
+APP_FRAMEWORK=$TF_VAR_java_framework
 
 case $TF_VAR_db_strategy in
 
@@ -383,7 +394,7 @@ else
 fi
 
 #-- Deployment --------------------------------------------------------------
-if [[ $TF_VAR_deploy_strategy == "Kubernetes" ]]; then
+if [[ $TF_VAR_deploy_strategy == "kubernetes" ]]; then
   if [[ $TF_VAR_kubernetes_strategy == "OKE" ]]; then
     cp_terraform oke_common.tf 
     if [[ $TF_VAR_oke_strategy == "Create New OKE" ]]; then
@@ -392,14 +403,14 @@ if [[ $TF_VAR_deploy_strategy == "Kubernetes" ]]; then
       cp_terraform oke_existing.tf 
     fi   
   fi
-elif [[ $TF_VAR_deploy_strategy == "Virtual Machine" ]]; then
+  mkdir oke 
+  cp -r ../option/oke/* oke/.
+elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   cp_terraform compute.tf
   mkdir compute 
-  if [[ $TF_VAR_language == "Java" ]]; then
-    cp ../option/app_src/compute/compute_java_bootstrap.sh compute/compute_bootstrap.sh
-  fi
+  cp ../option/compute/compute_bootstrap.sh compute/compute_bootstrap.sh
   # XX Other language missing
-elif [[ $TF_VAR_deploy_strategy == "Function" ]]; then
+elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   cp_terraform function.tf 
 fi
 
