@@ -34,7 +34,7 @@ build_test_destroy () {
   get_output_from_tfstate REST_URL rest_url  
   wget $UI_URL   -o $SCRIPT_DIR/test/${TEST_NAME}_result.html
   wget $REST_URL -o $SCRIPT_DIR/test/${TEST_NAME}_result.json
-  ./destroy.sh > destroy.log 2>&1  
+  ./destroy.sh --auto-approve > destroy.log 2>&1  
 }
 
 if [ -d test ]; then
