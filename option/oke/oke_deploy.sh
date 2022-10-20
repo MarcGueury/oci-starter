@@ -3,7 +3,6 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR/..
 
 docker login ${TF_VAR_ocir} -u ${TF_VAR_namespace}/${TF_VAR_username} -p "${TF_VAR_auth_token}"
-export DOCKER_PREFIX=${TF_VAR_ocir}/${TF_VAR_namespace}
 echo DOCKER_PREFIX=$DOCKER_PREFIX
 
 docker tag app:1.0 $DOCKER_PREFIX/app:1.0
