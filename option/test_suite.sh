@@ -20,19 +20,18 @@ start_test () {
   cd $TEST_NAME
 }
 
-get_output_from_tfstate () {
-  RESULT=`jq -r '.outputs."'$2'".value' terraform/terraform.tfstate`
-  echo "$1=$RESULT"
-  export $1=$RESULT
-}
-
 build_test_destroy () {
   echo "-- Build test $TEST_NAME ---------------------------------------"   
+  SECONDS=0
   cd $SCRIPT_DIR/test/$TEST_NAME/output
   ./build.sh > build.log 2>&1  
   cp /tmp/result.html $SCRIPT_DIR/test/${TEST_NAME}_result.html
   cp /tmp/result.json $SCRIPT_DIR/test/${TEST_NAME}_result.json
+  echo "build_secs=" $SECONDS >  $SCRIPT_DIR/test/${TEST_NAME}_time.txt
+
+  SECONDS=0
   ./destroy.sh --auto-approve > destroy.log 2>&1  
+  echo "destroy_secs=" $SECONDS >> $SCRIPT_DIR/test/${TEST_NAME}_time.txt
 }
 
 if [ -d test ]; then
