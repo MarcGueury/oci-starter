@@ -35,5 +35,4 @@ if [ "$1" == "compute" ]; then
   cp -r target/* ../compute/app/.
 elif [ "$1" == "kubernetes" ]; then
   docker build -t app:1.0 .
-  cp app.yaml ../oke/.
 fi  
