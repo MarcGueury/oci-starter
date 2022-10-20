@@ -18,10 +18,10 @@ export KUBECONFIG=terraform/starter_cluster_kubeconfig
 chmod 600 $KUBECONFIG
 
 # One time configuration
-if [ ! -f app.yaml ]; then
+if [ ! -f oke/app.yaml ]; then
   # Using & as separator
-  sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/app.yaml > app.yaml
-  sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/ui.yaml > ui.yaml
+  sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/app.yaml > oke/app.yaml
+  sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" ui_src/ui.yaml > oke/ui.yaml
 
   # Deploy ingress-nginx
   kubectl create clusterrolebinding jdoe_clst_adm --clusterrole=cluster-admin --user=$TF_VAR_user_ocid
@@ -33,8 +33,8 @@ if [ ! -f app.yaml ]; then
 fi
 
 # Create objects in Kubernetes
-kubectl apply -f app.yaml
-kubectl apply -f ui.yaml
-kubectl apply -f ingress.yaml
+kubectl apply -f oke/app.yaml
+kubectl apply -f oke/ui.yaml
+kubectl apply -f oke/ingress.yaml
 
 echo UI_URL=http://`kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}"`
