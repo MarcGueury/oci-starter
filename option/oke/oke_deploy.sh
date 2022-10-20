@@ -2,6 +2,13 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR/..
 
+if [ -z $DOCKER_PREFIX ]; then
+  echo "Set up the variables before to run this script by running:"
+  echo ". bin/env_pre_terraform.sh"
+  echo ". bin/env_post_terraform.sh"
+  exit
+fi
+
 # Docker Login
 docker login ${TF_VAR_ocir} -u ${TF_VAR_namespace}/${TF_VAR_username} -p "${TF_VAR_auth_token}"
 echo DOCKER_PREFIX=$DOCKER_PREFIX
@@ -15,10 +22,11 @@ docker push $DOCKER_PREFIX/ui:1.0
 
 # Configure KUBECTL
 export KUBECONFIG=terraform/starter_kubeconfig
-chmod 600 $KUBECONFIG
 
 # One time configuration
 if [ ! -f oke/app.yaml ]; then
+  chmod 600 $KUBECONFIG
+ 
   # Using & as separator
   sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/app.yaml > oke/app.yaml
   sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" ui_src/ui.yaml > oke/ui.yaml
