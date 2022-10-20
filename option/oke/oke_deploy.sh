@@ -14,7 +14,7 @@ docker tag ui:1.0 $DOCKER_PREFIX/ui:1.0
 docker push $DOCKER_PREFIX/ui:1.0
 
 # Configure KUBECTL
-export KUBECONFIG=terraform/starter_cluster_kubeconfig
+export KUBECONFIG=terraform/starter_kubeconfig
 chmod 600 $KUBECONFIG
 
 # One time configuration
@@ -26,6 +26,7 @@ if [ ! -f oke/app.yaml ]; then
   # Deploy ingress-nginx
   kubectl create clusterrolebinding jdoe_clst_adm --clusterrole=cluster-admin --user=$TF_VAR_user_ocid
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/static/provider/cloud/deploy.yaml
+  kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
 
   # Create secrets
   kubectl create secret docker-registry ocirsecret --docker-server=$TF_VAR_ocir --docker-username="$TF_VAR_namespace/$TF_VAR_username" --docker-password="$TF_VAR_auth_token" --docker-email="$TF_VAR_email"

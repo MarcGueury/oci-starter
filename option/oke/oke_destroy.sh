@@ -16,5 +16,5 @@ if [ $1 != "--auto-approve" ]; then
   esac
 fi
 
-export KUBECONFIG=terraform/starter_cluster_kubeconfig
+export KUBECONFIG=terraform/starter_kubeconfig
 kubectl delete ingress,services --all

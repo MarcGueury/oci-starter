@@ -55,6 +55,8 @@ if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   echo TF_VAR_email=$TF_VAR_email
   export TF_VAR_ocir=${TF_VAR_region}.ocir.io
   echo TF_VAR_ocir=$TF_VAR_ocir
+  
   export DOCKER_PREFIX=${TF_VAR_ocir}/${TF_VAR_namespace}
   echo DOCKER_PREFIX=$DOCKER_PREFIX
+  export KUBECONFIG=$SCRIPT_DIR/../terraform/starter_kubeconfig
 fi

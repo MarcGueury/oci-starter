@@ -17,6 +17,6 @@ data "oci_containerengine_cluster_kube_config" "starter_cluster_kube_config" {
 
 resource "local_file" "starter_cluster_kube_config_file" {
   content  = data.oci_containerengine_cluster_kube_config.starter_cluster_kube_config.content
-  filename = "${path.module}/starter_cluster_kubeconfig"
+  filename = "${path.module}/starter_kubeconfig"
 }
 
