@@ -34,7 +34,17 @@ if [ ! -f oke/app.yaml ]; then
   # Deploy ingress-nginx
   kubectl create clusterrolebinding jdoe_clst_adm --clusterrole=cluster-admin --user=$TF_VAR_user_ocid
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/static/provider/cloud/deploy.yaml
-  kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=120s
+  kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/componet=controller --timeout=120s
+  # Wait for the ingress external IP
+  external_ip=""
+  while [ -z $external_ip ]; do
+    echo "Waiting for external IP..."
+    external_ip=$(kubectl get svc -n ingress-nginx ingress-nginx-controller --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
+    if [ -z "$external_ip" ]; then
+      sleep 10
+    fi
+  done
+  echo 'Ingress ready:' && echo $external_ip
 
   # Create secrets
   kubectl create secret docker-registry ocirsecret --docker-server=$TF_VAR_ocir --docker-username="$TF_VAR_namespace/$TF_VAR_username" --docker-password="$TF_VAR_auth_token" --docker-email="$TF_VAR_email"
