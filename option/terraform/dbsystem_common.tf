@@ -10,6 +10,7 @@ data "oci_database_pluggable_databases" "starter_pdbs" {
 locals {
   # TNS Connect String (Description....)
   db_url = data.oci_database_pluggable_databases.starter_pdbs.pluggable_databases.0.connection_strings.0.pdb_ip_default
+  db_host = "todo"
   jdbc_url = format("jdbc:oracle:thin:@%s", local.db_url)
 }
 
