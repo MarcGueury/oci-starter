@@ -308,7 +308,6 @@ fi
 
 
 export |grep TF_VAR > variables.sh
-chmod +x variables.sh
 
 fi  
 echo MODE=$MODE
@@ -327,7 +326,6 @@ title "Creating Directory"
 # ./helidon version
 
 chmod +x variables.sh
-# cat variables.sh
 
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
@@ -338,7 +336,7 @@ fi
 cd ./$REPOSITORY_NAME
 
 cp -r ../basis/* .
-cp ../variables.sh .
+mv ../variables.sh .
 
 #-- APP ---------------------------------------------------------------------
 
