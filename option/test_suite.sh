@@ -39,8 +39,10 @@ build_test_destroy () {
   else
      echo RESULT JSON: ***** BAD ******
   fi
+  cat /tmp/result.info
   mv /tmp/result.html ${TEST_DIR}_result.html
   mv /tmp/result.json ${TEST_DIR}_result.json
+  mv /tmp/result.info ${TEST_DIR}_result.info
   SECONDS=0
   ./destroy.sh --auto-approve > destroy.log 2>&1  
   echo "destroy_secs=" $SECONDS >> ${TEST_DIR}_time.txt
