@@ -23,7 +23,9 @@ start_test () {
 build_test_destroy () {
   echo "-- Build test $TEST_NAME ---------------------------------------"   
   SECONDS=0
+  pwd
   cd $SCRIPT_DIR/test/$TEST_NAME/output
+  pwd
   ./build.sh > build.log 2>&1  
   cp /tmp/result.html $SCRIPT_DIR/test/${TEST_NAME}_result.html
   cp /tmp/result.json $SCRIPT_DIR/test/${TEST_NAME}_result.json
@@ -50,6 +52,8 @@ git clone https://github.com/MarcGueury/oci-starter
 start_test JAVA_HELIDON_COMPUTE_ATP
 ./oci_starter.sh -language java -deploy compute -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
+
+exit
 
 # Java Compute ATP + Existing Subnet
 start_test JAVA_HELIDON_COMPUTE_ATP_EX_SUBNET

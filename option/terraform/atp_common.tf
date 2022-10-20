@@ -23,6 +23,7 @@ locals {
   # Get index for 'name' equal to "Dan"
   index_profile = index(local.list_profiles, "TCPS/MEDIUM")
   db_url = data.oci_database_autonomous_database.starter_atp.connection_strings[0].profiles[local.index_profile].value
+  db_host = "todo"
   jdbc_url = format("jdbc:oracle:thin:@%s", local.db_url)
 }
 
