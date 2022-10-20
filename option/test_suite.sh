@@ -35,11 +35,11 @@ build_test_destroy () {
      echo RESULT HTML: ***** BAD ****** 
   fi
   if grep -q "deptno" /tmp/result.json; then
-     echo RESULT JSON: OK 
+     echo "RESULT JSON: OK                "`cat /tmp/result.json | cut -c 1-80`... 
   else
-     echo RESULT JSON: ***** BAD ******
+     echo "RESULT JSON: ***** BAD ******  "`cat /tmp/result.json | cut -c 1-80`... 
   fi
-  cat /tmp/result.info
+  echo "RESULT INFO:                   "`cat /tmp/result.info | cut -c 1-80`
   mv /tmp/result.html ${TEST_DIR}_result.html
   mv /tmp/result.json ${TEST_DIR}_result.json
   mv /tmp/result.info ${TEST_DIR}_result.info
