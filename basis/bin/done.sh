@@ -24,8 +24,8 @@ fi
 echo 
 echo "Build done"
 if [ ! -z "$UI_URL" ]; then
-  wget $UI_URL   -o /tmp/result.html
-  wget $REST_URL -o /tmp/result.json
+  wget $UI_URL   -o /tmp/wget.log -O /tmp/result.html
+  wget $REST_URL -o /tmp/wget.log -O /tmp/result.json
   echo - User Interface : $UI_URL
   echo - Rest API : $REST_URL
 fi

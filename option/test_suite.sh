@@ -37,7 +37,10 @@ build_test_destroy () {
 if [ -d test ]; then
   echo "test directory already exists"
   exit;
-di
+fi
+
+# Avoid already set variables
+unset "${!TF_VAR@}"
 
 mkdir test
 cd test

@@ -61,7 +61,7 @@ EOF
 title oci_starter.sh 
 
 # Avoid issue when developing
-unset TF_VAR_ssh_private_key
+unset "${!TF_VAR@}"
 
 if [ "$#" -eq 3 ]; then
   export MODE=GIT
