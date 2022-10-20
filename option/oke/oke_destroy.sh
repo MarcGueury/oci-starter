@@ -17,4 +17,10 @@ if [ "$1" != "--auto-approve" ]; then
 fi
 
 export KUBECONFIG=terraform/starter_kubeconfig
+
+# Delete all ingress, services
 kubectl delete ingress,services --all
+
+# Delete the ingress controller
+kubectl delete -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/static/provider/cloud/deploy.yaml
+
