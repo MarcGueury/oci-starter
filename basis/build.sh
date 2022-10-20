@@ -15,3 +15,4 @@ if [ -d oke ]; then
   oke/oke_deploy.sh
 fi
 
+bin/done.sh

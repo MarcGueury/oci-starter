@@ -30,10 +30,8 @@ build_test_destroy () {
   echo "-- Build test $TEST_NAME ---------------------------------------"   
   cd $SCRIPT_DIR/test/$TEST_NAME/output
   ./build.sh > build.log 2>&1  
-  get_output_from_tfstate UI_URL ui_url  
-  get_output_from_tfstate REST_URL rest_url  
-  wget $UI_URL   -o $SCRIPT_DIR/test/${TEST_NAME}_result.html
-  wget $REST_URL -o $SCRIPT_DIR/test/${TEST_NAME}_result.json
+  cp /tmp/result.html $SCRIPT_DIR/test/${TEST_NAME}_result.html
+  cp /tmp/result.json $SCRIPT_DIR/test/${TEST_NAME}_result.json
   ./destroy.sh --auto-approve > destroy.log 2>&1  
 }
 
