@@ -4,14 +4,14 @@ cd $SCRIPT_DIR/..
 
 echo "OKE DESTROY"
 
-if [ $1 != "--auto-approve" ]; then
+if [ "$1" != "--auto-approve" ]; then
   read -p "Do you want to proceed? (yes/no) " yn
 
   case $yn in 
-  	yes ) echo ok, we will proceed;;
-	no ) echo exiting...;
+  	yes ) echo Deleting;;
+	no ) echo Exiting...;
 		exit;;
-	* ) echo invalid response;
+	* ) echo Invalid response;
 		exit 1;;
   esac
 fi
