@@ -20,5 +20,4 @@ if [ $1 == "compute" ]; then
   cp -r ui/* ../compute/ui/.
 elif [ $1 == "kubernetes" ]; then
   docker build -t ui:1.0 .
-  cp ui.yaml ../oke/.
 fi  
