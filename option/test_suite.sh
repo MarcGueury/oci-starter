@@ -89,7 +89,9 @@ start_test 52_JAVA_SPRINGBOOT_OKE_MYSQL
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy kubernetes -database mysql -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
 
-exit
+
+
+
 
 # Java Compute ATP 
 start_test 01_JAVA_HELIDON_COMPUTE_ATP
@@ -134,6 +136,8 @@ build_test_destroy
 start_test 09_NODE_COMPUTE_MYSQL
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language node -database mysql -deploy compute -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
+
+exit
 
 # Java Compute + Existing ATP + Existing Subnet
 start_test 10_JAVA_HELIDON_COMPUTE_EX_ATP_SUBNET
