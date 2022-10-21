@@ -5,3 +5,7 @@ locals {
     // jdbc:mysql://10.1.1.237/db1?user=root&password=xxxxx
     jdbc_url = format("jdbc:mysql://%s/db1", local.db_host)
 }
+
+output "jdbc_url" {
+   value = local.jdbc_url
+}
