@@ -62,4 +62,3 @@ kubectl apply -f oke/app.yaml
 kubectl apply -f oke/ui.yaml
 kubectl apply -f oke/ingress.yaml
 
-
