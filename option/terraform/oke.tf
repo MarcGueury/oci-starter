@@ -238,17 +238,6 @@ resource oci_core_security_list starter_seclist_api {
     }
   }
   ingress_security_rules {
-    description = "Kubernetes worker to Kubernetes API endpoint communication"
-    protocol    = "6"
-    source      = "10.0.10.0/24"
-    source_type = "CIDR_BLOCK"
-    stateless   = "false"
-    tcp_options {
-      max = "6443"
-      min = "6443"
-    }
-  }
-  ingress_security_rules {
     description = "Kubernetes worker to control plane communication"
     protocol    = "6"
     source      = "10.0.10.0/24"
@@ -282,7 +271,7 @@ resource "oci_core_subnet" "starter_nodepool_subnet" {
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
-  security_list_ids = [oci_core_security_list.starter_seclist_node.id]
+  security_list_ids = [oci_core_security_list.starter_seclist_node.id,oci_core_vcn.starter_vcn.default_security_list_id,oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-nodepool-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }
@@ -306,7 +295,7 @@ resource "oci_core_subnet" "starter_api_subnet" {
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
-  security_list_ids = [oci_core_security_list.starter_seclist_api.id]
+  security_list_ids = [oci_core_security_list.starter_seclist_api.id,oci_core_vcn.starter_vcn.default_security_list_id,oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-api-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 }

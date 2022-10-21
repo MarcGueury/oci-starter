@@ -97,7 +97,12 @@ start_test 08_JAVA_HELIDON_COMPUTE_MYSQL
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -database mysql -deploy compute -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
 
+# Node + Mysql
+start_test 09_NODE_COMPUTE_MYSQL
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language node -database mysql -deploy compute -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
 # OKE + Helidon
-start_test 09_JAVA_HELIDON_OKE_ATP
+start_test 10_JAVA_HELIDON_OKE_ATP
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
