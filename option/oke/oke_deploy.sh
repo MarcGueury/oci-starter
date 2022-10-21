@@ -27,10 +27,6 @@ export KUBECONFIG=terraform/starter_kubeconfig
 if [ ! -f oke/app.yaml ]; then
   chmod 600 $KUBECONFIG
  
-  # Using & as separator
-  sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/app.yaml > oke/app.yaml
-  sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" ui_src/ui.yaml > oke/ui.yaml
-
   # Deploy ingress-nginx
   kubectl create clusterrolebinding jdoe_clst_adm --clusterrole=cluster-admin --user=$TF_VAR_user_ocid
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/static/provider/cloud/deploy.yaml
@@ -47,16 +43,14 @@ if [ ! -f oke/app.yaml ]; then
   done
   echo "Ingress ready: $external_ip"
   
-  # <Debug...>
-  date
-  kubectl get all -n ingress-nginx 
-  # </Debug....>
-
-
   # Create secrets
   kubectl create secret docker-registry ocirsecret --docker-server=$TF_VAR_ocir --docker-username="$TF_VAR_namespace/$TF_VAR_username" --docker-password="$TF_VAR_auth_token" --docker-email="$TF_VAR_email"
   kubectl create secret generic db-secret --from-literal=db_user=$TF_VAR_db_user --from-literal=db_password=$TF_VAR_db_password --from-literal=jdbc_url=$JDBC_URL
 fi
+
+# Using & as separator
+sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/app.yaml > oke/app.yaml
+sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" ui_src/ui.yaml > oke/ui.yaml
 
 # Create objects in Kubernetes
 kubectl apply -f oke/app.yaml
