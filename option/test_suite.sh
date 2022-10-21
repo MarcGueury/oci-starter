@@ -71,7 +71,7 @@ build_test_destroy
 
 # Java Compute + Existing MYSQL + Existing Subnet
 start_test 12_JAVA_HELIDON_COMPUTE_EX_MYSQL_SUBNET
-./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy compute -database mysql -db_password $TEST_DB_PASSWORD -db_ocid $EX_MYSQL_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy compute -database mysql -db_password $TEST_DB_PASSWORD -mysql_ocid $EX_MYSQL_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
 
 # OKE + Helidon

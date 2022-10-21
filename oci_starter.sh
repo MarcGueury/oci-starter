@@ -274,6 +274,20 @@ mandatory "language" $TF_VAR_language
 mandatory "deploy" $TF_VAR_deploy_strategy
 mandatory "db_password" $TF_VAR_db_password
 
+if [ "$TF_VAR_db_existing_strategy" == "Use Existing DB" ]; then
+  if [ "$TF_VAR_db_strategy" == "Autonomous Transaction Processing Database" ]; then
+     mandatory "atp_ocid" $TF_VAR_atp_ocid
+  fi
+
+  if [ "$TF_VAR_db_strategy" == "Database System" ]; then
+     mandatory "db_ocid" $TF_VAR_db_ocid
+  fi
+
+  if [ "$TF_VAR_db_strategy" == "MySQL" ]; then
+     mandatory "mysql_ocid" $TF_VAR_mysql_ocid
+  fi
+fi    
+
 if [ "$TF_VAR_deploy_strategy" != "compute" ] && [ -z "$TF_VAR_auth_token" ]; then
   echo "WARNING: token is not defined."
   echo "         You will need to define it in variables.sh"
