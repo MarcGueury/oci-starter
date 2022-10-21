@@ -106,3 +106,13 @@ build_test_destroy
 start_test 10_JAVA_HELIDON_OKE_ATP
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
+
+# OKE + SPRINGBOOT
+start_test 10_JAVA_SPRINGBOOT_OKE_ATP
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+# OKE + SPRINGBOOT + MYSQL
+start_test 10_JAVA_SPRINGBOOT_OKE_ATP
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy kubernetes -database mysql -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
