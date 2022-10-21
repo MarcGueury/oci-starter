@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: app
-    image: ##DOCKER_PREFIX##/app:1.0
+    image: ##DOCKER_PREFIX##/app
     ports:
     - containerPort: 8080
       name: app-port

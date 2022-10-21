@@ -14,11 +14,11 @@ docker login ${TF_VAR_ocir} -u ${TF_VAR_namespace}/${TF_VAR_username} -p "${TF_V
 echo DOCKER_PREFIX=$DOCKER_PREFIX
 
 # Push image in registry
-docker tag app:1.0 $DOCKER_PREFIX/app:1.0
-docker push $DOCKER_PREFIX/app:1.0
+docker tag app $DOCKER_PREFIX/app
+docker push $DOCKER_PREFIX/app
 
-docker tag ui:1.0 $DOCKER_PREFIX/ui:1.0
-docker push $DOCKER_PREFIX/ui:1.0
+docker tag ui $DOCKER_PREFIX/ui
+docker push $DOCKER_PREFIX/ui
 
 # Configure KUBECTL
 export KUBECONFIG=terraform/starter_kubeconfig
@@ -45,7 +45,7 @@ if [ ! -f oke/app.yaml ]; then
   
   # Create secrets
   kubectl create secret docker-registry ocirsecret --docker-server=$TF_VAR_ocir --docker-username="$TF_VAR_namespace/$TF_VAR_username" --docker-password="$TF_VAR_auth_token" --docker-email="$TF_VAR_email"
-  kubectl create secret generic db-secret --from-literal=db_user=$TF_VAR_db_user --from-literal=db_password=$TF_VAR_db_password --from-literal=jdbc_url=$JDBC_URL
+  kubectl create secret generic db-secret --from-literal=db_user=$TF_VAR_db_user --from-literal=db_password=$TF_VAR_db_password --from-literal=jdbc_url=$JDBC_URL --from-literal=spring_application_json='{ "db.url": "'$JDBC_URL'" }'
 fi
 
 # Using & as separator

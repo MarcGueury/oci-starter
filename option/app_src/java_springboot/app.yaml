@@ -7,16 +7,16 @@ metadata:
 spec:
   containers:
   - name: app
-    image: ##DOCKER_PREFIX##/app:1.0
+    image: ##DOCKER_PREFIX##/app
     ports:
     - containerPort: 8080
       name: app-port
     env:
-    - name: JDBC_URL
+    - name: SPRING_APPLICATION_JSON
       valueFrom:
         secretKeyRef:
           name: db-secret
-          key: jdbc_url
+          key: spring_application_json
     - name: DB_USER
       valueFrom:
         secretKeyRef:

@@ -23,9 +23,9 @@ if [ "$OCI_CLI_CLOUD_SHELL" == "true" ]; then
   csruntimectl java set $JAVA_ID
 fi
 
-if [ "$1" == "compute" ]; then
-  mvn package
+mvn package
 
+if [ "$1" == "compute" ]; then
   # Replace the user and password
   cp start.sh target/.
   sed -i "s/##DB_USER##/$TF_VAR_db_user/" target/start.sh
