@@ -21,12 +21,9 @@ start_test () {
 }
 
 build_test_destroy () {
-  echo "-- Build test $TEST_NAME ---------------------------------------"   
   SECONDS=0
-  pwd
   TEST_DIR=$SCRIPT_DIR/test/$TEST_NAME
   cd $TEST_DIR/output
-  pwd
   ./build.sh > build.log 2>&1  
   echo "build_secs=" $SECONDS >  ${TEST_DIR}_time.txt
   if grep -q "OCI Starter" /tmp/result.html; then
@@ -46,6 +43,7 @@ build_test_destroy () {
   SECONDS=0
   ./destroy.sh --auto-approve > destroy.log 2>&1  
   echo "destroy_secs=" $SECONDS >> ${TEST_DIR}_time.txt
+  cat ${TEST_DIR}_time.txt
 }
 
 if [ -d test ]; then
