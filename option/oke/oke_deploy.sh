@@ -14,11 +14,11 @@ docker login ${TF_VAR_ocir} -u ${TF_VAR_namespace}/${TF_VAR_username} -p "${TF_V
 echo DOCKER_PREFIX=$DOCKER_PREFIX
 
 # Push image in registry
-docker tag app $DOCKER_PREFIX/app
-docker push $DOCKER_PREFIX/app
+docker tag app $DOCKER_PREFIX/app:latest
+docker push $DOCKER_PREFIX/app:latest
 
-docker tag ui $DOCKER_PREFIX/ui
-docker push $DOCKER_PREFIX/ui
+docker tag ui $DOCKER_PREFIX/ui:latest
+docker push $DOCKER_PREFIX/ui:latest
 
 # Configure KUBECTL
 export KUBECONFIG=terraform/starter_kubeconfig

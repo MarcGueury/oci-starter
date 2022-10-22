@@ -33,6 +33,14 @@ unknown_value() {
   exit
 }
 
+default() {
+  if [ -z $"$1" ]; then
+    export $1=$2
+  fi
+}
+
+
+
 show_help() {
   cat <<EOF
 oci-starter.sh
@@ -42,7 +50,7 @@ oci-starter.sh
    -deploy (mandatory) compute/kubernetes/function
    -java_framework (default helidon/springboot/tomcat)
    -java_vm (default jdk/graalvm)  
-   -java_version (default 17/8/11)
+   -java_version (default 17/11/8)
    -kubernetes (default oke/docker) 
    -oke_ocid ()
    -ui (default html/reactjs/none) 
@@ -83,8 +91,8 @@ export TF_VAR_prefix="starter"
 # export TF_VAR_language="${var.language}"
 export TF_VAR_java_framework=helidon
 # export TF_VAR_java_vm=jdk
-export TF_VAR_java_version=17
-export TF_VAR_vcn_strategy="Create New VCN"
+# export TF_VAR_java_version=17
+# export TF_VAR_vcn_strategy="Create New VCN"
 # export TF_VAR_vcn_ocid="${var.vcn_ocid}"
 # export TF_VAR_subnet_ocid="${var.subnet_ocid}"
 export TF_VAR_ui_strategy="HTML"
@@ -116,6 +124,8 @@ while [[ $# -gt 0 ]]; do
     -language)
       if [ $2 == "java" ]; then 
         export TF_VAR_language=$2
+        default TF_VAR_java_version 17
+        default TF_VAR_java_framework helidon
       elif [ $2 == "node" ]; then  
         export TF_VAR_language=$2
       else
@@ -354,8 +364,11 @@ mv ../variables.sh .
 
 #-- APP ---------------------------------------------------------------------
 
-APP_LANG=$TF_VAR_language
-APP_FRAMEWORK=$TF_VAR_java_framework
+APP=$TF_VAR_language
+
+if [ "$TF_VAR_language" == "java" ]; then
+  APP=${TF_VAR_language}_${TF_VAR_java_framework}
+fi
 
 case $TF_VAR_db_strategy in
 
@@ -371,8 +384,7 @@ case $TF_VAR_db_strategy in
     APP_DB="mysql"
 esac
 
-APP=${APP_LANG}_${APP_FRAMEWORK}
-APP_DB=${APP_LANG}_${APP_FRAMEWORK}_${APP_DB}
+APP_DB=${APP}_${APP_DB}
 echo APP=$APP
 mkdir app_src
 mkdir db_src

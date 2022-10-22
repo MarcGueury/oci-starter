@@ -30,5 +30,6 @@ if [ "$1" == "compute" ]; then
   mkdir ../compute/app
   cp -r src/* ../compute/app/.
 elif [ "$1" == "kubernetes" ]; then
-  docker build -t app .
+  docker image rm app:latest
+  docker build -t app:latest .
 fi  

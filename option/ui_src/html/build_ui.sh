@@ -19,5 +19,6 @@ if [ $1 == "compute" ]; then
   mkdir ../compute/ui
   cp -r ui/* ../compute/ui/.
 elif [ $1 == "kubernetes" ]; then
-  docker build -t ui .
+  docker image rm ui:latest
+  docker build -t ui:latest .
 fi  
