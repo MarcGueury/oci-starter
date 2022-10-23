@@ -89,10 +89,10 @@ else
 # export TF_VAR_compartment_ocid="${var.compartment_id}"
 export TF_VAR_prefix="starter"
 # export TF_VAR_language="${var.language}"
-export TF_VAR_java_framework=helidon
+# export TF_VAR_java_framework=helidon
 # export TF_VAR_java_vm=jdk
 # export TF_VAR_java_version=17
-# export TF_VAR_vcn_strategy="Create New VCN"
+export TF_VAR_vcn_strategy="Create New VCN"
 # export TF_VAR_vcn_ocid="${var.vcn_ocid}"
 # export TF_VAR_subnet_ocid="${var.subnet_ocid}"
 export TF_VAR_ui_strategy="HTML"

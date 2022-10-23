@@ -5,19 +5,14 @@ cd $SCRIPT_DIR/..
 echo "OKE DESTROY"
 
 if [ "$1" != "--auto-approve" ]; then
-  read -p "Do you want to proceed? (yes/no) " yn
-
-  case $yn in 
-  	yes ) echo Deleting;;
-	no ) echo Exiting...;
-		exit;;
-	* ) echo Invalid response;
-		exit 1;;
-  esac
+  echo "Error: Please call this script via destroy.sh"
+  exit
 fi
 
 export KUBECONFIG=terraform/starter_kubeconfig
 
+# The goal is to destroy all LoadBalancers created by OKE in OCI before to delete OKE.
+#
 # Delete all ingress, services
 kubectl delete ingress,services --all
 
