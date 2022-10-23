@@ -41,6 +41,9 @@ build_test_destroy () {
   mv /tmp/result.html ${TEST_DIR}_result.html
   mv /tmp/result.json ${TEST_DIR}_result.json
   mv /tmp/result.info ${TEST_DIR}_result.info
+  mv /tmp/result_html.log ${TEST_DIR}_result_html.log
+  mv /tmp/result_json.log ${TEST_DIR}_result_json.log
+  mv /tmp/result_info.log ${TEST_DIR}_result_info.log
   SECONDS=0
   ./destroy.sh --auto-approve > destroy.log 2>&1  
   echo "destroy_secs=" $SECONDS >> ${TEST_DIR}_time.txt
@@ -73,6 +76,8 @@ build_test_destroy
 start_test 52_JAVA_SPRINGBOOT_OKE_MYSQL
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy kubernetes -database mysql -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
+
+##############@
 
 # Java Compute ATP 
 start_test 01_JAVA_HELIDON_COMPUTE_ATP
@@ -132,6 +137,8 @@ build_test_destroy
 start_test 12_JAVA_HELIDON_COMPUTE_EX_MYSQL_SUBNET
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy compute -database mysql -db_password $TEST_DB_PASSWORD -db_ocid $EX_MYSQL_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
+
+exit
 
 # OKE + Helidon
 start_test 50_JAVA_HELIDON_OKE_ATP
