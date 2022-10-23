@@ -17,8 +17,6 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   export KUBECONFIG=$SCRIPT_DIR/../terraform/starter_kubeconfig
   export UI_URL=http://`kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}"`
-  kubectl wait --for=condition=ready pod app
-  kubectl wait --for=condition=ready pod ui
 fi
 
 echo 
