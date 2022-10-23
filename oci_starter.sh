@@ -34,7 +34,7 @@ unknown_value() {
 }
 
 default() {
-  if [ -z $"$1" ]; then
+  if [ ! -v $1 ]; then
     export $1=$2
   fi
 }
