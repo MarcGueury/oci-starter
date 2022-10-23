@@ -27,17 +27,21 @@ build_test_destroy () {
   cd $TEST_DIR/output
   ./build.sh > build.log 2>&1  
   echo "build_secs=" $SECONDS >  ${TEST_DIR}_time.txt
-  if grep -q "OCI Starter" /tmp/result.html; then
-     echo RESULT HTML: OK 
+  if [ -f /tmp/result.html ]; then
+    if grep -q "OCI Starter" /tmp/result.html; then
+      echo RESULT HTML: OK 
+    else
+      echo RESULT HTML: ***** BAD ****** 
+    fi
+    if grep -q "deptno" /tmp/result.json; then
+      echo "RESULT JSON: OK                "`cat /tmp/result.json | cut -c 1-80`... 
+    else
+      echo "RESULT JSON: ***** BAD ******  "`cat /tmp/result.json | cut -c 1-80`... 
+    fi
+    echo "RESULT INFO:                   "`cat /tmp/result.info | cut -c 1-80`
   else
-     echo RESULT HTML: ***** BAD ****** 
+    echo "No file /tmp/result.html"
   fi
-  if grep -q "deptno" /tmp/result.json; then
-     echo "RESULT JSON: OK                "`cat /tmp/result.json | cut -c 1-80`... 
-  else
-     echo "RESULT JSON: ***** BAD ******  "`cat /tmp/result.json | cut -c 1-80`... 
-  fi
-  echo "RESULT INFO:                   "`cat /tmp/result.info | cut -c 1-80`
   mv /tmp/result.html ${TEST_DIR}_result.html
   mv /tmp/result.json ${TEST_DIR}_result.json
   mv /tmp/result.info ${TEST_DIR}_result.info
@@ -61,23 +65,6 @@ unset "${!TF_VAR@}"
 mkdir test
 cd test
 git clone https://github.com/MarcGueury/oci-starter
-
-# OKE + Helidon
-start_test 50_JAVA_HELIDON_OKE_ATP
-./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
-build_test_destroy
-
-# OKE + SPRINGBOOT
-start_test 51_JAVA_SPRINGBOOT_OKE_AP
-./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
-build_test_destroy
-
-# OKE + SPRINGBOOT + MYSQL
-start_test 52_JAVA_SPRINGBOOT_OKE_MYSQL
-./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy kubernetes -database mysql -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
-build_test_destroy
-
-##############@
 
 # Java Compute ATP 
 start_test 01_JAVA_HELIDON_COMPUTE_ATP
@@ -135,10 +122,8 @@ build_test_destroy
 
 # Java Compute + Existing MYSQL + Existing Subnet
 start_test 12_JAVA_HELIDON_COMPUTE_EX_MYSQL_SUBNET
-./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy compute -database mysql -db_password $TEST_DB_PASSWORD -db_ocid $EX_MYSQL_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy compute -database mysql -db_password $TEST_DB_PASSWORD -mysql_ocid $EX_MYSQL_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
-
-exit
 
 # OKE + Helidon
 start_test 50_JAVA_HELIDON_OKE_ATP
