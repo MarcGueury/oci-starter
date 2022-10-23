@@ -64,6 +64,6 @@ output "instance_public_ips" {
 }
 
 output "ui_url" {
-  value = format("http://%s/", oci_core_instance.starter_instance.public_ip)
+  value = format("http://%s", oci_core_instance.starter_instance.public_ip)
 }
 
