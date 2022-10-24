@@ -267,7 +267,13 @@ while [[ $# -gt 0 ]]; do
       export TF_VAR_auth_token="$2"
       shift # past argument
       shift # past value
-      ;;                                 
+      ;;        
+    -zip)
+      export MODE=ZIP
+      export REPOSITORY_NAME="$2"
+      shift # past argument
+      shift # past value
+      ;;                                         
     -*|--*)
       echo "Unknown option $1"
       exit 1
@@ -353,6 +359,8 @@ chmod +x variables.sh
 
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
+elif [ -v REPOSITORY_NAME ]; then
+  mkdir $REPOSITORY_NAME
 else 
   export REPOSITORY_NAME=output
   mkdir $REPOSITORY_NAME
@@ -465,6 +473,9 @@ elif [[ $TF_VAR_db_strategy == "MySQL" ]]; then
   fi   
 fi
 
+title "Done"
+echo Directory $REPOSITORY_NAME created.
+
 if [ $MODE == "GIT " ]; then
   #-- Commit in devops git ----------------------------------------------------
   git config --local user.email "test@example.com"
@@ -472,6 +483,9 @@ if [ $MODE == "GIT " ]; then
   git add .
   git commit -m "added latest files"
   git push origin main
+elif [ $MODE == "ZIP " ]; then
+  mkdir zip
+  zip -r zip/$REPOSITORY_NAME.zip $REPOSITORY_NAME
 else
   title "Done"
   echo Directory $REPOSITORY_NAME created.

@@ -32,12 +32,11 @@ Notes:
   sudo npm install -g grunt
   npm install
   grunt vb-process-local vb-package  
-  grunt vb-serve --port=7070
+  // grunt vb-serve --port=7070
 ...
-Serving web application from "build/optimized/webApps/starter" directory at "http://localhost:7070/"
-
-sudo rm -Rf  /usr/share/nginx/html/starter
-sudo cp -r build/optimized/webApps/starter /usr/share/nginx/html/.
-
--> It works !
+  Serving web application from "build/optimized/webApps/starter" directory at "http://localhost:7070/"
+ 
+  sudo rm -Rf  /usr/share/nginx/html/starter
+  sudo cp -r build/optimized/webApps/starter /usr/share/nginx/html/.
+  -> It works !
 ...  
