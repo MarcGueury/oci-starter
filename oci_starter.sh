@@ -479,14 +479,14 @@ fi
 title "Done"
 echo Directory $REPOSITORY_NAME created.
 
-if [ $MODE == "GIT " ]; then
+if [ "$MODE" == "GIT" ]; then
   #-- Commit in devops git ----------------------------------------------------
   git config --local user.email "test@example.com"
   git config --local user.name "${OCI_USERNAME}"
   git add .
   git commit -m "added latest files"
   git push origin main
-elif [ $MODE == "ZIP " ]; then
+elif [ "$MODE" == "ZIP" ]; then
   cd $SCRIPT_DIR
   mkdir zip
   zip -r zip/$REPOSITORY_NAME.zip $REPOSITORY_NAME
