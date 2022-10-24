@@ -1,4 +1,7 @@
 #!/bin/bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $SCRIPT_DIR
+
 title() {
     TITLE="-- $1 ---------------------------------------------------------------------"
     echo ${TITLE:0:78} 
@@ -484,11 +487,10 @@ if [ $MODE == "GIT " ]; then
   git commit -m "added latest files"
   git push origin main
 elif [ $MODE == "ZIP " ]; then
+  cd $SCRIPT_DIR
   mkdir zip
   zip -r zip/$REPOSITORY_NAME.zip $REPOSITORY_NAME
 else
-  title "Done"
-  echo Directory $REPOSITORY_NAME created.
   echo
   echo Next steps: 
   echo   cd $REPOSITORY_NAME
