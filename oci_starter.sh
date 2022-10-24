@@ -487,9 +487,12 @@ if [ "$MODE" == "GIT" ]; then
   git commit -m "added latest files"
   git push origin main
 elif [ "$MODE" == "ZIP" ]; then
+  # The goal is to have a file that when uncompressed create a directory prefix.
   cd $SCRIPT_DIR
-  mkdir zip
-  zip -r zip/$REPOSITORY_NAME.zip $REPOSITORY_NAME
+  mkdir -p zip/$REPOSITORY_NAME
+  mv $REPOSITORY_NAME zip/$REPOSITORY_NAME/$PREFIX
+  cd zip/$REPOSITORY_NAME
+  zip -r ../$REPOSITORY_NAME.zip $PREFIX
 else
   echo
   echo Next steps: 
