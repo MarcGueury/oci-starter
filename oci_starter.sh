@@ -490,9 +490,9 @@ elif [ "$MODE" == "ZIP" ]; then
   # The goal is to have a file that when uncompressed create a directory prefix.
   cd $SCRIPT_DIR
   mkdir -p zip/$REPOSITORY_NAME
-  mv $REPOSITORY_NAME zip/$REPOSITORY_NAME/$PREFIX
+  mv $REPOSITORY_NAME zip/$REPOSITORY_NAME/$TF_VAR_prefix
   cd zip/$REPOSITORY_NAME
-  zip -r ../$REPOSITORY_NAME.zip $PREFIX
+  zip -r ../$REPOSITORY_NAME.zip $TF_VAR_prefix
 else
   echo
   echo Next steps: 
