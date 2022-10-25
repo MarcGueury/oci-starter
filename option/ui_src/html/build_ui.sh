@@ -9,11 +9,7 @@
 # Docker:
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR
-if [ $1 != "compute" ] && [ $1 != "kubernetes" ] ; then
-  echo 'Argument required: build or kubernetes'
-  exit
-fi
+. $SCRIPT_DIR/../bin/build_common.sh
 
 if [ $1 == "compute" ]; then
   mkdir ../compute/ui

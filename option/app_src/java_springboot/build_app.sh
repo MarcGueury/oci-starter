@@ -10,18 +10,8 @@
 # Docker:
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR
-if [ "$1" != "compute" ] && [ "$1" != "kubernetes" ] ; then
-  echo 'Argument required: compute or kubernetes'
-  exit
-fi
-
-# Check java version
-if [ "$OCI_CLI_CLOUD_SHELL" == "true" ]; then
-  ## XX Check Java Version in env variables
-  export JAVA_ID=`csruntimectl java list | grep jdk-17 | sed -e 's/^.*\(graal[^ ]*\) .*$/\1/'`
-  csruntimectl java set $JAVA_ID
-fi
+. $SCRIPT_DIR/../bin/build_common.sh
+check_java_version
 
 mvn package
 

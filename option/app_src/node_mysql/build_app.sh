@@ -10,11 +10,7 @@
 # Docker:
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR
-if [ "$1" != "compute" ] && [ "$1" != "kubernetes" ] ; then
-  echo 'Argument required: compute or kubernetes'
-  exit
-fi
+. $SCRIPT_DIR/../bin/build_common.sh
 
 # Replace the user and password in the configuration file (XXX)
 CONFIG_FILE=src/start.sh

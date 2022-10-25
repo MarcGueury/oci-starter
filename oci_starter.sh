@@ -46,6 +46,8 @@ default() {
 
 show_help() {
   cat <<EOF
+Usage: $(basename $0) [OPTIONS]
+
 oci-starter.sh
    -prefix (default starter)
    -compartment_ocid (mandatory)
@@ -66,7 +68,6 @@ oci-starter.sh
    -db_user (default admin)
    -db_password( mandatory )
 EOF
-
 }
 
 title oci_starter.sh 
@@ -362,6 +363,7 @@ chmod +x variables.sh
 
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
+  cp ../mode/git/* $REPOSITORY_NAME/.
 elif [ -v REPOSITORY_NAME ]; then
   mkdir $REPOSITORY_NAME
 else 
@@ -372,6 +374,26 @@ cd ./$REPOSITORY_NAME
 
 cp -r ../basis/* .
 mv ../variables.sh .
+
+#-- README.md ------------------------------------------------------------------
+
+case $TF_VAR_deploy_strategy in
+"compute")
+    __readme_deploy="- compute : contains the Compute scripts"
+  ;;
+"kubernetes")
+    __readme_deploy="- oke : contains the Kubernetes scripts
+    - Command: deploy.sh"
+  ;;
+esac
+
+if grep -q "__TO_FILL__" variables.sh; then
+  __readme_next_step="- Edit the file variables.sh. There variables needs to be filled:"
+  __to_fill=`cat variables.sh | grep __TO_FILL__`
+  __to_fill="\n${__to_fill}\n"
+fi
+
+cat README.md | sed "s/__readme_deploy/$__readme_deploy/" | sed "s/__readme_next_step/$__readme_next_step/"  | sed "s/__to_fill/${__to_fill}/" > README.md
 
 #-- APP ---------------------------------------------------------------------
 
