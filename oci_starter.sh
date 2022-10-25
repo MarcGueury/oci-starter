@@ -387,18 +387,18 @@ cat > README.md <<EOF
 - variables.sh  : Contains the settings of your project
 
 ### Directories
-- app_src   : Contain the source of the Application (Command: build_app.sh)
-- ui_src    : Contain the source of the User Interface (Command: build_ui.sh)
-- db_src    : Contain the source, sql files of the database
-- terraform : contains the terraforms scripts (Command: plan.sh / apply.sh)
+- app_src   : Contains the source of the Application (Command: build_app.sh)
+- ui_src    : Contains the source of the User Interface (Command: build_ui.sh)
+- db_src    : Contains the source, sql files of the database
+- terraform : Contains the terraforms scripts (Command: plan.sh / apply.sh)
 EOF
 
 case $TF_VAR_deploy_strategy in
 "compute")
-    echo "- compute   : contains the Compute scripts" >> README.md
+    echo "- compute   : Contains the Compute scripts" >> README.md
   ;;
 "kubernetes")
-    echo "- oke       : contains the Kubernetes scripts (Command: deploy.sh)" >> README.md
+    echo "- oke       : Contains the Kubernetes scripts (Command: deploy.sh)" >> README.md
   ;;
 esac
 
