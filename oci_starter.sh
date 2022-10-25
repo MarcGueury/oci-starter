@@ -377,23 +377,41 @@ mv ../variables.sh .
 
 #-- README.md ------------------------------------------------------------------
 
+cat > README.md <<EOF 
+## OCI-Starter
+### Usage 
+
+### Commands
+- build.sh      : Build the whole program: Run Compile the App, Run Terraform, Run post Terraform tasks 
+- destroy.sh    : Destroy the created objects by Terraform
+- variables.sh  : Contains the settings of your project
+
+### Directories
+- app_src   : Contain the source of the Application (Command: build_app.sh)
+- ui_src    : Contain the source of the User Interface (Command: build_ui.sh)
+- db_src    : Contain the source, sql files of the database
+- terraform : contains the terraforms scripts (Command: plan.sh / apply.sh)
+EOF
+
 case $TF_VAR_deploy_strategy in
 "compute")
-    __readme_deploy="- compute : contains the Compute scripts"
+    echo "- compute   : contains the Compute scripts" >> README.md
   ;;
 "kubernetes")
-    __readme_deploy="- oke : contains the Kubernetes scripts
-    - Command: deploy.sh"
+    echo "- oke       : contains the Kubernetes scripts (Command: deploy.sh)" >> README.md
   ;;
 esac
 
-if grep -q "__TO_FILL__" variables.sh; then
-  __readme_next_step="- Edit the file variables.sh. There variables needs to be filled:"
-  __to_fill=`cat variables.sh | grep __TO_FILL__`
-  __to_fill="\n${__to_fill}\n"
-fi
+echo >> README.md
+echo "### Next Steps" >> README.md
 
-cat README.md | sed "s/__readme_deploy/$__readme_deploy/" | sed "s/__readme_next_step/$__readme_next_step/"  | sed "s/__to_fill/${__to_fill}/" > README.md
+if grep -q "__TO_FILL__" variables.sh; then
+  echo "- Edit the file variables.sh. Some variables needs to be filled:" >> README.md
+  echo >> README.md
+  echo `cat variables.sh | grep __TO_FILL__` >> README.md
+  echo >> README.md
+fi
+echo "- Run build.sh" >> README.md
 
 #-- APP ---------------------------------------------------------------------
 
@@ -517,9 +535,7 @@ elif [ "$MODE" == "ZIP" ]; then
   zip -r ../$REPOSITORY_NAME.zip $TF_VAR_prefix
 else
   echo
-  echo Next steps: 
-  echo   cd $REPOSITORY_NAME
-  echo   ./build.sh
+  cat README.md
 fi
 
   

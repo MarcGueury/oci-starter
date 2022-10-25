@@ -16,7 +16,7 @@
     - Command: plan.sh / apply.sh
 __readme_deploy
 
-### Next Step
+### Next Steps
 __readme_next_step 
 __to_fill
 - Run build.sh
