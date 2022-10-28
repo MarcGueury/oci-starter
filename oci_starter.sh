@@ -432,11 +432,11 @@ echo "- Run build.sh" >> README.md
 #-- Insfrastruture As Code --------------------------------------------------
 
 # Default state local
-cp -r ../option/iac/terraform_local/* terraform/.
+cp -r ../option/infra_as_code/terraform_local/* terraform/.
 if [ "$TF_VAR_iac" == "resource_manager" ]; then
-  cp -r ../option/iac/resource_manager/* terraform/.
+  cp -r ../option/infra_as_code/resource_manager/* terraform/.
 elif [ "$TF_VAR_iac" == "terraform_object_storage" ]; then
-  cp -r ../option/iac/terraform_object_storage/* terraform/.
+  cp -r ../option/infra_as_code/terraform_object_storage/* terraform/.
 fi
 
 #-- APP ---------------------------------------------------------------------
