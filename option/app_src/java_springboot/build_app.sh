@@ -15,7 +15,7 @@ check_java_version
 
 mvn package
 
-if [ "$1" == "compute" ]; then
+if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   # Replace the user and password
   cp start.sh target/.
   sed -i "s/##DB_USER##/$TF_VAR_db_user/" target/start.sh
@@ -24,7 +24,7 @@ if [ "$1" == "compute" ]; then
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
 
-elif [ "$1" == "kubernetes" ]; then
+elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   docker image rm app:latest
   docker build -t app:latest .
 fi  

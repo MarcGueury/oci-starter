@@ -18,12 +18,12 @@ CONFIG_FILE=src/main/resources/META-INF/microprofile-config.properties
 sed -i "s/##DB_USER##/$TF_VAR_db_user/" $CONFIG_FILE
 sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
 
-if [ "$1" == "compute" ]; then
+if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   mvn package
   cp start.sh target/.
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
-elif [ "$1" == "kubernetes" ]; then
+elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   docker image rm app:latest
   docker build -t app:latest .
 fi  

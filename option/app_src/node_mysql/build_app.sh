@@ -22,10 +22,10 @@ if [ "$OCI_CLI_CLOUD_SHELL" == "true" ]; then
   echo 
 fi
 
-if [ "$1" == "compute" ]; then
+if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   mkdir ../compute/app
   cp -r src/* ../compute/app/.
-elif [ "$1" == "kubernetes" ]; then
+elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   docker image rm app:latest
   docker build -t app:latest .
 fi  
