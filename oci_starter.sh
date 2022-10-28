@@ -424,6 +424,9 @@ if grep -q "__TO_FILL__" variables.sh; then
   echo `cat variables.sh | grep __TO_FILL__` >> README.md
   echo >> README.md
 fi
+if [ "$MODE" == "CLI" ]; then
+echo "- cd output" >> README.md
+fi
 echo "- Run build.sh" >> README.md
 
 #-- Insfrastruture As Code --------------------------------------------------
