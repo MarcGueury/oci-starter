@@ -12,7 +12,7 @@ fi
 
 if [ -v STARTER_VARIABLES_SET ]; then
   echo "Variables already set"
-  exit 0
+  return
 else 
   export STARTER_VARIABLES_SET="PRE"
 fi 
