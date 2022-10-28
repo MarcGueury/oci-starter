@@ -65,7 +65,7 @@ resource_manager_apply() {
   echo "Saved Job TF State"
 }
 
-resource_manager_delete() {
+resource_manager_destroy() {
   resource_manager_get_stack 
   
   echo "Creating Destroy Job"
