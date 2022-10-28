@@ -278,13 +278,13 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;      
-    -iac)
+    -iac|-infra_as_code)
       if [ $2 == "terraform_local" ]; then 
-        export TF_VAR_iac=$2
+        export TF_VAR_infra_as_code=$2
       elif [ $2 == "terraform_object_storage" ]; then  
-        export TF_VAR_java_framework=$2
+        export TF_VAR_infra_as_code=$2
       elif [ $2 == "resource_manager" ]; then  
-        export TF_VAR_java_framework=$2        
+        export TF_VAR_infra_as_code=$2        
       else
         unknown_value "$1" "terraform_local/terraform_object_storage/resource_manager"
       fi
@@ -433,9 +433,9 @@ echo "- Run build.sh" >> README.md
 
 # Default state local
 cp -r ../option/infra_as_code/terraform_local/* terraform/.
-if [ "$TF_VAR_iac" == "resource_manager" ]; then
+if [ "$TF_VAR_infra_as_code" == "resource_manager" ]; then
   cp -r ../option/infra_as_code/resource_manager/* terraform/.
-elif [ "$TF_VAR_iac" == "terraform_object_storage" ]; then
+elif [ "$TF_VAR_infra_as_code" == "terraform_object_storage" ]; then
   cp -r ../option/infra_as_code/terraform_object_storage/* terraform/.
 fi
 
