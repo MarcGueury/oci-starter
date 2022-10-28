@@ -277,7 +277,20 @@ while [[ $# -gt 0 ]]; do
       export REPOSITORY_NAME="$2"
       shift # past argument
       shift # past value
-      ;;                                         
+      ;;      
+    -iac)
+      if [ $2 == "local" ]; then 
+        export TF_VAR_iac=$2
+      elif [ $2 == "object_storage" ]; then  
+        export TF_VAR_java_framework=$2
+      elif [ $2 == "resource_manager" ]; then  
+        export TF_VAR_java_framework=$2        
+      else
+        unknown_value "$1" "local/object_storage/resource_manager"
+      fi
+      shift # past argument
+      shift # past value
+      ;;                                            
     -*|--*)
       echo "Unknown option $1"
       exit 1
@@ -412,6 +425,16 @@ if grep -q "__TO_FILL__" variables.sh; then
   echo >> README.md
 fi
 echo "- Run build.sh" >> README.md
+
+#-- Insfrastruture As Code --------------------------------------------------
+
+# Default state local
+cp -r ../option/iac/state_local/* terraform/.
+if [ "$TF_VAR_iac" == "resource_manager" ]; then
+  cp -r ../option/iac/resource_manager/* terraform/.
+elif [ "$TF_VAR_iac" == "object_storage" ]; then
+  cp -r ../option/iac/object_storage/* terraform/.
+fi
 
 #-- APP ---------------------------------------------------------------------
 
