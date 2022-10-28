@@ -8,7 +8,7 @@ cd $SCRIPT_DIR
 . bin/env_pre_terraform.sh
 app_src/build_app.sh 
 ui_src/build_ui.sh 
-bin/terraform.sh
+terraform/apply.sh --auto-approve
 
 if [ -d oke ]; then
   . bin/env_post_terraform.sh

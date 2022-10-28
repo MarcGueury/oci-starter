@@ -4,12 +4,18 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # Variables
 . $SCRIPT_DIR/../variables.sh
 
-if ! command -v jq &> /dev/null
-then
-    echo "Command jq could not be found. Please install it"
-    echo "Ex on linux: sudo yum install jq -y"
-    exit
+if ! command -v jq &> /dev/null; then
+  echo "Command jq could not be found. Please install it"
+  echo "Ex on linux: sudo yum install jq -y"
+  exit 1
 fi
+
+if [ -v STARTER_VARIABLES_SET ]; then
+  echo "Variables already set"
+  exit 0
+else 
+  export STARTER_VARIABLES_SET="PRE"
+fi 
 
 if [ "$OCI_CLI_CLOUD_SHELL" == "True" ];  then
   # Cloud Shell
