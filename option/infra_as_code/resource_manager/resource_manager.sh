@@ -5,15 +5,14 @@ cd $SCRIPT_DIR
 
 set -e
 
-WORKING_DIR=../tmp
-if [ ! -d $WORKING_DIR ]; then
-  mkdir ../tmp
+TMP_DIR=../tmp
+if [ ! -d $TMP_DIR ]; then
+  mkdir $TMP_DIR
 fi
 
-
 resource_manager_get_stack() {
-  if[ ! -f ../tmp/resource_manager_stackid ]; then
-    echo "Stack does exists already ( file ../tmp/resource_manager_stackid not found )"
+  if [ ! -f ../tmp/resource_manager_stackid ]; then
+    echo "Stack does not exists ( file ../tmp/resource_manager_stackid not found )"
     exit
   fi    
   source ../tmp/resource_manager_stackid
@@ -23,45 +22,51 @@ resource_manager_get_stack() {
 resource_manager_create() {
   echo "Creating Stack"
 
-  if[ -f ../tmp/resource_manager_stackid ]; then
+  if [ -f ../tmp/resource_manager_stackid ]; then
      echo "Stack exists already ( file ../tmp/resource_manager_stackid found )"
-     exit
+     return
   fi    
 
-  ZIP_FILE_PATH=$WORKING_DIR/resource_manager_$TF_VAR_prefix.zip
-  rm $ZIP_FILE_PATH
+  ZIP_FILE_PATH=$TMP_DIR/resource_manager_$TF_VAR_prefix.zip
+  if [ -f $ZIP_FILE_PATH ]; then
+    rm $ZIP_FILE_PATH
+  fi  
   zip -r $ZIP_FILE_PATH *
 
-  if [ "${WORKING_DIR}" == "" ]; then
-    STACK_ID=$(oci resource-manager stack create --compartment-id $COMPARTMENT_ID --config-source $ZIP_FILE_PATH --query 'data.id' --raw-output)
-  else
-  	STACK_ID=$(oci resource-manager stack create --compartment-id $COMPARTMENT_ID --config-source $ZIP_FILE_PATH --working-directory $WORKING_DIR --query 'data.id' --raw-output)
-  fi
+  # Transforms the variables in a JSON format
+  # This is a complex way to get them. But it works for multi line variables like TF_VAR_private_key
+  excluded=$(env | LC_ALL=C sed -n 's/^\([A-Z_a-z][0-9A-Z_a-z]*\)=.*/\1/p' | grep -v 'TF_VAR_')
+  sh -c 'unset $1; export -p' sh "$excluded" > $TMP_DIR/var.sh
+  echo -n "{" > $TMP_DIR/variables.json
+  cat $TMP_DIR/tf_var.sh | sed "s/export TF_VAR_/\"/g" | sed "s/=\"/\": \"/g" | sed ':a;N;$!ba;s/\"\n/\", /g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/$/}/'>> $TMP_DIR/variables.json
+  cat $TMP_DIR/variables.json
+
+	STACK_ID=$(oci resource-manager stack create --compartment-id $TF_VAR_compartment_ocid --config-source $ZIP_FILE_PATH --display-name resource_manager_$TF_VAR_prefix  --variables file://$TMP_DIR/variables.json --query 'data.id' --raw-output)
   echo "Created stack id: ${STACK_ID}"
-  echo "export STACK_ID=$STACK_ID" > ../tmp/resource_manager_stackid
+  echo "export STACK_ID=$STACK_ID" > $TMP_DIR/resource_manager_stackid
 }
 
 resource_manager_plan() {
   resource_manager_get_stack
 
   echo "Creating Plan Job"
-  CREATED_PLAN_JOB_ID=$(oci resource-manager job create-plan-job --stack-id $STACK_ID --wait-for-state SUCCEEDED --query 'data.id' --raw-output)
+  CREATED_PLAN_JOB_ID=$(oci resource-manager job create-plan-job --stack-id $STACK_ID --wait-for-state SUCCEEDED --wait-for-state FAILED --query 'data.id' --raw-output)
   echo "Created Plan Job Id: ${CREATED_PLAN_JOB_ID}"
 
   echo "Getting Job Logs"
-  echo $(oci resource-manager job get-job-logs --job-id $CREATED_PLAN_JOB_ID) > $WORKING_DIR/plan_job_logs.txt
+  echo $(oci resource-manager job get-job-logs --job-id $CREATED_PLAN_JOB_ID) > $TMP_DIR/plan_job_logs.txt
   echo "Saved Job Logs"
 }
 
 resource_manager_apply() {
-  resource_manager_get_stack
+  resource_manager_get_stack 
 
   echo "Creating Apply Job"
-  CREATED_APPLY_JOB_ID=$(oci resource-manager job create-apply-job --stack-id $STACK_ID --execution-plan-strategy FROM_PLAN_JOB_ID --execution-plan-job-id "$CREATED_PLAN_JOB_ID" --wait-for-state SUCCEEDED --query 'data.id' --raw-output)
+  CREATED_APPLY_JOB_ID=$(oci resource-manager job create-apply-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --wait-for-state FAILED --query 'data.id' --raw-output)
   echo "Created Apply Job Id: ${CREATED_APPLY_JOB_ID}"
 
   echo "Getting Job Terraform state"
-  oci resource-manager job get-job-tf-state --job-id $CREATED_APPLY_JOB_ID --file $WORKING_DIR/job_tf_state.txt
+  oci resource-manager job get-job-tf-state --job-id $CREATED_APPLY_JOB_ID --file $TMP_DIR/job_tf_state.txt
   echo "Saved Job TF State"
 }
 
@@ -75,6 +80,8 @@ resource_manager_destroy() {
   echo "Deleting Stack"
   oci resource-manager stack delete --stack-id $STACK_ID --force
   echo "Deleted Stack Id: ${STACK_ID}"
+
+  rm $TMP_DIR/resource_manager_stackid
 }
 
 # echo "Creating Import Tf State Job"
