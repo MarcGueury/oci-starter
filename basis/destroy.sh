@@ -24,5 +24,4 @@ fi
 if [ -d oke ]; then
   oke/oke_destroy.sh --auto-approve
 fi
-
 terraform/destroy.sh --auto-approve
