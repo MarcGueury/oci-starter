@@ -48,3 +48,5 @@ get_attribute_from_tfstate "BASTION_IP" "starter_bastion" "public_ip"
 
 # JDBC_URL
 get_output_from_tfstate "JDBC_URL" "jdbc_url"
+get_output_from_tfstate "DB_HOST" "db_host"
+get_output_from_tfstate "DB_URL" "db_url"

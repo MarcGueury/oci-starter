@@ -516,6 +516,8 @@ elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
 fi
 
 #-- Database ----------------------------------------------------------------
+cp_terraform output.tf 
+
 if [[ $TF_VAR_db_strategy == "Autonomous Transaction Processing Database" ]]; then
   cp_terraform atp_common.tf
   cp_dir_db_src oracle

@@ -27,31 +27,6 @@ resource "oci_core_instance" "starter_instance" {
     source_type = "image"
     source_id   = data.oci_core_images.oraclelinux.images.0.id
   }
-
-  connection {
-    agent       = false
-    host        = oci_core_instance.starter_instance.public_ip
-    user        = "opc"
-    private_key = var.ssh_private_key
-  }
-
-  provisioner "file" {
-    source      = "../compute"
-    destination = "."
-  }
-
-  provisioner "remote-exec" {
-    on_failure = continue
-    inline = [
-      "export TF_VAR_java_version=${var.java_version}",
-      "export TF_VAR_language=${var.language}",      
-      "export JDBC_URL='${local.jdbc_url}'",
-      "export DB_HOST='${local.db_host}'",      
-      "mv compute/* .",
-      "rmdir compute",
-      "bash compute_bootstrap.sh > compute_bootstrap.log 2>&1"
-    ]
-  }
 }
 
 # Output the private and public IPs of the instance

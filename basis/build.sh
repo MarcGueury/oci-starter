@@ -6,12 +6,15 @@ cd $SCRIPT_DIR
 . variables.sh
 . bin/sshkey_generate.sh
 . bin/env_pre_terraform.sh
+terraform/apply.sh --auto-approve
+. bin/env_post_terraform.sh
+bin/deploy_bastion.sh
 app_src/build_app.sh 
 ui_src/build_ui.sh 
-terraform/apply.sh --auto-approve
 
-if [ -d oke ]; then
-  . bin/env_post_terraform.sh
+if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
+  bin/deploy_compute.sh
+elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   oke/oke_deploy.sh
 fi
 

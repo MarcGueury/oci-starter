@@ -26,7 +26,3 @@ locals {
   db_host = "todo"
   jdbc_url = format("jdbc:oracle:thin:@%s", local.db_url)
 }
-
-output "jdbc_url" {
-   value = local.jdbc_url
-}

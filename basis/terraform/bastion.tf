@@ -35,28 +35,6 @@ resource "oci_core_instance" "starter_bastion" {
     source_type = "image"
     source_id   = data.oci_core_images.oraclelinux.images.0.id
   }
-
-  connection {
-    agent       = false
-    host        = oci_core_instance.starter_bastion.public_ip
-    user        = "opc"
-    private_key = var.ssh_private_key
-  }
-
-  provisioner "file" {
-    source      = "../db_src"
-    destination = "db_src"
-  }
-
-  provisioner "remote-exec" {
-    on_failure = continue
-    inline = [
-      "export DB_USER=${var.db_user}",
-      "export DB_PASSWORD='${var.db_password}'",
-      "export DB_URL='${local.db_url}'",
-      "bash db_src/db_init.sh > db_src/db_init.log 2>&1"
-    ]
-  }
 }
 
 # Output the private and public IPs of the instance
