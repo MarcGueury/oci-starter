@@ -36,7 +36,7 @@ resource_manager_create() {
   # Transforms the variables in a JSON format
   # This is a complex way to get them. But it works for multi line variables like TF_VAR_private_key
   excluded=$(env | LC_ALL=C sed -n 's/^\([A-Z_a-z][0-9A-Z_a-z]*\)=.*/\1/p' | grep -v 'TF_VAR_')
-  sh -c 'unset $1; export -p' sh "$excluded" > $TMP_DIR/var.sh
+  sh -c 'unset $1; export -p' sh "$excluded" > $TMP_DIR/tf_var.sh
   echo -n "{" > $TMP_DIR/variables.json
   cat $TMP_DIR/tf_var.sh | sed "s/export TF_VAR_/\"/g" | sed "s/=\"/\": \"/g" | sed ':a;N;$!ba;s/\"\n/\", /g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/$/}/'>> $TMP_DIR/variables.json
   cat $TMP_DIR/variables.json
@@ -66,7 +66,7 @@ resource_manager_apply() {
   echo "Created Apply Job Id: ${CREATED_APPLY_JOB_ID}"
 
   echo "Getting Job Terraform state"
-  oci resource-manager job get-job-tf-state --job-id $CREATED_APPLY_JOB_ID --file $TMP_DIR/job_tf_state.txt
+  oci resource-manager job get-job-tf-state --job-id $CREATED_APPLY_JOB_ID --file terraform.tfstate
   echo "Saved Job TF State"
 }
 
@@ -77,6 +77,7 @@ resource_manager_destroy() {
   CREATED_DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --query 'data.id' --raw-output)
   echo "Created Destroy Job Id: ${CREATED_DESTROY_JOB_ID}"
 
+  // XXXX Check the result of the destroy JOB and stop deletion if required
   echo "Deleting Stack"
   oci resource-manager stack delete --stack-id $STACK_ID --force
   echo "Deleted Stack Id: ${STACK_ID}"
