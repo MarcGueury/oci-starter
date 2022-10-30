@@ -25,6 +25,4 @@ if [ -d oke ]; then
   oke/oke_destroy.sh --auto-approve
 fi
 
-cd terraform
-terraform destroy --auto-approve
-cd ..
+terraform/destroy.sh --auto-approve
