@@ -10,6 +10,7 @@ if ! command -v jq &> /dev/null; then
   exit 1
 fi
 
+// XXXXXX -> Should detect when a new output is created
 if [ -v STARTER_VARIABLES_SET ]; then
   echo "Variables already set"
   return
