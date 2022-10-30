@@ -18,9 +18,12 @@ resource_manager_get_stack() {
   source ../tmp/resource_manager_stackid
 }
 
+rs_echo() {
+  echo "Resource Mananger: $1"
+}
 
 resource_manager_create() {
-  echo "Creating Stack"
+  rs_echo "Create Stack"
 
   if [ -f ../tmp/resource_manager_stackid ]; then
      echo "Stack exists already ( file ../tmp/resource_manager_stackid found )"
@@ -48,11 +51,11 @@ resource_manager_create() {
 resource_manager_plan() {
   resource_manager_get_stack
 
-  echo "Create Plan Job"
+  rs_echo "Create Plan Job"
   CREATED_PLAN_JOB_ID=$(oci resource-manager job create-plan-job --stack-id $STACK_ID --wait-for-state SUCCEEDED --wait-for-state FAILED --query 'data.id' --raw-output)
   echo "Created Plan Job Id: ${CREATED_PLAN_JOB_ID}"
 
-  echo "Get Job Logs"
+  rs_echo "Get Job Logs"
   echo $(oci resource-manager job get-job-logs --job-id $CREATED_PLAN_JOB_ID) > $TMP_DIR/plan_job_logs.txt
   echo "Saved Job Logs"
 }
@@ -60,15 +63,14 @@ resource_manager_plan() {
 resource_manager_apply() {
   resource_manager_get_stack 
 
-  echo "Create Apply Job"
+  rs_echo "Create Apply Job"
   CREATED_APPLY_JOB_ID=$(oci resource-manager job create-apply-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --wait-for-state FAILED --query 'data.id' --raw-output)
   echo "Created Apply Job Id: ${CREATED_APPLY_JOB_ID}"
 
-  echo "Get job state"
-  oci resource-manager job get-job-tf-state --job-id $CREATED_APPLY_JOB_ID --file $TMP_DIR/create_job.state
-  cat $TMP_DIR/create_job.state
-
-  echo "Get stack state"
+  rs_echo "Get job"
+  STATUS=$(oci resource-manager job get --job-id $CREATED_DESTROY_JOB_ID  --query 'data."lifecycle-state"' --raw-output)
+ 
+  rs_echo "Get stack state"
   # XXXXX terraform state will be zipped in a next run
   oci resource-manager stack get-stack-tf-state --stack-id $STACK_ID --file terraform.tfstate
 }
@@ -76,19 +78,21 @@ resource_manager_apply() {
 resource_manager_destroy() {
   resource_manager_get_stack 
   
-  echo "Create Destroy Job"
+  rs_echo "Create Destroy Job"
   CREATED_DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --query 'data.id' --raw-output)
   echo "Created Destroy Job Id: ${CREATED_DESTROY_JOB_ID}"
 
-  echo "Get job state"
-  oci resource-manager job get-job-tf-state --job-id $CREATED_DESTROY_JOB_ID --file $TMP_DIR/destroy_job.state
-  cat $TMP_DIR/destroy_job.state
+  rs_echo "Get job"
+  STATUS=$(oci resource-manager job get --job-id $CREATED_DESTROY_JOB_ID  --query 'data."lifecycle-state"' --raw-output)
+ 
+  # XXXX Check the result of the destroy JOB and stop deletion if required
+  if [ "$STATUS" != "SUCCEEDED" ]; then
+    echo "ERROR. Exiting"
+  fi  
 
-  // XXXX Check the result of the destroy JOB and stop deletion if required
-  echo "Delete Stack"
+  rs_echo "Delete Stack"
   oci resource-manager stack delete --stack-id $STACK_ID --force
   echo "Deleted Stack Id: ${STACK_ID}"
-
   rm $TMP_DIR/resource_manager_stackid
 }
 
