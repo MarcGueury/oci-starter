@@ -30,7 +30,7 @@ resource "oci_core_instance" "starter_instance" {
 
   connection {
     agent       = false
-    host        = oci_core_instance.starter_bastion.public_ip
+    host        = oci_core_instance.starter_instance.public_ip
     user        = "opc"
     private_key = var.ssh_private_key
   }
