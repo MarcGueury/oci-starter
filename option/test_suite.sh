@@ -71,6 +71,10 @@ start_test 01_JAVA_HELIDON_COMPUTE_ATP
 ./oci_starter.sh -language java -deploy compute -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
 
+start_test 01B_JAVA_HELIDON_COMPUTE_ATP_RESOURCE_MANAGER
+./oci_starter.sh -language java -deploy compute -db_password $TEST_DB_PASSWORD -iac resource_manager > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
 # Java Compute ATP + Existing Subnet
 start_test 02_JAVA_HELIDON_COMPUTE_ATP_EX_SUBNET
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy compute -db_password $TEST_DB_PASSWORD -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
@@ -88,6 +92,10 @@ build_test_destroy
 # SpringBoot
 start_test 05_JAVA_SPRINGBOOT_COMPUTE_ATP
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy compute -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1   
+build_test_destroy
+
+start_test 05B_JAVA_SPRINGBOOT_COMPUTE_ATP_RESOURCE_MANAGER
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy compute -db_password $TEST_DB_PASSWORD -iac resource_manager > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1   
 build_test_destroy
 
 # DB System
