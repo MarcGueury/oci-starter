@@ -11,10 +11,10 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
 
-if [ "$1" == "compute" ]; then
+if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   mkdir ../compute/ui
   cp -r ui/* ../compute/ui/.
-elif [ "$1" == "kubernetes" ]; then
+elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   docker image rm ui:latest
   docker build -t ui:latest .
 fi  

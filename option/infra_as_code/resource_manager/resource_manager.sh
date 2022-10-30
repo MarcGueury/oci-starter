@@ -39,7 +39,6 @@ resource_manager_create() {
   sh -c 'unset $1; export -p' sh "$excluded" > $TMP_DIR/tf_var.sh
   echo -n "{" > $TMP_DIR/variables.json
   cat $TMP_DIR/tf_var.sh | sed "s/export TF_VAR_/\"/g" | sed "s/=\"/\": \"/g" | sed ':a;N;$!ba;s/\"\n/\", /g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/$/}/'>> $TMP_DIR/variables.json
-  cat $TMP_DIR/variables.json
 
 	STACK_ID=$(oci resource-manager stack create --compartment-id $TF_VAR_compartment_ocid --config-source $ZIP_FILE_PATH --display-name resource_manager_$TF_VAR_prefix  --variables file://$TMP_DIR/variables.json --query 'data.id' --raw-output)
   echo "Created stack id: ${STACK_ID}"
