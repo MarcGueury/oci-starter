@@ -81,8 +81,7 @@ if [ -d ui ]; then
   sudo yum install nginx -y > /tmp/yum_nginx.log
   
   # Default: location /app/ { proxy_pass http://localhost:8080 }
-  NGINX_APP=`cat nginx_app.conf`
-  sudo sed -i "/#error_page.*/i $NGNIX_APP" /etc/nginx/conf.d/default.conf
+  sudo sed -i '/404.html/ r nginx_app.conf' /etc/nginx/conf.d/default.conf
 
   # SE Linux (for proxy_pass)
   sudo setsebool -P httpd_can_network_connect 1
