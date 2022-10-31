@@ -510,8 +510,7 @@ if [[ $TF_VAR_deploy_strategy == "kubernetes" ]]; then
 elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   cp_terraform compute.tf
   mkdir compute 
-  cp ../option/compute/compute_bootstrap.sh compute/compute_bootstrap.sh
-  # XX Other language missing
+  cp ../option/compute/* compute/.
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   cp_terraform function.tf 
 fi
