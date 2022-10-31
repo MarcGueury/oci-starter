@@ -12,7 +12,7 @@ app.get('/dept', async (req, res) => {
     let connection;
 
     try {
-        connection = await oracledb.getConnection({ user: process.env.DB_USER, password: process.env.DB_PASSWORD, connectionString: process.env.DB_HOST });
+        connection = await oracledb.getConnection({ user: process.env.DB_USER, password: process.env.DB_PASSWORD, connectionString: process.env.DB_URL });
         result = await connection.execute(
             `select deptno, dname, loc from DEPT`,
             [],

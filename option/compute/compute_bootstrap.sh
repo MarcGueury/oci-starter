@@ -48,7 +48,7 @@ fi
 
 # Hardcode the connection to the DB in the start.sh
 sed -i "s!##JDBC_URL##!$JDBC_URL!" app/start.sh 
-sed -i "s!##DB_HOST##!$DB_HOST!" app/start.sh 
+sed -i "s!##DB_URL##!$DB_URL!" app/start.sh 
 chmod +x app/start.sh
 
 # Create an "app.service" that starts when the machine starts.
