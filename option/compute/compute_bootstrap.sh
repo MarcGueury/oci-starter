@@ -4,7 +4,7 @@
 # Script that is runned once during the setup of a 
 # - compute
 # - with Java
-if [[ -z "$TF_VAR_java_version" ]] || [[ -z "$JDBC_URL" ]]; then
+if [[ -z "$TF_VAR_language" ]] || [[ -z "$JDBC_URL" ]]; then
   echo "Missing env variables"
   exit
 fi
