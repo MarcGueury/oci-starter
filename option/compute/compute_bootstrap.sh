@@ -16,18 +16,7 @@ if [ -f app/install.sh ]; then
   app/install.sh
 fi  
 
-if [ "$TF_VAR_language" == "node" ]; then
-  # Install last version of NodeJS
-  sudo yum install -y oracle-nodejs-release-el7 oracle-release-el7
-  sudo yum install -y nodejs
-  # Not needed for mysql...
-  sudo yum install -y oracle-instantclient-release-el7
-  sudo yum install -y oracle-instantclient-basic
-  sudo yum install -y oracle-instantclient-sqlplus
-  cd app
-  npm install
-  cd $HOME
-else
+if [ "$TF_VAR_language" == "java" ]; then
   # Install the JVM (JDK or GraalVM)
   if [ "$TF_VAR_java_vm" == "GraalVM" ]; then
     # GraalVM
