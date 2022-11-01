@@ -11,6 +11,11 @@ fi
 
 # -- App --------------------------------------------------------------------
 
+# Application Specific installation
+if [ -f app/install.sh ]; then
+  app/install.sh
+fi  
+
 if [ "$TF_VAR_language" == "node" ]; then
   # Install last version of NodeJS
   sudo yum install -y oracle-nodejs-release-el7 oracle-release-el7

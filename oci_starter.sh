@@ -132,8 +132,10 @@ while [[ $# -gt 0 ]]; do
         default TF_VAR_java_framework helidon
       elif [ $2 == "node" ]; then  
         export TF_VAR_language=$2
+      elif [ $2 == "python" ]; then  
+        export TF_VAR_language=$2
       else
-        unknown_value "$1" "java/node"
+        unknown_value "$1" "java/node/python"
       fi
       shift # past argument
       shift # past value
@@ -324,7 +326,7 @@ fi
 if [ "$TF_VAR_deploy_strategy" != "compute" ] && [ -z "$TF_VAR_auth_token" ]; then
   echo "WARNING: token is not defined."
   echo "         You will need to define it in variables.sh"
-  export TF_VAR_auth_token="--MISSING--"
+  export TF_VAR_auth_token="__TO_FILL__"
 fi
 
 if [ -z "$TF_VAR_compartment_ocid" ]; then
@@ -353,10 +355,6 @@ if [ "$TF_VAR_db_strategy" == "MySQL" ] && [ "$TF_VAR_db_user" == "admin" ]; the
   export TF_VAR_db_user="root"
 fi
 
-
-export |grep TF_VAR > variables.sh
-
-fi  
 echo MODE=$MODE
 
 title "Creating Directory"  

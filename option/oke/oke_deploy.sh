@@ -24,7 +24,8 @@ docker push $DOCKER_PREFIX/ui:latest
 export KUBECONFIG=terraform/starter_kubeconfig
 
 # One time configuration
-if [ ! -f oke/app.yaml ]; then
+if [ ! -f $KUBECONFIG ]; then
+  oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONFIG --region $TF_VAR_region --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
   chmod 600 $KUBECONFIG
  
   # Deploy ingress-nginx
