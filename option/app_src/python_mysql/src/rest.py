@@ -1,8 +1,9 @@
 import pymysql
+import os 
 from app import app
-from config import mysql
 from flask import jsonify
 from flask import flash, request
+from flaskext.mysql import MySQL
 
 @app.route('/dept')
 def dept():
@@ -18,7 +19,20 @@ def dept():
         print(e)
     finally:
         cursor.close() 
-        conn.close()       
-       
+        conn.close()     
+
+@app.route('/info')
+def info():
+        return "Python / Flask"          
+
+mysql = MySQL()
+db_url = os.getenv('DB_URL')
+mysql_host = db_url.split(':')[0]
+app.config['MYSQL_DATABASE_USER'] = os.getenv('DB_USER')
+app.config['MYSQL_DATABASE_PASSWORD'] = os.getenv('DB_PASSWORD')
+app.config['MYSQL_DATABASE_DB'] = 'db1'
+app.config['MYSQL_DATABASE_HOST'] = mysql_host
+mysql.init_app(app)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
