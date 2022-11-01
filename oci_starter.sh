@@ -135,7 +135,7 @@ while [[ $# -gt 0 ]]; do
       elif [ $2 == "python" ]; then  
         export TF_VAR_language=$2
       else
-        unknown_value "$1" "java/node/python"
+        unknown_value "$1" "java/node"
       fi
       shift # past argument
       shift # past value
@@ -354,6 +354,10 @@ if [ "$TF_VAR_db_strategy" == "MySQL" ] && [ "$TF_VAR_db_user" == "admin" ]; the
   echo "         Forcing the db_user to root"
   export TF_VAR_db_user="root"
 fi
+
+export |grep TF_VAR > variables.sh
+
+fi  
 
 echo MODE=$MODE
 
