@@ -1,4 +1,4 @@
 FROM node:16
-COPY src/* /app/.
+COPY src/* /app/
 WORKDIR /app
 ENTRYPOINT ["node","rest.js"]
