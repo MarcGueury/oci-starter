@@ -326,7 +326,7 @@ if [ "$TF_VAR_db_existing_strategy" == "Use Existing DB" ]; then
   fi
 fi    
 
-if [ "$TF_VAR_lang" != "java" ]; then  
+if [ "$TF_VAR_language" != "java" ]; then  
   unset TF_VAR_java_framework
 fi
 
