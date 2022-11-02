@@ -23,7 +23,7 @@ start_test () {
 
 build_test_destroy () {
   SECONDS=0
-  TEST_DIR=$SCRIPT_DIR/test/$TEST_NAME
+  TEST_DIR=$SCRIPT_DIR/test_oke/$TEST_NAME
   pwd
   cd $TEST_DIR/output
   ./build.sh > build.log 2>&1  
@@ -62,7 +62,7 @@ build_option() {
     NAME=${OPTION_LANG}-${OPTION_DB}-${OPTION_UI}
   fi
   start_test $NAME
-  ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID -oke_ocid $EX_OKE_OCID -atp_ocid $EX_ATP_OCID \
+  bash -x ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID -oke_ocid $EX_OKE_OCID -atp_ocid $EX_ATP_OCID \
                    -language $OPTION_LANG -java_framework $OPTION_JAVA_FRAMEWORK -database $OPTION_DB -ui $OPTION_UI -deploy kubernetes -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
   build_test_destroy
 }

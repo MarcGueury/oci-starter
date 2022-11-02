@@ -9,9 +9,6 @@ if [ -z $DOCKER_PREFIX ]; then
   exit
 fi
 
-# OKE_PREFIX
-OKE_PREFIX="${PREFIX}-"
-
 # Docker Login
 docker login ${TF_VAR_ocir} -u ${TF_VAR_namespace}/${TF_VAR_username} -p "${TF_VAR_auth_token}"
 echo DOCKER_PREFIX=$DOCKER_PREFIX
@@ -54,7 +51,7 @@ if [ ! -f $KUBECONFIG ]; then
   # Create secrets
   kubectl create secret docker-registry ocirsecret --docker-server=$TF_VAR_ocir --docker-username="$TF_VAR_namespace/$TF_VAR_username" --docker-password="$TF_VAR_auth_token" --docker-email="$TF_VAR_email"
   # XXXX - Tthis should be by date 
-  kubectl create secret generic ${OKE_PREFIX}db-secret --from-literal=db_user=$TF_VAR_db_user --from-literal=db_password=$TF_VAR_db_password --from-literal=db_url=$DB_URL --from-literal=jdbc_url=$JDBC_URL --from-literal=spring_application_json='{ "db.url": "'$JDBC_URL'" }'
+  kubectl create secret generic ${PREFIX}-db-secret --from-literal=db_user=$TF_VAR_db_user --from-literal=db_password=$TF_VAR_db_password --from-literal=db_url=$DB_URL --from-literal=jdbc_url=$JDBC_URL --from-literal=spring_application_json='{ "db.url": "'$JDBC_URL'" }'
 fi
 
 OKE_PREFIX="${PREFIX}-"
@@ -62,13 +59,13 @@ OKE_PREFIX="${PREFIX}-"
 # XXXXXX
 TMP_DIR=$SCRIPT_DIR/../tmp
 mkdir $TMP_DIR
-sed "s&##PREFIX##&${OKE_PREFIX}&" app_src/app.yaml | sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&"  > $TMP_DIR/app.yaml
-sed "s&##PREFIX##&${OKE_PREFIX}&" ui_src/ui.yaml | sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&"  > $TMP_DIR/ui.yaml
-sed "s&##PREFIX##&${OKE_PREFIX}&" ui_src/ingress.yaml > $TMP_DIR/ingress.yaml
+sed "s&##PREFIX##&${PREFIX}&" app_src/app.yaml | sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&"  > $TMP_DIR/app.yaml
+sed "s&##PREFIX##&${PREFIX}&" ui_src/ui.yaml | sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&"  > $TMP_DIR/ui.yaml
+sed "s&##PREFIX##&${PREFIX}&" ui_src/ingress.yaml > $TMP_DIR/ingress.yaml
 
 # delete the old pod, just to be sure a new image is pulled
 # XXX use rolling update with deployment ? but maybe overkill for a sample ?
-kubectl delete pod ${OKE_PREFIX}app ${OKE_PREFIX}ui
+kubectl delete pod ${PREFIX}-app ${PREFIX}-ui
 
 # Create objects in Kubernetes
 kubectl apply -f $TMP_DIR/app.yaml
