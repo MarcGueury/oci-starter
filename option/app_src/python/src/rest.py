@@ -3,12 +3,12 @@ import json
 from app import app
 from flask import jsonify
 from flask import flash, request
-import cx_Oracle
+import oracledb
 
 @app.route('/dept')
 def dept():
     try:
-        conn = cx_Oracle.connect(
+        conn = oracledb.connect(
           user=os.getenv('DB_USER'),
           password=os.getenv('DB_PASSWORD'),
           dsn=os.getenv('DB_URL'))
