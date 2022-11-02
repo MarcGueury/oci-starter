@@ -58,9 +58,8 @@ fi
 # XXXXXX
 TMP_DIR=$SCRIPT_DIR/../tmp
 mkdir $TMP_DIR
-sed "s&##PREFIX##&${TF_VAR_prefix}&" app_src/app.yaml | sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&"  > $TMP_DIR/app.yaml
-sed "s&##PREFIX##&${TF_VAR_prefix}&" ui_src/ui.yaml | sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&"  > $TMP_DIR/ui.yaml
-sed "s&##PREFIX##&${TF_VAR_prefix}&" ui_src/ingress.yaml > $TMP_DIR/ingress.yaml
+sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/app.yaml > $TMP_DIR/app.yaml
+sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" ui_src/ui.yaml > $TMP_DIR/ui.yaml
 
 # delete the old pod, just to be sure a new image is pulled
 # XXX use rolling update with deployment ? but maybe overkill for a sample ?
@@ -69,5 +68,5 @@ kubectl delete pod ${TF_VAR_prefix}-app ${TF_VAR_prefix}-ui
 # Create objects in Kubernetes
 kubectl apply -f $TMP_DIR/app.yaml
 kubectl apply -f $TMP_DIR/ui.yaml
-kubectl apply -f $TMP_DIR/ingress.yaml
+kubectl apply -f oke/ingress.yaml
 

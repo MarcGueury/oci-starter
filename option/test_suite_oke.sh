@@ -62,7 +62,7 @@
       NAME=${OPTION_LANG}-${OPTION_DB}-${OPTION_UI}
     fi
     start_test $NAME
-    bash -x ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID -oke_ocid $EX_OKE_OCID -atp_ocid $EX_ATP_OCID -bastion_ocid $EX_BASTION_OCID \
+    bash -x ./oci_starter.sh -prefix $NAME -compartment_ocid $EX_COMPARTMENT_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID -oke_ocid $EX_OKE_OCID -atp_ocid $EX_ATP_OCID -bastion_ocid $EX_BASTION_OCID \
                     -language $OPTION_LANG -java_framework $OPTION_JAVA_FRAMEWORK -database $OPTION_DB -ui $OPTION_UI -deploy kubernetes -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
     build_test_destroy
     exit
