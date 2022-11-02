@@ -133,7 +133,7 @@ while [[ $# -gt 0 ]]; do
       elif [ $2 == "python" ]; then  
         export TF_VAR_language=$2
       else
-        unknown_value "$1" "java/node"
+        unknown_value "$1" "java/node/python"
       fi
       shift # past argument
       shift # past value
