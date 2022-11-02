@@ -1,8 +1,14 @@
 FROM python:3.8-slim-buster
-COPY src/* /app/
+
+RUN pip install --upgrade pip
+
+RUN adduser -D myuser
+USER myuser
 WORKDIR /app
-RUN pip3 install oracledb 
-RUN pip3 install Flask
-RUN pip3 install -U flask-cors
-RUN pip3 install flask-mysql
+ENV PATH="/app/.local/bin:${PATH}"
+COPY src/* /app/
+COPY --chown=myuser:myuser src/* /app/
+RUN pip3 install --user -r requirements.txt
+
 ENTRYPOINT ["python3","rest.py"]
+
