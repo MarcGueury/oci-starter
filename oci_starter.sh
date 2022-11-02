@@ -258,7 +258,12 @@ while [[ $# -gt 0 ]]; do
       export TF_VAR_mysql_ocid="$2"
       shift # past argument
       shift # past value
-      ;;                            
+      ;;     
+    -bastion_ocid)
+      export TF_VAR_bastion_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;                                   
     -db_user)
       export TF_VAR_db_user="$2"
       shift # past argument
@@ -516,6 +521,14 @@ elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   cp_terraform function.tf 
 fi
+
+#-- Bastion -----------------------------------------------------------------
+
+if [ -v TF_VAR_bastion_ocid ]; then
+  cp_terraform bastion_existing.tf  
+else
+  cp_terraform bastion.tf  
+fi 
 
 #-- Database ----------------------------------------------------------------
 cp_terraform output.tf 
