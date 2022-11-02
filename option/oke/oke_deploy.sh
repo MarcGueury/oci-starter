@@ -60,7 +60,7 @@ sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" ui_src/ui.yaml > oke/ui.yaml
 
 # delete the old pod, just to be sure a new image is pulled
 # XXX use rolling update with deployment ? but maybe overkill for a sample ?
-# ? kubectl delete pod app ui
+kubectl delete pod app ui
 
 # Create objects in Kubernetes
 kubectl apply -f oke/app.yaml
