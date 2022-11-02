@@ -2,7 +2,7 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Variables
-if grep -q "__TO_FILL__" variables.sh; then
+if grep -q "__TO_FILL__" $SCRIPT_DIR/../variables.sh; then
   echo "Error: missing variables."
   echo
   echo "Edit the file variables.sh. Some variables needs to be filled:" 
