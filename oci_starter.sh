@@ -42,8 +42,6 @@ default() {
   fi
 }
 
-
-
 show_help() {
   cat <<EOF
 Usage: $(basename $0) [OPTIONS]
@@ -327,6 +325,10 @@ if [ "$TF_VAR_db_existing_strategy" == "Use Existing DB" ]; then
      mandatory "mysql_ocid" $TF_VAR_mysql_ocid
   fi
 fi    
+
+if [ "$TF_VAR_lang" != "java" ]; then  
+  unset TF_VAR_java_framework
+fi
 
 if [ "$TF_VAR_deploy_strategy" != "compute" ] && [ -z "$TF_VAR_auth_token" ]; then
   echo "WARNING: token is not defined."
