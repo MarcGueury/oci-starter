@@ -38,7 +38,7 @@ unknown_value() {
 
 default() {
   if [ ! -v $1 ]; then
-    export $1=$2
+    export $1="$2"
   fi
 }
 
