@@ -143,7 +143,7 @@ while [[ $# -gt 0 ]]; do
         export TF_VAR_deploy_strategy=$2
       elif [ $2 == "kubernetes" ] || [ $2 == "oke" ]  ; then  
         export TF_VAR_deploy_strategy="kubernetes"
-        default TF_VAR_kubernetes_strategy "OKE"
+        default TF_VAR_kubernetes_strategy OKE
         default TF_VAR_oke_strategy "Create New OKE"
       elif [ $2 == "function" ]; then  
         export TF_VAR_deploy_strategy=$2
