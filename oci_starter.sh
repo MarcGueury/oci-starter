@@ -16,7 +16,7 @@ cp_terraform() {
     cp ../option/terraform/$1 terraform/.
 
     # Append a second file
-    if [ -v $2 ]; then
+    if [ ! -z "$2" ]; then
       echo "append $2"
       echo terraform/$1
       cat ../option/terraform/$2 >> terraform/$1
