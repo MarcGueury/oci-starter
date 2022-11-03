@@ -548,9 +548,9 @@ cp_terraform output.tf
 if [[ $TF_VAR_db_strategy == "Autonomous Transaction Processing Database" ]]; then
   cp_dir_db_src oracle
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
-    cp_terraform atp.tf atp_common.tf
+    cp_terraform atp.tf atp_append.tf
   else
-    cp_terraform atp_existing.tf atp_common.tf
+    cp_terraform atp_existing.tf atp_append.tf
   fi   
 elif [[ $TF_VAR_db_strategy == "Database System" ]]; then
   cp_dir_db_src oracle
@@ -562,9 +562,9 @@ elif [[ $TF_VAR_db_strategy == "Database System" ]]; then
 elif [[ $TF_VAR_db_strategy == "MySQL" ]]; then  
   cp_dir_db_src mysql
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
-    cp_terraform mysql.tf mysql_common.tf
+    cp_terraform mysql.tf mysql_append.tf
   else
-    cp_terraform mysql_existing.tf mysql_common.tf
+    cp_terraform mysql_existing.tf mysql_append.tf
   fi   
 fi
 
