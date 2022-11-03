@@ -69,5 +69,6 @@ kubectl delete pod ${TF_VAR_prefix}-app ${TF_VAR_prefix}-ui
 # Create objects in Kubernetes
 kubectl apply -f $TMP_DIR/app.yaml
 kubectl apply -f $TMP_DIR/ui.yaml
-kubectl apply -f oke/ingress.yaml
+kubectl apply -f oke/ingress-app.yaml
+kubectl apply -f oke/ingress-ui.yaml
 

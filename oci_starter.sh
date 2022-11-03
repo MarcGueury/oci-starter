@@ -523,10 +523,15 @@ if [[ $TF_VAR_deploy_strategy == "kubernetes" ]]; then
   fi
   mkdir oke 
   cp -r ../option/oke/* oke/.
-  
+
+  if [ -f app_src/ingress-app.yaml ]; then
+    mv app_src/ingress-app.yaml oke/.
+  fi
+
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" app_src/app.yaml 
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" ui_src/ui.yaml
-  sed -i "s&##PREFIX##&${TF_VAR_prefix}&" oke/ingress.yaml 
+  sed -i "s&##PREFIX##&${TF_VAR_prefix}&" oke/ingress-app.yaml 
+  sed -i "s&##PREFIX##&${TF_VAR_prefix}&" oke/ingress-ui.yaml
 elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   cp_terraform compute.tf
   mkdir compute 

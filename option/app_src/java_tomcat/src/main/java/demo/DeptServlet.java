@@ -37,6 +37,8 @@ public class DeptServlet extends HttpServlet {
 		StringBuffer sb = new StringBuffer();
 		sb.append("[");
 		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("oracle.jdbc.driver.OracleDriver");
 			Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM dept");
@@ -47,11 +49,10 @@ public class DeptServlet extends HttpServlet {
 				sb.append("{\"deptno\": \"" + rs.getInt(1) + "\", \"dname\": \"" + rs.getString(2) + "\", \"loc\": \""
 						+ rs.getString(3) + "\"}");
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
 		sb.append("]");
 		response.getWriter().append(sb);
 	}
-
 }

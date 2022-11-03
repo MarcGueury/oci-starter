@@ -34,7 +34,7 @@
       else
         echo RESULT HTML: ***** BAD ****** 
       fi
-      if grep -q "deptno" /tmp/result.json; then
+      if grep -q -i "deptno" /tmp/result.json; then
         echo "RESULT JSON: OK                "`cat /tmp/result.json | cut -c 1-80`... 
       else
         echo "RESULT JSON: ***** BAD ******  "`cat /tmp/result.json | cut -c 1-80`... 
