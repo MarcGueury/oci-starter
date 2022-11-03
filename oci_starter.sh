@@ -14,6 +14,13 @@ todo() {
 cp_terraform() {
     echo "cp_terraform $1"
     cp ../option/terraform/$1 terraform/.
+
+    # Append a second file
+    if [ -v $2 ]; then
+      echo "append $2"
+      echo terraform/$1
+      cat ../option/terraform/$2 >> terraform/$1
+    fi
 }
 
 cp_dir_db_src() {
@@ -507,11 +514,10 @@ fi
 #-- Deployment --------------------------------------------------------------
 if [[ $TF_VAR_deploy_strategy == "kubernetes" ]]; then
   if [[ $TF_VAR_kubernetes_strategy == "OKE" ]]; then
-    cp_terraform oke_common.tf 
     if [[ $TF_VAR_oke_strategy == "Create New OKE" ]]; then
-      cp_terraform oke.tf 
+      cp_terraform oke.tf oke_append.tf 
     else
-      cp_terraform oke_existing.tf 
+      cp_terraform oke_existing.tf oke_append.tf 
     fi   
   fi
   mkdir oke 
@@ -540,28 +546,25 @@ fi
 cp_terraform output.tf 
 
 if [[ $TF_VAR_db_strategy == "Autonomous Transaction Processing Database" ]]; then
-  cp_terraform atp_common.tf
   cp_dir_db_src oracle
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
-    cp_terraform atp.tf 
+    cp_terraform atp.tf atp_common.tf
   else
-    cp_terraform atp_existing.tf
+    cp_terraform atp_existing.tf atp_common.tf
   fi   
 elif [[ $TF_VAR_db_strategy == "Database System" ]]; then
-  cp_terraform dbsystem_common.tf
   cp_dir_db_src oracle
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
-    cp_terraform dbsystem.tf 
+    cp_terraform dbsystem.tf dbsystem_append.tf
   else
-    cp_terraform dbsystem_existing.tf 
+    cp_terraform dbsystem_existing.tf dbsystem_append.tf
   fi   
 elif [[ $TF_VAR_db_strategy == "MySQL" ]]; then  
-  cp_terraform mysql_common.tf
   cp_dir_db_src mysql
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
-    cp_terraform mysql.tf 
+    cp_terraform mysql.tf mysql_common.tf
   else
-    cp_terraform mysql_existing.tf
+    cp_terraform mysql_existing.tf mysql_common.tf
   fi   
 fi
 
