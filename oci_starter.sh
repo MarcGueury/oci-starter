@@ -18,8 +18,8 @@ cp_terraform() {
     # Append a second file
     if [ ! -z "$2" ]; then
       echo "append $2"
-      echo > terraform/$1
-      echo > terraform/$1
+      echo >> terraform/$1
+      echo >> terraform/$1
       cat ../option/terraform/$2 >> terraform/$1
     fi
 }
