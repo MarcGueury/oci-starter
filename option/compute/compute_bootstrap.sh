@@ -40,13 +40,15 @@ if [ "$TF_VAR_language" == "java" ]; then
   fi
 fi
 
-# Hardcode the connection to the DB in the start.sh
-sed -i "s!##JDBC_URL##!$JDBC_URL!" app/start.sh 
-sed -i "s!##DB_URL##!$DB_URL!" app/start.sh 
-chmod +x app/start.sh
+# -- app/start.sh -----------------------------------------------------------
+if [ -f app/start.sh ]; then
+  # Hardcode the connection to the DB in the start.sh
+  sed -i "s!##JDBC_URL##!$JDBC_URL!" app/start.sh 
+  sed -i "s!##DB_URL##!$DB_URL!" app/start.sh 
+  chmod +x app/start.sh
 
-# Create an "app.service" that starts when the machine starts.
-cat > /tmp/app.service << EOT
+  # Create an "app.service" that starts when the machine starts.
+  cat > /tmp/app.service << EOT
 [Unit]
 Description=App
 After=network.target
@@ -61,11 +63,12 @@ User=opc
 WantedBy=default.target
 EOT
 
-sudo cp /tmp/app.service /etc/systemd/system
-sudo chmod 664 /etc/systemd/system/app.service
-sudo systemctl daemon-reload
-sudo systemctl enable app.service
-sudo systemctl restart app.service
+  sudo cp /tmp/app.service /etc/systemd/system
+  sudo chmod 664 /etc/systemd/system/app.service
+  sudo systemctl daemon-reload
+  sudo systemctl enable app.service
+  sudo systemctl restart app.service
+fi
 
 # -- UI --------------------------------------------------------------------
 if [ -d ui ]; then
