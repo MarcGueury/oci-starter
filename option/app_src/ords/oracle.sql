@@ -40,9 +40,24 @@ BEGIN
     p_source_type    => ORDS.source_type_collection_feed,
     p_source         => 'SELECT deptno, dname, loc FROM dept',
     p_items_per_page => 0);
-  COMMIT;
-END;
+
+  ORDS.define_template(
+   p_module_name    => 'rest',
+   p_pattern        => 'info/');
+
+  ORDS.define_handler(
+    p_module_name    => 'rest',
+    p_pattern        => 'info/',
+    p_method         => 'GET',
+    p_source_type    => ords.source_type_plsql,
+    p_source         => 'BEGIN
+                           :pn_status := 100;
+                           :pv_result := ''ORDS'';
+                        END;
+                        ');
+end;                        
 /
 
 EXIT
--- GET http://ords_url/ords/starter/rest/dept/
+-- GET http://ords_url/ords/starter/rest/dept
+-- GET http://ords_url/ords/starter/rest/info
