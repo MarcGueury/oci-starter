@@ -51,8 +51,8 @@ BEGIN
     p_method         => 'GET',
     p_source_type    => ords.source_type_plsql,
     p_source         => 'BEGIN
-                           :pn_status := 100;
-                           :pv_result := ''ORDS'';
+                           :pn_status := 200;
+                           HTP.print(''ORDS'');
                         END;
                         ');
 end;                        
