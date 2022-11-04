@@ -10,7 +10,7 @@ cd $SCRIPT_DIR
 # export EX_MYSQL_OCID=
 # export OCI_TOKEN=
 # export TEST_DB_PASSWORD=
-. $HOME/bin/env_oci_starter_testsuite.sh
+. $HOME/bin/env_oci_starter_testsuite.sh compute
 
 start_test () {
   export TEST_NAME=$1

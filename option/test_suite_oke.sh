@@ -11,7 +11,7 @@
   # export EX_BASTION_OCID=
   # export OCI_TOKEN=
   # export TEST_DB_PASSWORD=
-  . $HOME/bin/env_oci_starter_testsuite.sh
+  . $HOME/bin/env_oci_starter_testsuite.sh kubernetes
 
   start_test () {
     export TEST_NAME=$1
