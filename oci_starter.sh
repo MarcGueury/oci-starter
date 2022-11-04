@@ -577,7 +577,7 @@ elif [[ $TF_VAR_db_strategy == "MySQL" ]]; then
 fi
 
 # ORDS Case
-if [ -f app_src/oracle.sql ] then
+if [ -f app_src/oracle.sql ]; then
   mv app_src/oracle.sql db_src/.
 fi
 
