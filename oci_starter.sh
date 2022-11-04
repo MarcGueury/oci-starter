@@ -56,8 +56,8 @@ Usage: $(basename $0) [OPTIONS]
 
 oci-starter.sh
    -prefix (default starter)
-   -compartment_ocid (mandatory)
-   -language (mandatory) java / node / python 
+   -compartment_ocid (default tenancy_ocid)
+   -language (mandatory) java / node / python / ords 
    -deploy (mandatory) compute/kubernetes/function
    -java_framework (default helidon/springboot/tomcat)
    -java_vm (default jdk/graalvm)  
@@ -140,8 +140,10 @@ while [[ $# -gt 0 ]]; do
         export TF_VAR_language=$2
       elif [ $2 == "python" ]; then  
         export TF_VAR_language=$2
+      elif [ $2 == "ords" ]; then  
+        export TF_VAR_language=$2
       else
-        unknown_value "$1" "java/node/python"
+        unknown_value "$1" "java/node/python/ords"
       fi
       shift # past argument
       shift # past value
@@ -572,6 +574,11 @@ elif [[ $TF_VAR_db_strategy == "MySQL" ]]; then
   else
     cp_terraform mysql_existing.tf mysql_append.tf
   fi   
+fi
+
+# ORDS Case
+if [ -f app_src/oracle.sql ] then
+  mv app_src/oracle.sql db_src/.
 fi
 
 title "Done"

@@ -50,6 +50,9 @@ get_attribute_from_tfstate "BASTION_IP" "starter_bastion" "public_ip"
 get_output_from_tfstate "JDBC_URL" "jdbc_url"
 get_output_from_tfstate "DB_URL" "db_url"
 
+if [ "$TF_VAR_db_strategy" == "Autonomous Transaction Processing Database" ]; then
+  get_output_from_tfstate "ORDS_URL" "ords_url"
+fi
 
 if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   # OKE
