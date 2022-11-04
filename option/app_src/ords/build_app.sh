@@ -19,5 +19,5 @@ sed -i "s/##ORDS_URL##/$ORDS_URL/" ingress-app.conf
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   cp nginx_app.conf ../compute
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
-  ## XXX Nothing ? Write the ingress_app.yaml
+  echo "No docker image needed"
 fi  
