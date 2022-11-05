@@ -13,7 +13,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
 
 # Replace the ORDS URL
-sed -i "s&##ORDS_URL##&$ORDS_URL&" nginx_app.locations
+sed -i "s&##ORDS_URL##&$ORDS_URL&" ../oke/nginx_app.locations
 sed -i "s&##ORDS_URL##&$ORDS_URL&" ingress-app.yaml
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
