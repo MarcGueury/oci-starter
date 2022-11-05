@@ -78,21 +78,20 @@ if [ -d ui ]; then
   sudo yum install nginx -y > /tmp/yum_nginx.log
   
   # Default: location /app/ { proxy_pass http://localhost:8080 }
-  ## XXXXXX THIS IS NOT REENTRANT
-  # sudo sed -i '/404.html/ r nginx_app.conf' /etc/nginx/conf.d/default.conf
-  if [ grep -Fxq "$FILENAME" my_list.txt ]; then
+  sudo cp nginx_app.locations /etc/nginx/conf.d/.
+  if grep -q nginx_app /etc/nginx/conf.d/default.conf; then
     echo "Include is already there"
   else
-    sudo sed -i '/404.html/ r nginx_include.conf' /etc/nginx/conf.d/default.conf
+     echo not found
+     sudo sed -i '/404.html/ a include conf.d/nginx_app.locations;' /etc/nginx/conf.d/default.conf
   fi
-  sudo cp nginx_app.conf /etc/nginx/conf.d/.
 
   # SE Linux (for proxy_pass)
   sudo setsebool -P httpd_can_network_connect 1
 
   # Start it
   sudo systemctl enable nginx
-  sudo systemctl start nginx
+  sudo systemctl restart nginx
 
   # Copy the index file after the installation of nginx
   sudo cp -r ui/* /usr/share/nginx/html/
