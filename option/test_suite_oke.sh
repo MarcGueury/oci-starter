@@ -95,6 +95,10 @@
     loop_db
     OPTION_LANG=python
     loop_db
+    # XXXX ORDS works only with ATP (DBSystems is not test/done)
+    OPTION_LANG=ords
+    OPTION_DB=atp 
+    loop_ui
   }
 
   if [ -d test_oke ]; then
