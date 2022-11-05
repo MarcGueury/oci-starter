@@ -5,9 +5,9 @@ cd $SCRIPT_DIR
 # Needed to get the TF_VAR_prefix
 . variables.sh
 . bin/sshkey_generate.sh
-. bin/env_pre_terraform.sh
+. bin/auto_env.sh
 terraform/apply.sh --auto-approve
-. bin/env_post_terraform.sh
+. bin/auto_env.sh
 bin/deploy_bastion.sh
 app_src/build_app.sh 
 ui_src/build_ui.sh 

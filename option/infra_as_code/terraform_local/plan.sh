@@ -1,4 +1,4 @@
 #!/bin/bash
-. ../bin/env_pre_terraform.sh
+. ../bin/auto_env.sh
 terraform init
 terraform plan

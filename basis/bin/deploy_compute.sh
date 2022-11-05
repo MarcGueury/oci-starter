@@ -1,6 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-. $SCRIPT_DIR/env_post_terraform.sh
+. $SCRIPT_DIR/auto_env.sh
+cd $SCRIPT_DIR/..
 
 # Using RSYNC allow to reapply the same command several times easily
 rsync -av -e "ssh -o StrictHostKeyChecking=no -i id_devops_rsa" compute/* opc@$COMPUTE_IP:.

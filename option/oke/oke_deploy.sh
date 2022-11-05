@@ -4,8 +4,7 @@ cd $SCRIPT_DIR/..
 
 if [ -z $DOCKER_PREFIX ]; then
   echo "Set up the variables before to run this script by running:"
-  echo ". bin/env_pre_terraform.sh"
-  echo ". bin/env_post_terraform.sh"
+  echo ". bin/auto_env.sh"
   exit
 fi
 

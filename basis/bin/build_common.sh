@@ -15,7 +15,7 @@ check_java_version() {
 cd $SCRIPT_DIR
 if [ ! -v TF_VAR_deploy_strategy ]; then
   echo 'Variables not set. Before to run the script, please run:'
-  echo '. bin/env_pre_terraform.sh'
+  echo '. bin/auto_env.sh'
   exit
 fi  
 

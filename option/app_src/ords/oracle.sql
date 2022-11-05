@@ -48,6 +48,7 @@ BEGIN
    p_module_name    => 'module',
    p_pattern        => 'info/');
 
+  -- XXX pn_status needed ??
   ORDS.define_handler(
     p_module_name    => 'module',
     p_pattern        => 'info/',
