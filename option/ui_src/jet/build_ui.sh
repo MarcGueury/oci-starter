@@ -11,15 +11,25 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
 
-unzip starter.zip
-cd starter
-npm install
-grunt vb-process-local vb-package 
-rm -Rf  ../ui/*
-cp -r build/optimized/webApps/starter ../ui/.
+if [ -d starter ]; then
+  cd starter
+  node_modules/grunt-cli/bin/grunt vb-clean
+else
+  mkdir starter
+  cd starter
+  unzip ../starter.zip
+  npm install
+fi    
+node_modules/grunt-cli/bin/grunt vb-process-local
+cd ..
 
+mkdir -p ui
+rm -Rf ui/*
+cp -r starter/build/processed/webApps/starter ui/.
+
+# Common
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-  mkdir ../compute/ui
+  mkdir -p ../compute/ui
   cp -r ui/* ../compute/ui/.
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   docker image rm ui:latest
