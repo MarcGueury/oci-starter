@@ -11,6 +11,13 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
 
+unzip starter.zip
+cd starter
+npm install
+grunt vb-process-local vb-package 
+rm -Rf  ../ui/*
+cp -r build/optimized/webApps/starter ../ui/.
+
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   mkdir ../compute/ui
   cp -r ui/* ../compute/ui/.
@@ -18,21 +25,3 @@ elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   docker image rm ui:latest
   docker build -t ui:latest .
 fi  
-
-Notes:
-...
-  sudo yum install -y oracle-nodejs-release-el7 oracle-release-el7
-  sudo yum install -y nodejs
-  cd vb
-  npm install
-  sudo npm install -g grunt
-  npm install
-  grunt vb-process-local vb-package  
-  // grunt vb-serve --port=7070
-...
-  Serving web application from "build/optimized/webApps/starter" directory at "http://localhost:7070/"
- 
-  sudo rm -Rf  /usr/share/nginx/html/starter
-  sudo cp -r build/optimized/webApps/starter /usr/share/nginx/html/.
-  -> It works !
-...  

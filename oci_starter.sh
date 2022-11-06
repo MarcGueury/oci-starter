@@ -64,7 +64,7 @@ oci-starter.sh
    -java_version (default 17/11/8)
    -kubernetes (default oke/docker) 
    -oke_ocid ()
-   -ui (default html/reactjs/none) 
+   -ui (default html/reactjs/jet/none) 
    -vcn_ocid()
    -subnet_ocid()
    -database (default atp/dbsystem/mysql)
@@ -105,7 +105,7 @@ export TF_VAR_prefix="starter"
 export TF_VAR_vcn_strategy="Create New VCN"
 # export TF_VAR_vcn_ocid="${var.vcn_ocid}"
 # export TF_VAR_subnet_ocid="${var.subnet_ocid}"
-export TF_VAR_ui_strategy="HTML"
+export TF_VAR_ui_strategy="html"
 # export TF_VAR_deploy_strategy="${var.deploy_strategy}"
 #export TF_VAR_kubernetes_strategy="oke"
 # export TF_VAR_oke_strategy="Create New OKE"
@@ -214,7 +214,9 @@ while [[ $# -gt 0 ]]; do
       ;;
     -ui)
       if [ $2 == "html" ]; then 
-        export TF_VAR_ui_strategy="HTML"
+        export TF_VAR_ui_strategy="html"
+      elif [ $2 == "jet" ]; then  
+        export TF_VAR_ui_strategy="jet"        
       elif [ $2 == "reactjs" ]; then  
         export TF_VAR_ui_strategy="ReactJS"
       elif [ $2 == "none" ]; then  
@@ -503,6 +505,8 @@ if [[ $TF_VAR_ui_strategy == "None" ]]; then
 else
   mkdir ui_src
   UI=`echo "$TF_VAR_ui_strategy" | awk '{print tolower($0)}'`
+  # html is the base
+  cp ../option/ui_src/html/* ui_src/.
   cp -r ../option/ui_src/$UI/* ui_src/.
 fi
 
