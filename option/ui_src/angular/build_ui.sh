@@ -13,13 +13,13 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 cd src
 npm install
-npm install -g @angular/cli
-ng build
+npm install @angular/cli
+node_modules/.bin/ng build
 cd ..
 
 mkdir -p ui
 rm -Rf ui/*
-cp -r src/build/* ui/.
+cp -r src/dist/* ui/.
 
 # Common
 build_ui
