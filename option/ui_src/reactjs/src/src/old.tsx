@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from "react";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,9 +17,10 @@ function createData(deptno: string, dname: string, loc: string) {
     return { deptno, dname, loc };
 }
 
-const rows: { deptno: string, dname: string, loc: string }[] = [
+var rows: { deptno: string, dname: string, loc: string }[] = [
     // createData('1', 'IT', 'Gembloux')
 ];
+var [ row2, setRows ] = useState([{ deptno: "", dname: "", loc: "" }]);
 
 // Load the REST URL 
 function loadRest() {
@@ -30,13 +31,17 @@ function loadRest() {
             if (json != null) {
                 json.innerHTML = this.responseText;
             }
+            // Replacing the whole array is needed to refresh the component
+            var r = []
             let jsonValue = JSON.parse(this.responseText);
             for (var i = 0; i < jsonValue.length; i++) {
-                rows.push(createData(jsonValue[i].deptno, jsonValue[i].dname, jsonValue[i].loc));
+                r.push(createData(jsonValue[i].deptno, jsonValue[i].dname, jsonValue[i].loc));
             }
+            // setRows( jsonValue );
         }
     };
-    xhttp.open("GET", "app/dept", true);
+    // xhttp.open("GET", "http://starter.oracloud.be/app/dept", true);
+    xhttp.open("GET", "dept.json", true);
     xhttp.send();
 
     var xhttp2 = new XMLHttpRequest();
@@ -48,7 +53,8 @@ function loadRest() {
             }
         }
     };
-    xhttp2.open("GET", "app/info", true);
+    // xhttp2.open("GET", "http://starter.oracloud.be/app/info", true);
+    xhttp2.open("GET", "info.txt", true);
     xhttp2.send();
 }
 
@@ -92,7 +98,7 @@ export default function ButtonAppBar() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {row2.map((row) => (
                             <TableRow
                                 key={row.deptno}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

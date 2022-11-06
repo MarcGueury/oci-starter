@@ -4,9 +4,10 @@
     "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
-    "@mui/x-data-grid": "latest",    
+    "@mui/x-data-grid": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "axios": "^1.1.3",
     "react": "latest",
     "react-dom": "latest",
     "typescript": "latest"
@@ -17,7 +18,8 @@
   },
   "main": "index.tsx",
   "scripts": {
-    "start": "react-scripts start"
+    "start": "react-scripts start",
+    "build": "react-scripts build"
   },
   "browserslist": {
     "production": [
