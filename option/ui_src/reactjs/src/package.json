@@ -1,0 +1,34 @@
+{
+  "dependencies": {
+    "@emotion/react": "latest",
+    "@emotion/styled": "latest",
+    "@mui/icons-material": "latest",
+    "@mui/material": "latest",
+    "@mui/x-data-grid": "latest",    
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "typescript": "latest"
+  },
+  "description": "https://github.com/mui/material-ui/blob/v5.10.12/docs/data/material/components/app-bar/ButtonAppBar.tsx",
+  "devDependencies": {
+    "react-scripts": "latest"
+  },
+  "main": "index.tsx",
+  "scripts": {
+    "start": "react-scripts start"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
