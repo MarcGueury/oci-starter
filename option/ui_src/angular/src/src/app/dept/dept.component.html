@@ -1,0 +1,21 @@
+<h1>Sample</h1>
+
+<h2>Rest Result</h2>
+<td>{{ depts_json }}</td>
+
+<h2>Department Table</h2>
+<table>
+  <tr *ngFor="let dept of depts">
+    <td>{{ dept.deptno }}</td>
+    <td>{{ dept.dname }}</td>
+    <td>{{ dept.loc }}</td>
+  </tr>
+</table>
+
+<h2>Rest Info</h2>
+<div>{{ info }}</div>
+<!-- 
+Copyright Google LLC. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at https://angular.io/license
+-->
