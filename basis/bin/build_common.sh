@@ -11,6 +11,17 @@ check_java_version() {
     fi
 }
 
+build_ui() {
+  cd $SCRIPT_DIR
+  if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
+    mkdir -p ../compute/ui
+    cp -r ui/* ../compute/ui/.
+  elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
+    docker image rm ui:latest
+    docker build -t ui:latest .
+  fi 
+}
+
 # SCRIPT_DIR should be set by the calling scripts 
 cd $SCRIPT_DIR
 if [ ! -v TF_VAR_deploy_strategy ]; then

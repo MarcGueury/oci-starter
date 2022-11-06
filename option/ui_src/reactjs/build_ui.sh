@@ -21,10 +21,4 @@ rm -Rf ui/*
 cp -r src/build/* ui/.
 
 # Common
-if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-  mkdir -p ../compute/ui
-  cp -r ui/* ../compute/ui/.
-elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
-  docker image rm ui:latest
-  docker build -t ui:latest .
-fi  
+build_ui
