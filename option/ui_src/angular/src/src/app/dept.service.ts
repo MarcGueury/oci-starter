@@ -28,7 +28,7 @@ export class DeptService {
   }
 
   getInfo(): Observable<string> {
-    return this.http.get<string>('app/info', { responseType: 'text' }).pipe(
+    return this.http.get('app/info', { responseType: 'text' }).pipe(
       tap((_) => this.log('fetched info')),
       catchError(this.handleError<string>('getInfo'))
     );
