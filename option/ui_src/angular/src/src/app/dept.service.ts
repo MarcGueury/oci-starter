@@ -21,14 +21,14 @@ export class DeptService {
     private messageService: MessageService) { }
 
   getDepts(): Observable<Dept[]> {
-    return this.http.get<Dept[]>('dept.json').pipe(
+    return this.http.get<Dept[]>('app/dept').pipe(
       tap((_) => this.log('fetched dept')),
       catchError(this.handleError<Dept[]>('getDept', []))
     );
   }
 
   getInfo(): Observable<string> {
-    return this.http.get<string>('info.txt').pipe(
+    return this.http.get<string>('app/info', { responseType: 'text' }).pipe(
       tap((_) => this.log('fetched info')),
       catchError(this.handleError<string>('getInfo'))
     );
