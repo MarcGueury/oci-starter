@@ -25,7 +25,7 @@ cd ..
 
 mkdir -p ui
 rm -Rf ui/*
-cp -r starter/build/processed/webApps/starter ui/.
+cp -r starter/build/processed/webApps/starter/* ui/.
 
 # Common
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
