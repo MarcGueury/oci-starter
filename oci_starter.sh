@@ -64,7 +64,7 @@ oci-starter.sh
    -java_version (default 17/11/8)
    -kubernetes (default oke/docker) 
    -oke_ocid ()
-   -ui (default html/reactjs/jet/none) 
+   -ui (default html/reactjs/jet/angular/none) 
    -vcn_ocid()
    -subnet_ocid()
    -database (default atp/dbsystem/mysql)
@@ -217,6 +217,8 @@ while [[ $# -gt 0 ]]; do
         export TF_VAR_ui_strategy="html"
       elif [ $2 == "jet" ]; then  
         export TF_VAR_ui_strategy="jet"        
+      elif [ $2 == "angular" ]; then  
+        export TF_VAR_ui_strategy="angular"        
       elif [ $2 == "reactjs" ]; then  
         export TF_VAR_ui_strategy="ReactJS"
       elif [ $2 == "none" ]; then  
