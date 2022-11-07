@@ -1,0 +1,73 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/MGUEURY/Downloads/starter/starter.csproj": {}
+  },
+  "projects": {
+    "/Users/MGUEURY/Downloads/starter/starter.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/MGUEURY/Downloads/starter/starter.csproj",
+        "projectName": "starter",
+        "projectPath": "/Users/MGUEURY/Downloads/starter/starter.csproj",
+        "packagesPath": "/Users/MGUEURY/.nuget/packages/",
+        "outputPath": "/Users/MGUEURY/Downloads/starter/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/MGUEURY/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Oracle.ManagedDataAccess.Core": {
+              "target": "Package",
+              "version": "[3.21.80, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.2.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/6.0.110/libexec/sdk/6.0.110/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -57,7 +57,7 @@ Usage: $(basename $0) [OPTIONS]
 oci-starter.sh
    -prefix (default starter)
    -compartment_ocid (default tenancy_ocid)
-   -language (mandatory) java / node / python / ords 
+   -language (mandatory) java / node / python / dotnet / ords 
    -deploy (mandatory) compute/kubernetes/function
    -java_framework (default helidon/springboot/tomcat)
    -java_vm (default jdk/graalvm)  
@@ -139,6 +139,8 @@ while [[ $# -gt 0 ]]; do
       elif [ $2 == "node" ]; then  
         export TF_VAR_language=$2
       elif [ $2 == "python" ]; then  
+        export TF_VAR_language=$2
+      elif [ $2 == "dotnet" ]; then  
         export TF_VAR_language=$2
       elif [ $2 == "ords" ]; then  
         export TF_VAR_language=$2
