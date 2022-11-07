@@ -19,7 +19,7 @@ cd ..
 
 mkdir -p ui
 rm -Rf ui/*
-cp -r src/dist/* ui/.
+cp -r src/dist/example-app/* ui/.
 
 # Common
 build_ui
