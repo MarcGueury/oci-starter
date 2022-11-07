@@ -70,6 +70,14 @@
   loop_ui() {
     OPTION_UI=html 
     build_option
+    if [ "$OPTION_LANG" == "ORDS" ]; then
+      OPTION_UI=reactjs
+      build_option
+      OPTION_UI=angular
+      build_option
+      OPTION_UI=jet
+      build_option
+    fi 
   }
 
   loop_db() {
@@ -94,6 +102,8 @@
     OPTION_LANG=node 
     loop_db
     OPTION_LANG=python
+    loop_db
+    OPTION_LANG=dotnet
     loop_db
     # XXXX ORDS works only with ATP (DBSystems is not test/done)
     OPTION_LANG=ords
