@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace starter.Controllers;
 
-[ApiController]
-[Route("app/[controller]")]
 public class DeptController : ControllerBase
 {
     private readonly ILogger<DeptController> _logger;
@@ -20,7 +18,7 @@ public class DeptController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "dept")]
+    [Route("dept")]
     public IEnumerable<Dept> Get()
     {
         string conStringUser = "User Id=" + user + ";Password=" + pwd + ";Data Source=" + db + ";";
@@ -54,4 +52,10 @@ public class DeptController : ControllerBase
         }
         return a.ToArray();
     }
+
+    [Route("info")]
+    public String Info()
+    {
+        return ".NET";
+    }  
 }
