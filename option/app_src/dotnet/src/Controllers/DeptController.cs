@@ -56,6 +56,6 @@ public class DeptController : ControllerBase
     [Route("info")]
     public String Info()
     {
-        return ".NET";
+        return ".NET - Oracle";
     }  
 }
