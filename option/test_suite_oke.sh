@@ -70,7 +70,8 @@
   loop_ui() {
     OPTION_UI=html 
     build_option
-    if [ "$OPTION_LANG" == "ORDS" ]; then
+    # Test all the UIs with ORDS only
+    if [ "$OPTION_LANG" == "ords" ]; then
       OPTION_UI=reactjs
       build_option
       OPTION_UI=angular

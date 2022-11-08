@@ -1,12 +1,17 @@
-FROM oraclelinux:7-slim
-
-RUN  yum -y install oracle-release-el7 oracle-nodejs-release-el7 && \
-     yum -y install oracle-instantclient-release-el7 && \
-     yum-config-manager --disable ol7_developer_EPEL && \
-     yum -y install oracle-instantclient-basic oracle-instantclient-sqlplus nodejs && \
-     rm -rf /var/cache/yum
-
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
-COPY src/* /app/
-RUN npm install
-CMD exec node rest.js
+
+# Copy everything
+COPY src ./
+# Restore as distinct layers
+RUN dotnet restore
+# Build and publish a release
+RUN dotnet publish -c Release -o out
+RUN ls -R 
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+ls -R
+ENTRYPOINT [ "./starter" ]
