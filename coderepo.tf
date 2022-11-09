@@ -27,7 +27,7 @@ resource "null_resource" "clonerepo" {
       export TF_VAR_prefix="${var.prefix}"
       export TF_VAR_language="${local.language}"
       export TF_VAR_java_framework="${local.java_framework}"
-      export TF_VAR_java_vm="${var.java_vm}"
+      export TF_VAR_java_vm="${local.java_vm}"
       export TF_VAR_java_version="${var.java_version}"
       export TF_VAR_vcn_strategy="${var.vcn_strategy}"
       export TF_VAR_vcn_ocid="${var.vcn_ocid}"
@@ -72,4 +72,5 @@ locals {
   java_framework = lower(var.java_framework)
   language = lower(var.language)
   db_strategy = lookup({"Autonomous Transaction Processing Database": "autonomous", "Database System": "database", "MySQL": "mysql"}, var.db_strategy, "error" )
+  java_vm = lookup({"JDK": "jdk", "GraalVM": "graalvm"}, var.java_vm, "error" )
 }

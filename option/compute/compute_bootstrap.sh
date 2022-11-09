@@ -17,9 +17,9 @@ if [ -f app/install.sh ]; then
 fi  
 
 if [ "$TF_VAR_language" == "java" ]; then
-  # Install the JVM (JDK or GraalVM)
-  if [ "$TF_VAR_java_vm" == "GraalVM" ]; then
-    # GraalVM
+  # Install the JVM (jdk or graalvm)
+  if [ "$TF_VAR_java_vm" == "graalvm" ]; then
+    # graalvm
     if [ "$TF_VAR_java_version" == 8 ]; then
       sudo yum install -y graalvm21-ee-8-jdk.x86_64 
     elif [ "$TF_VAR_java_version" == 11 ]; then
@@ -29,7 +29,7 @@ if [ "$TF_VAR_language" == "java" ]; then
     fi
     
   else
-    # JDK 
+    # jdk 
     if [ "$TF_VAR_java_version" == 8 ]; then
       sudo yum install -y java-1.8.0-openjdk
     elif [ "$TF_VAR_java_version" == 11 ]; then

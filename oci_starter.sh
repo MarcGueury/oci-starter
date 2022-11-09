@@ -180,9 +180,9 @@ while [[ $# -gt 0 ]]; do
       ;;   
     -java_vm)
       if [ $2 == "jdk" ]; then 
-        export TF_VAR_java_vm="JDK"
+        export TF_VAR_java_vm="jdk"
       elif [ $2 == "graalvm" ]; then  
-        export TF_VAR_java_vm="GraalVM"
+        export TF_VAR_java_vm="graalvm"
       else
         unknown_value "$1" "jdk/graalvm"
       fi
@@ -357,7 +357,7 @@ if [ -z "$TF_VAR_compartment_ocid" ]; then
   echo "         The components will be created in the root compartment."
 fi
 
-# To avoid issue, Helidon support only JDK 17
+# To avoid issue, Helidon support only jdk 17
 if [ "$TF_VAR_java_framework" == "helidon" ] && [ "$TF_VAR_java_version" != "17" ]; then  
   echo "WARNING: Helidon supports only Java 17."
   echo "         Forcing the version to 17"
