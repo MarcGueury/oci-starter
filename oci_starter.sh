@@ -379,17 +379,14 @@ if [ "$TF_VAR_db_strategy" == "MySQL" ] && [ "$TF_VAR_db_user" == "admin" ]; the
 fi
 
 # Create env.sh
-cat <<EOF > env.sh
-#!/bin/bash
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-
-# Env Variables
-EOF
+echo '#!/bin/bash' > env.sh
+echo 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"' >> env.sh
+echo '' >> env.sh
+echo '# Env Variables' >> env.sh
 export |grep TF_VAR >> env.sh
-cat <<EOF >> env.sh
-
-# Get other env variables automatically
-. $SCRIPT_DIR/bin/auto_env.sh"
+echo '' >> env.sh
+echo '# Get other env variables automatically' >> env.sh
+echo '. $SCRIPT_DIR/bin/auto_env.sh"' >> env.sh
 EOF
 
 fi  
