@@ -11,3 +11,5 @@ helper
 variables.sh
 env.sh
 output
+option/app_src/dotnet/src/obj
+option/app_src/dotnet_mysql/src/obj
