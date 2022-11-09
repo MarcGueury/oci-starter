@@ -20,7 +20,7 @@ if [ "$1" != "--auto-approve" ]; then
   esac
 fi
 
-. bin/auto_env.sh
+. env.sh
 if [ -d oke ]; then
   oke/oke_destroy.sh --auto-approve
 fi

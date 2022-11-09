@@ -14,15 +14,15 @@ get_output_from_tfstate () {
   export $1="$RESULT"
 }
 
-# -- variables
-if grep -q "__TO_FILL__" $SCRIPT_DIR/../variables.sh; then
-  echo "Error: missing variables."
+# -- env.sh
+if grep -q "__TO_FILL__" $SCRIPT_DIR/../env.sh; then
+  echo "Error: missing environment variables."
   echo
-  echo "Edit the file variables.sh. Some variables needs to be filled:" 
-  echo `cat variables.sh | grep __TO_FILL__` 
+  echo "Edit the file env.sh. Some variables needs to be filled:" 
+  echo `cat env.sh | grep __TO_FILL__` 
   exit
 fi
-. $SCRIPT_DIR/../variables.sh
+# . $SCRIPT_DIR/../env.sh
 
 if ! command -v jq &> /dev/null; then
   echo "Command jq could not be found. Please install it"

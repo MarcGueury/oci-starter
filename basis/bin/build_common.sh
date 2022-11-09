@@ -25,8 +25,8 @@ build_ui() {
 # SCRIPT_DIR should be set by the calling scripts 
 cd $SCRIPT_DIR
 if [ ! -v TF_VAR_deploy_strategy ]; then
-  echo 'Variables not set. Before to run the script, please run:'
-  echo '. bin/auto_env.sh'
+  echo 'Environment variables not set. Before to run the script, please run:'
+  echo '. env.sh'
   exit
 fi  
 

@@ -29,10 +29,10 @@
     ./build.sh > build.log 2>&1  
     echo "build_secs=" $SECONDS >  ${TEST_DIR}_time.txt
     if [ -f /tmp/result.html ]; then
-      if grep -q "OCI Starter" /tmp/result.html; then
-        echo RESULT HTML: OK 
+    if grep -q -i "DOCTYPE html" /tmp/result.html; then
+        echo "RESULT HTML: OK"
       else
-        echo RESULT HTML: ***** BAD ****** 
+        echo "RESULT HTML: ***** BAD ******"
       fi
       if grep -q -i "deptno" /tmp/result.json; then
         echo "RESULT JSON: OK                "`cat /tmp/result.json | cut -c 1-80`... 

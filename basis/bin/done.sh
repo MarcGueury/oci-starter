@@ -3,7 +3,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR/..
 
 if [ -z "TF_VAR_deploy_strategy" ]; then
-  . ./variables.sh
+  . ./env.sh
 fi 
 
 get_output_from_tfstate () {

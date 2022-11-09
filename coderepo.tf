@@ -49,7 +49,7 @@ resource "null_resource" "clonerepo" {
       export TF_VAR_secret_strategy="${var.secret_strategy}"
       export TF_VAR_vault_ocid="${var.vault_ocid}"
       export TF_VAR_vault_secret_authtoken_ocid="${var.vault_secret_authtoken_ocid}"
-      ' > variables.sh
+      ' > env.sh
       chmod +x oci_starter.sh
       ./oci_starter.sh ${local.git_url} ${oci_devops_repository.test_repository.name} ${local.username}
     EOT

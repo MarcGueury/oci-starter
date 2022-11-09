@@ -4,7 +4,7 @@ cd $SCRIPT_DIR/..
 
 if [ -z $DOCKER_PREFIX ]; then
   echo "Set up the variables before to run this script by running:"
-  echo ". bin/auto_env.sh"
+  echo ". env.sh"
   exit
 fi
 

@@ -348,7 +348,7 @@ fi
 
 if [ "$TF_VAR_deploy_strategy" != "compute" ] && [ -z "$TF_VAR_auth_token" ]; then
   echo "WARNING: token is not defined."
-  echo "         You will need to define it in variables.sh"
+  echo "         You will need to define it in the file env.sh"
   export TF_VAR_auth_token="__TO_FILL__"
 fi
 
@@ -378,7 +378,19 @@ if [ "$TF_VAR_db_strategy" == "MySQL" ] && [ "$TF_VAR_db_user" == "admin" ]; the
   export TF_VAR_db_user="root"
 fi
 
-export |grep TF_VAR > variables.sh
+# Create env.sh
+cat <<EOF > env.sh
+#!/bin/bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+# Env Variables
+EOF
+export |grep TF_VAR >> env.sh
+cat <<EOF >> env.sh
+
+# Get other env variables automatically
+. $SCRIPT_DIR/bin/auto_env.sh"
+EOF
 
 fi  
 
@@ -397,7 +409,7 @@ title "Creating Directory"
 # ls -al helidon
 # ./helidon version
 
-chmod +x variables.sh
+chmod + env.sh
 
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
@@ -411,7 +423,7 @@ fi
 cd ./$REPOSITORY_NAME
 
 cp -r ../basis/* .
-mv ../variables.sh .
+mv ../env.sh .
 
 #-- README.md ------------------------------------------------------------------
 
@@ -422,7 +434,7 @@ cat > README.md <<EOF
 ### Commands
 - build.sh      : Build the whole program: Run Compile the App, Run Terraform, Run post Terraform tasks 
 - destroy.sh    : Destroy the created objects by Terraform
-- variables.sh  : Contains the settings of your project
+- env.sh        : Contains the settings of your project
 
 ### Directories
 - app_src   : Contains the source of the Application (Command: build_app.sh)
@@ -443,10 +455,10 @@ esac
 echo >> README.md
 echo "### Next Steps" >> README.md
 
-if grep -q "__TO_FILL__" variables.sh; then
-  echo "- Edit the file variables.sh. Some variables needs to be filled:" >> README.md
+if grep -q "__TO_FILL__" env.sh; then
+  echo "- Edit the file env.sh. Some variables needs to be filled:" >> README.md
   echo >> README.md
-  echo `cat variables.sh | grep __TO_FILL__` >> README.md
+  echo `cat env.sh | grep __TO_FILL__` >> README.md
   echo >> README.md
 fi
 echo "- Run:" >> README.md
