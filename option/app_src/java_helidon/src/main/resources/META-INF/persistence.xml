@@ -23,8 +23,6 @@
 
     <persistence-unit name="pu1" transaction-type="JTA">
         <jta-data-source>ds1</jta-data-source>
-        <class>me.opc.mp.database.Pokemon</class>
-        <class>me.opc.mp.database.PokemonType</class>
         <class>me.opc.mp.database.Dept</class>                
         <properties>
             <property name="eclipselink.deploy-on-startup" value="false"/>
