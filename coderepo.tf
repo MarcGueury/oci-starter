@@ -37,7 +37,7 @@ resource "null_resource" "clonerepo" {
       export TF_VAR_kubernetes_strategy="${var.kubernetes_strategy}"
       export TF_VAR_oke_strategy="${var.oke_strategy}"
       export TF_VAR_oke_ocid="${var.oke_ocid}"
-      export TF_VAR_db_strategy="${var.db_strategy}"
+      export TF_VAR_db_strategy="${local.db_strategy}"
       export TF_VAR_db_existing_strategy="${var.db_existing_strategy}"
       export TF_VAR_atp_ocid="${var.atp_ocid}"
       export TF_VAR_db_ocid="${var.db_ocid}"
@@ -71,4 +71,5 @@ locals {
   deploy_strategy = lookup({"Virtual Machine": "compute", "Kubernetes": "kubernetes", "Function": "function"}, var.deploy_strategy, "error" )
   java_framework = lower(var.java_framework)
   language = lower(var.language)
+  db_strategy = lookup({"Autonomous Transaction Processing Database": "autonomous", "Database System": "database", "MySQL": "mysql"}, var.db_strategy, "error" )
 }

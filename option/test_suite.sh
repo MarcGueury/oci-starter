@@ -133,14 +133,39 @@ start_test 12_JAVA_HELIDON_COMPUTE_EX_MYSQL_SUBNET
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy compute -database mysql -db_password $TEST_DB_PASSWORD -mysql_ocid $EX_MYSQL_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
 
+# Java Compute + Existing MYSQL + Existing Subnet
+start_test 13_DOTNET_COMPUTE_EX_ATP_SUBNET
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language dotnet -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+# Java Compute + Existing MYSQL + Existing Subnet
+start_test 14_PYTHON_COMPUTE_EX_ATP_SUBNET
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language python -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+# Java Compute + Existing MYSQL + Existing Subnet
+start_test 15_ORDS_COMPUTE_EX_ATP_SUBNET
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language ords -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+#
+start_test 16_ORDS_COMPUTE_REACTJS_EX_ATP_SUBNET
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -ui reactjs -language ords -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+#
+start_test 17_ORDS_COMPUTE_ANGULAR_EX_ATP_SUBNET
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -ui angular -language ords -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+#
+start_test 18_ORDS_COMPUTE_JET_EX_ATP_SUBNET
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -ui jet -language ords -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
 # OKE + Helidon
 start_test 50_JAVA_HELIDON_OKE_ATP
 ./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
-build_test_destroy
-
-# OKE + SPRINGBOOT
-start_test 51_JAVA_SPRINGBOOT_OKE_ATP
-./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
 build_test_destroy
 
 # OKE + SPRINGBOOT + MYSQL

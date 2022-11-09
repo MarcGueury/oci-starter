@@ -110,7 +110,7 @@ export TF_VAR_ui_strategy="html"
 #export TF_VAR_kubernetes_strategy="oke"
 # export TF_VAR_oke_strategy="Create New OKE"
 # export TF_VAR_oke_ocid="${var.oke_ocid}"
-export TF_VAR_db_strategy="Autonomous Transaction Processing Database"
+export TF_VAR_db_strategy="autonomous"
 export TF_VAR_db_existing_strategy="Create New DB"
 # export TF_VAR_atp_ocid="${var.atp_ocid}"
 # export TF_VAR_db_ocid="${var.db_ocid}"
@@ -244,11 +244,11 @@ while [[ $# -gt 0 ]]; do
       ;;     
     -d|-database)
       if [ $2 == "atp" ] || [ $2 == "autonomous" ]; then 
-        export TF_VAR_db_strategy="Autonomous Transaction Processing Database"
+        export TF_VAR_db_strategy="autonomous"
       elif [ $2 == "dbsystem" ] || [ $2 == "database" ]; then  
-        export TF_VAR_db_strategy="Database System"
+        export TF_VAR_db_strategy="database"
       elif [ $2 == "mysql" ]; then  
-        export TF_VAR_db_strategy="MySQL"        
+        export TF_VAR_db_strategy="mysql"        
       else
         unknown_value "$1" "atp/dbsystem/mysql"
       fi
@@ -329,15 +329,15 @@ mandatory "deploy" $TF_VAR_deploy_strategy
 mandatory "db_password" $TF_VAR_db_password
 
 if [ "$TF_VAR_db_existing_strategy" == "Use Existing DB" ]; then
-  if [ "$TF_VAR_db_strategy" == "Autonomous Transaction Processing Database" ]; then
+  if [ "$TF_VAR_db_strategy" == "autonomous" ]; then
      mandatory "atp_ocid" $TF_VAR_atp_ocid
   fi
 
-  if [ "$TF_VAR_db_strategy" == "Database System" ]; then
+  if [ "$TF_VAR_db_strategy" == "database" ]; then
      mandatory "db_ocid" $TF_VAR_db_ocid
   fi
 
-  if [ "$TF_VAR_db_strategy" == "MySQL" ]; then
+  if [ "$TF_VAR_db_strategy" == "mysql" ]; then
      mandatory "mysql_ocid" $TF_VAR_mysql_ocid
   fi
 fi    
@@ -364,15 +364,15 @@ if [ "$TF_VAR_java_framework" == "helidon" ] && [ "$TF_VAR_java_version" != "17"
   export TF_VAR_java_version=17
 fi
 
-# Default user of Database System
-if [ "$TF_VAR_db_strategy" == "Database System" ] && [ "$TF_VAR_db_user" == "admin" ]; then  
+# Default user of database
+if [ "$TF_VAR_db_strategy" == "database" ] && [ "$TF_VAR_db_user" == "admin" ]; then  
   echo "WARNING: Default user in Oracle Database System is system"
   echo "         Forcing the db_user to system"
   export TF_VAR_db_user="system"
 fi
 
 # Default user of MySQL
-if [ "$TF_VAR_db_strategy" == "MySQL" ] && [ "$TF_VAR_db_user" == "admin" ]; then  
+if [ "$TF_VAR_db_strategy" == "mysql" ] && [ "$TF_VAR_db_user" == "admin" ]; then  
   echo "WARNING: Default user in MySQL is root"
   echo "         Forcing the db_user to root"
   export TF_VAR_db_user="root"
@@ -387,7 +387,6 @@ export |grep TF_VAR >> env.sh
 echo '' >> env.sh
 echo '# Get other env variables automatically' >> env.sh
 echo '. $SCRIPT_DIR/bin/auto_env.sh' >> env.sh
-EOF
 
 fi  
 
@@ -484,15 +483,15 @@ fi
 
 case $TF_VAR_db_strategy in
 
-"Autonomous Transaction Processing Database")
+"autonomous")
     APP_DB="oracle"
     ;;
 
-"Database System")
+"database")
     APP_DB="oracle"
     ;;
 
-"MySQL")
+"mysql")
     APP_DB="mysql"
 esac
 
@@ -570,21 +569,21 @@ fi
 #-- Database ----------------------------------------------------------------
 cp_terraform output.tf 
 
-if [[ $TF_VAR_db_strategy == "Autonomous Transaction Processing Database" ]]; then
+if [[ $TF_VAR_db_strategy == "autonomous" ]]; then
   cp_dir_db_src oracle
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
     cp_terraform atp.tf atp_append.tf
   else
     cp_terraform atp_existing.tf atp_append.tf
   fi   
-elif [[ $TF_VAR_db_strategy == "Database System" ]]; then
+elif [[ $TF_VAR_db_strategy == "database" ]]; then
   cp_dir_db_src oracle
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
     cp_terraform dbsystem.tf dbsystem_append.tf
   else
     cp_terraform dbsystem_existing.tf dbsystem_append.tf
   fi   
-elif [[ $TF_VAR_db_strategy == "MySQL" ]]; then  
+elif [[ $TF_VAR_db_strategy == "mysql" ]]; then  
   cp_dir_db_src mysql
   if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
     cp_terraform mysql.tf mysql_append.tf
