@@ -428,15 +428,15 @@ cat > README.md <<EOF
 ### Usage 
 
 ### Commands
-- build.sh      : Build the whole program: Run Compile the App, Run Terraform, Run post Terraform tasks 
-- destroy.sh    : Destroy the created objects by Terraform
+- build.sh      : Build the whole program: Run Terraform, Configure the DB, Build the App, Build the UI
+- destroy.sh    : Destroy the objects created by Terraform
 - env.sh        : Contains the settings of your project
 
 ### Directories
-- app_src   : Contains the source of the Application (Command: build_app.sh)
-- ui_src    : Contains the source of the User Interface (Command: build_ui.sh)
-- db_src    : Contains the source, sql files of the database
-- terraform : Contains the terraforms scripts (Command: plan.sh / apply.sh)
+- app_src       : Source of the Application (Command: build_app.sh)
+- ui_src        : Source of the User Interface (Command: build_ui.sh)
+- db_src        : SQL files of the database
+- terraform     : Terraforms scripts (Command: plan.sh / apply.sh)
 EOF
 
 case $TF_VAR_deploy_strategy in
