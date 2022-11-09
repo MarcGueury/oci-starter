@@ -102,16 +102,16 @@ export TF_VAR_prefix="starter"
 # export TF_VAR_java_framework=helidon
 # export TF_VAR_java_vm=jdk
 # export TF_VAR_java_version=17
-export TF_VAR_vcn_strategy="Create New VCN"
+export TF_VAR_vcn_strategy="new"
 # export TF_VAR_vcn_ocid="${var.vcn_ocid}"
 # export TF_VAR_subnet_ocid="${var.subnet_ocid}"
 export TF_VAR_ui_strategy="html"
 # export TF_VAR_deploy_strategy="${var.deploy_strategy}"
 #export TF_VAR_kubernetes_strategy="oke"
-# export TF_VAR_oke_strategy="Create New OKE"
+# export TF_VAR_oke_strategy="new"
 # export TF_VAR_oke_ocid="${var.oke_ocid}"
 export TF_VAR_db_strategy="autonomous"
-export TF_VAR_db_existing_strategy="Create New DB"
+export TF_VAR_db_existing_strategy="new"
 # export TF_VAR_atp_ocid="${var.atp_ocid}"
 # export TF_VAR_db_ocid="${var.db_ocid}"
 # export TF_VAR_mysql_ocid="${var.mysql_ocid}"
@@ -156,7 +156,7 @@ while [[ $# -gt 0 ]]; do
       elif [ $2 == "kubernetes" ] || [ $2 == "oke" ]  ; then  
         export TF_VAR_deploy_strategy="kubernetes"
         default TF_VAR_kubernetes_strategy OKE
-        default TF_VAR_oke_strategy "Create New OKE"
+        default TF_VAR_oke_strategy "new"
       elif [ $2 == "function" ]; then  
         export TF_VAR_deploy_strategy=$2
       else
@@ -209,7 +209,7 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;          
     -oke_ocid)
-      export TF_VAR_oke_strategy="Use Existing OKE"
+      export TF_VAR_oke_strategy="existing"
       export TF_VAR_oke_ocid="$2"
       shift # past argument
       shift # past value
@@ -232,7 +232,7 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;   
     -vcn_ocid)
-      export TF_VAR_vcn_strategy="Use Existing VCN"
+      export TF_VAR_vcn_strategy="existing"
       export TF_VAR_vcn_ocid="$2"
       shift # past argument
       shift # past value
@@ -256,19 +256,19 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;  
     -atp_ocid)
-      export TF_VAR_db_existing_strategy="Use Existing DB"
+      export TF_VAR_db_existing_strategy="existing"
       export TF_VAR_atp_ocid="$2"
       shift # past argument
       shift # past value
       ;;    
     -db_ocid)
-      export TF_VAR_db_existing_strategy="Use Existing DB"
+      export TF_VAR_db_existing_strategy="existing"
       export TF_VAR_db_ocid="$2"
       shift # past argument
       shift # past value
       ;;    
     -mysql_ocid)
-      export TF_VAR_db_existing_strategy="Use Existing DB"
+      export TF_VAR_db_existing_strategy="existing"
       export TF_VAR_mysql_ocid="$2"
       shift # past argument
       shift # past value
@@ -328,7 +328,7 @@ mandatory "language" $TF_VAR_language
 mandatory "deploy" $TF_VAR_deploy_strategy
 mandatory "db_password" $TF_VAR_db_password
 
-if [ "$TF_VAR_db_existing_strategy" == "Use Existing DB" ]; then
+if [ "$TF_VAR_db_existing_strategy" == "existing" ]; then
   if [ "$TF_VAR_db_strategy" == "autonomous" ]; then
      mandatory "atp_ocid" $TF_VAR_atp_ocid
   fi
@@ -524,7 +524,7 @@ fi
 
 #-- Network -----------------------------------------------------------------
 
-if [[ $TF_VAR_vcn_strategy == "Create New VCN" ]]; then
+if [[ $TF_VAR_vcn_strategy == "new" ]]; then
   cp_terraform network.tf 
 else
   cp_terraform network_existing.tf 
@@ -533,7 +533,7 @@ fi
 #-- Deployment --------------------------------------------------------------
 if [[ $TF_VAR_deploy_strategy == "kubernetes" ]]; then
   if [[ $TF_VAR_kubernetes_strategy == "OKE" ]]; then
-    if [[ $TF_VAR_oke_strategy == "Create New OKE" ]]; then
+    if [[ $TF_VAR_oke_strategy == "new" ]]; then
       cp_terraform oke.tf oke_append.tf 
     else
       cp_terraform oke_existing.tf oke_append.tf 
@@ -571,21 +571,21 @@ cp_terraform output.tf
 
 if [[ $TF_VAR_db_strategy == "autonomous" ]]; then
   cp_dir_db_src oracle
-  if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
+  if [[ $TF_VAR_db_existing_strategy == "new" ]]; then
     cp_terraform atp.tf atp_append.tf
   else
     cp_terraform atp_existing.tf atp_append.tf
   fi   
 elif [[ $TF_VAR_db_strategy == "database" ]]; then
   cp_dir_db_src oracle
-  if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
+  if [[ $TF_VAR_db_existing_strategy == "new" ]]; then
     cp_terraform dbsystem.tf dbsystem_append.tf
   else
     cp_terraform dbsystem_existing.tf dbsystem_append.tf
   fi   
 elif [[ $TF_VAR_db_strategy == "mysql" ]]; then  
   cp_dir_db_src mysql
-  if [[ $TF_VAR_db_existing_strategy == "Create New DB" ]]; then
+  if [[ $TF_VAR_db_existing_strategy == "new" ]]; then
     cp_terraform mysql.tf mysql_append.tf
   else
     cp_terraform mysql_existing.tf mysql_append.tf

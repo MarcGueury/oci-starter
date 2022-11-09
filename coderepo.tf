@@ -29,16 +29,16 @@ resource "null_resource" "clonerepo" {
       export TF_VAR_java_framework="${local.java_framework}"
       export TF_VAR_java_vm="${local.java_vm}"
       export TF_VAR_java_version="${var.java_version}"
-      export TF_VAR_vcn_strategy="${var.vcn_strategy}"
+      export TF_VAR_vcn_strategy="${local.vcn_strategy}"
       export TF_VAR_vcn_ocid="${var.vcn_ocid}"
       export TF_VAR_subnet_ocid="${var.subnet_ocid}"
       export TF_VAR_ui_strategy="${var.ui_strategy}"
       export TF_VAR_deploy_strategy="${local.deploy_strategy}"
       export TF_VAR_kubernetes_strategy="${var.kubernetes_strategy}"
-      export TF_VAR_oke_strategy="${var.oke_strategy}"
+      export TF_VAR_oke_strategy="${local.oke_strategy}"
       export TF_VAR_oke_ocid="${var.oke_ocid}"
       export TF_VAR_db_strategy="${local.db_strategy}"
-      export TF_VAR_db_existing_strategy="${var.db_existing_strategy}"
+      export TF_VAR_db_existing_strategy="${local.db_existing_strategy}"
       export TF_VAR_atp_ocid="${var.atp_ocid}"
       export TF_VAR_db_ocid="${var.db_ocid}"
       export TF_VAR_mysql_ocid="${var.mysql_ocid}"
@@ -73,4 +73,8 @@ locals {
   language = lower(var.language)
   db_strategy = lookup({"Autonomous Transaction Processing Database": "autonomous", "Database System": "database", "MySQL": "mysql"}, var.db_strategy, "error" )
   java_vm = lookup({"JDK": "jdk", "GraalVM": "graalvm"}, var.java_vm, "error" )
+  db_existing_strategy = lookup({"Create New DB": "new", "Use Existing DB": "existing"}, var.db_existing_strategy, "error" )
+  vcn_strategy = lookup({"Create New VCN": "new", "Use Existing VCN": "existing"}, var.vcn_strategy, "error" )
+  oke_strategy = lookup({"Create New OKE": "new", "Use Existing OKE": "existing"}, var.oke_strategy, "error" )
 }
+
