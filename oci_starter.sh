@@ -380,13 +380,13 @@ fi
 
 # Create env.sh
 echo '#!/bin/bash' > env.sh
-echo 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"' >> env.sh
+echo 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )' >> env.sh
 echo '' >> env.sh
 echo '# Env Variables' >> env.sh
 export |grep TF_VAR >> env.sh
 echo '' >> env.sh
 echo '# Get other env variables automatically' >> env.sh
-echo '. $SCRIPT_DIR/bin/auto_env.sh"' >> env.sh
+echo '. $SCRIPT_DIR/bin/auto_env.sh' >> env.sh
 EOF
 
 fi  
