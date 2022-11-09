@@ -406,7 +406,7 @@ title "Creating Directory"
 # ls -al helidon
 # ./helidon version
 
-chmod + env.sh
+chmod +x env.sh
 
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
