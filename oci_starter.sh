@@ -475,10 +475,13 @@ fi
 
 #-- APP ---------------------------------------------------------------------
 
-APP=$TF_VAR_language
-
-if [ "$TF_VAR_language" == "java" ]; then
-  APP=${TF_VAR_language}_${TF_VAR_java_framework}
+if [[ $TF_VAR_deploy_strategy == "function" ]]; then
+  APP=fn/fn_$TF_VAR_language
+else
+  APP=$TF_VAR_language
+  if [ "$TF_VAR_language" == "java" ]; then
+    APP=${TF_VAR_language}_${TF_VAR_java_framework}
+  fi
 fi
 
 case $TF_VAR_db_strategy in
