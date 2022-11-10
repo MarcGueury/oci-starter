@@ -1,7 +1,23 @@
 # oci-starter
 
 ## Usage:
-### 1. Cloud Shell / Command Line 
+### 1. Website 
+
+Go to: [starter.oracloud.be](http://starter.oracloud.be/)
+
+- Make your choices.
+- Generate. You will get a zip file. ( ex:starter.zip )
+- Upload the zip file in OCI Shell. Then
+- Still in OCI Shell:
+
+```
+unzip starter.zip
+cd starter
+./build.sh
+Then click on the UI_URL at then end of the build
+```
+
+### 2. Cloud Shell / Command Line 
 
 - Go to OCI Home page.
 - Start "Cloud Shell" icon on top/right
@@ -34,9 +50,9 @@ Best practice:
 ...
 ```
 
-## 2. "Deploy to Oracle Cloud"
+## 3. "Deploy to Oracle Cloud"
 
 [ ![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/MarcGueury/oci-starter/archive/refs/heads/main.zip)
 
-Just follow the wizard.
+Just follow the wizard. (Not tested lately)
 
