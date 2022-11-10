@@ -1,4 +1,3 @@
-
 FROM nginx
 
 # Copy the HTML files
