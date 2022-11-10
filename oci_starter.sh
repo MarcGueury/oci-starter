@@ -441,10 +441,10 @@ EOF
 
 case $TF_VAR_deploy_strategy in
 "compute")
-    echo "- compute   : Contains the Compute scripts" >> README.md
+    echo "- compute       : Contains the Compute scripts" >> README.md
   ;;
 "kubernetes")
-    echo "- oke       : Contains the Kubernetes scripts (Command: deploy.sh)" >> README.md
+    echo "- oke           : Contains the Kubernetes scripts (Command: deploy.sh)" >> README.md
   ;;
 esac
 
