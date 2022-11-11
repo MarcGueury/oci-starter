@@ -1,10 +1,19 @@
-variable function_image_uri {}
+variable fn_image {default=""}
+variable fn_config {default=""}
 
-resource "oci_functions_application" "starter_application" {
+
+resource "oci_logging_log_group" "starter_log_group" {
   #Required
   compartment_id = var.compartment_ocid
-  display_name   = "starter-application"
-  subnet_ids     = [oci_core_subnet.starter_subnet.id]
+  display_name   = "${var.prefix}-log-group"
+}
+
+
+resource "oci_functions_application" "starter_fn_application" {
+  #Required
+  compartment_id = var.compartment_ocid
+  display_name   = "${var.prefix}-fn-application"
+  subnet_ids     = [data.oci_core_subnet.starter_subnet.id]
 
   image_policy_config {
     #Required
@@ -12,39 +21,37 @@ resource "oci_functions_application" "starter_application" {
   }
 }
 
-resource "oci_functions_function" "function" {
+resource "oci_functions_function" "starter_fn_function" {
   #Required
-  application_id = oci_functions_application.starter_application.id
-  display_name   = "function"
-  image          = var.function_image_uri
+  count = var.function_image==""?0:1
+  application_id = oci_functions_application.starter_fn_application.id
+  display_name   = "${var.prefix}-fn-function"
+  image          = var.fn_image
   memory_in_mbs  = "2048"
+  config         = var.fn_config
 
   #Optional
   timeout_in_seconds = "300"
+  trace_config {
+    is_enabled = true
+  }
 }
 
-resource oci_apigateway_gateway starter_apigw {
+resource oci_apigateway_deployment starter_apigw_deployment {
+  count = var.function_image==""?0:1
   compartment_id = var.compartment_ocid
-  display_name  = "${var.prefix}-apigw"
-  endpoint_type = "PUBLIC"
-  subnet_id = oci_core_subnet.starter_subnet.id 
-}
-
-output api {
-   value=local.APIGW_API_URL
-}
-
-resource oci_apigateway_deployment starter_deployment {
-  compartment_id = var.compartment_ocid
-  display_name = "starter_deployment"
-  gateway_id  = oci_apigateway_gateway.starter_apigw.id
-  path_prefix = "/function"
+  display_name = "${var.prefix}-apigw-deployment"
+  gateway_id  = local.apigw_ocid
+  path_prefix = "/app"
   specification {
     logging_policies {
-      #access_log = <<Optional value not found in discovery>>
-      # execution_log {
-      #   is_enabled = "true"
-      #  log_level  = "INFO"
+      access_log {
+        is_enabled = true
+      }
+      execution_log {
+        #Optional
+        is_enabled = true
+      }
     }
     request_policies {
       mutual_tls {
@@ -60,13 +67,17 @@ resource oci_apigateway_deployment starter_deployment {
         read_timeout_in_seconds = "10"
         send_timeout_in_seconds = "10"
         type = "HTTP_BACKEND"
-        FUNCTION !!
-        XXXXX url  = local.APIGW_API_URL
+        // XXXXXX FUNCTION !!!
+        url  = oci_functions_function.starter_fn_function[0].invoke_endpoint
       }
       methods = [
         "ANY",
       ]
-      path = "/search"
+      path = "/dept"
     }
   }
+}
+
+output fn_url {
+  value= var.function_image==""?"":concat( oci_apigateway_deployment.starter_apigw_deployment[0].endpoint,"/dept" )
 }

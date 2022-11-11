@@ -115,6 +115,7 @@ export TF_VAR_db_existing_strategy="new"
 # export TF_VAR_atp_ocid="${var.atp_ocid}"
 # export TF_VAR_db_ocid="${var.db_ocid}"
 # export TF_VAR_mysql_ocid="${var.mysql_ocid}"
+# export TF_VAR_apigw_ocid="${var.apigw_ocid}"
 export TF_VAR_db_user="admin"
 # XXXXXX export TF_VAR_vault_secret_authtoken_ocid=XXXXXXX
 # export TF_VAR_db_password="${var.db_password}"
@@ -275,6 +276,11 @@ while [[ $# -gt 0 ]]; do
       ;;     
     -bastion_ocid)
       export TF_VAR_bastion_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;           
+    -apigw_ocid)
+      export TF_VAR_apigw_ocid="$2"
       shift # past argument
       shift # past value
       ;;                                   
@@ -559,6 +565,11 @@ elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   cp ../option/compute/* compute/.
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   cp_terraform function.tf 
+  if [ -z "$TF_VAR_apigw_ocid" ]; then
+    cp_terraform apigw_existing.tf 
+  else
+    cp_terraform apigw.tf 
+  fi
 fi
 
 #-- Bastion -----------------------------------------------------------------
