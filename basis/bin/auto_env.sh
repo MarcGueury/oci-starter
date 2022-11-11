@@ -110,6 +110,7 @@ if [ -f $STATE_FILE ]; then
     get_attribute_from_tfstate "FUNCTION_ID" "function" "id"
     export FUNCTION_URL=$FUNCTION_ENDPOINT/20181201/functions/$FUNCTION_ID
 
+    echo "file=$TMP_DIR/fn_image.txt" 
     if [ -f $TMP_DIR/fn_image.txt ]; then
       export TF_VAR_fn_image=`cat $TMP_DIR/fn_image.txt`
       echo TF_VAR_fn_image=$TF_VAR_fn_image
