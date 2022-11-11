@@ -23,7 +23,7 @@ resource "oci_functions_application" "starter_fn_application" {
 
 resource "oci_functions_function" "starter_fn_function" {
   #Required
-  count = var.function_image==""?0:1
+  count = var.fn_image==""?0:1
   application_id = oci_functions_application.starter_fn_application.id
   display_name   = "${var.prefix}-fn-function"
   image          = var.fn_image
@@ -38,7 +38,7 @@ resource "oci_functions_function" "starter_fn_function" {
 }
 
 resource oci_apigateway_deployment starter_apigw_deployment {
-  count = var.function_image==""?0:1
+  count = var.fn_image==""?0:1
   compartment_id = var.compartment_ocid
   display_name = "${var.prefix}-apigw-deployment"
   gateway_id  = local.apigw_ocid
