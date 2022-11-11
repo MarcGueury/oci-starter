@@ -79,5 +79,5 @@ resource oci_apigateway_deployment starter_apigw_deployment {
 }
 
 output fn_url {
-  value= var.function_image==""?"":concat( oci_apigateway_deployment.starter_apigw_deployment[0].endpoint,"/dept" )
+  value= var.fn_image==""?"":concat( oci_apigateway_deployment.starter_apigw_deployment[0].endpoint,"/dept" )
 }
