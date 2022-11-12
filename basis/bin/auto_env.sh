@@ -114,8 +114,8 @@ if [ -f $STATE_FILE ]; then
     if [ -f $TMP_DIR/fn_image.txt ]; then
       export TF_VAR_fn_image=`cat $TMP_DIR/fn_image.txt`
       echo TF_VAR_fn_image=$TF_VAR_fn_image
-      export TF_VAR_fn_config=`cat $TMP_DIR/fn_config.txt`
-      echo TF_VAR_fn_config=$TF_VAR_fn_config
+      export TF_VAR_fn_db_url=`cat $TMP_DIR/fn_db_url.txt`
+      echo TF_VAR_fn_db_url=$TF_VAR_fn_db_url
     fi   
   fi
 

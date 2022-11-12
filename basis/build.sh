@@ -18,6 +18,9 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   bin/deploy_compute.sh
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   oke/oke_deploy.sh
+elif [ "$TF_VAR_deploy_strategy" == "function" ]; then
+  . env.sh
+  terraform/apply.sh --auto-approve
 fi
 
 bin/done.sh

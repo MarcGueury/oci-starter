@@ -1,5 +1,5 @@
 variable fn_image {default=""}
-variable fn_config {default=""}
+variable fn_db_url {default=""}
 
 
 resource "oci_logging_log_group" "starter_log_group" {
@@ -28,8 +28,11 @@ resource "oci_functions_function" "starter_fn_function" {
   display_name   = "${var.prefix}-fn-function"
   image          = var.fn_image
   memory_in_mbs  = "2048"
-  config         = var.fn_config
-
+  config = {
+    DB_URL = var.fn_db_url,
+    DB_USER = var.db_user,
+    DB_PASSWORD = var.db_password,
+  }
   #Optional
   timeout_in_seconds = "300"
   trace_config {
@@ -53,22 +56,14 @@ resource oci_apigateway_deployment starter_apigw_deployment {
         is_enabled = true
       }
     }
-    request_policies {
-      mutual_tls {
-        allowed_sans = [
-        ]
-        is_verified_certificate_required = "false"
-      }
-    }
     routes {
       backend {
         connect_timeout_in_seconds = "60"
         is_ssl_verify_disabled  = "true"
         read_timeout_in_seconds = "10"
         send_timeout_in_seconds = "10"
-        type = "HTTP_BACKEND"
-        // XXXXXX FUNCTION !!!
-        url  = oci_functions_function.starter_fn_function[0].invoke_endpoint
+        type = "ORACLE_FUNCTIONS_BACKEND"
+        function_id = oci_functions_function.starter_fn_function[0].id
       }
       methods = [
         "ANY",
@@ -79,5 +74,15 @@ resource oci_apigateway_deployment starter_apigw_deployment {
 }
 
 output fn_url {
-  value= var.fn_image==""?"":concat( oci_apigateway_deployment.starter_apigw_deployment[0].endpoint,"/dept" )
+  value= join("", oci_apigateway_deployment.starter_apigw_deployment.*.endpoint )
+}
+
+resource "oci_identity_policy" "starter_fn_policy" {
+  provider       = oci.home_region
+  name           = "${var.prefix}-fn-policy"
+  description    = "APIGW access Function"
+  compartment_id = var.compartment_ocid
+  statements = [
+    "ALLOW any-user to use functions-family in compartment id ${var.compartment_ocid} where ALL {request.principal.type= 'ApiGateway', request.resource.compartment.id = '${var.compartment_ocid}'}"
+  ]
 }
