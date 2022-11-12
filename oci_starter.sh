@@ -565,7 +565,7 @@ elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   cp ../option/compute/* compute/.
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   cp_terraform function.tf 
-  if [ -z "$TF_VAR_apigw_ocid" ]; then
+  if [ -v TF_VAR_apigw_ocid ]; then
     cp_terraform apigw_existing.tf 
   else
     cp_terraform apigw.tf 
