@@ -78,7 +78,6 @@ output fn_url {
 }
 
 resource "oci_identity_policy" "starter_fn_policy" {
-  provider       = oci.home_region
   name           = "${var.prefix}-fn-policy"
   description    = "APIGW access Function"
   compartment_id = var.compartment_ocid
