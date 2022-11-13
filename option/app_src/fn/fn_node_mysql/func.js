@@ -1,21 +1,17 @@
 const fdk = require('@fnproject/fdk');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 fdk.handle(async function() {
+    console.log("debug2");
     const aDbURL= process.env.DB_URL.split(":");
-    var con = await mysql.createConnection({
+    const connection = await mysql.createConnection({
         host: aDbURL[0],
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: "db1"
     });
-
-    con.connect();
-    const [rows] = await conn.execute("SELECT deptno, dname, loc FROM dept");    
-    con.end();
-
+    const [rows, fields] = await connection.execute("SELECT deptno, dname, loc FROM dept");
+    connection.end();   
     return rows;
 })
-
-
 

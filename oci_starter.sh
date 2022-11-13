@@ -508,6 +508,12 @@ APP_DB=${APP}_${APP_DB}
 echo APP=$APP
 mkdir app_src
 mkdir db_src
+
+# Function Common 
+if [[ $TF_VAR_deploy_strategy == "function" ]]; then
+  cp -r ../option/app_src/fn/fn_common/* app_src/.
+fi  
+
 # Generic version for Oracle DB
 if [ -d "../option/app_src/$APP" ]; then
   cp -r ../option/app_src/$APP/* app_src/.
