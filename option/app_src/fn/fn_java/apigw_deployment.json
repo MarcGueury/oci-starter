@@ -50,7 +50,7 @@
                             },
                             "backend": {
                                 "type": "HTTP_BACKEND",
-                                "url": "##OBJECT_STORAGE_URL##/${request.path[pathname]}",
+                                "url": "##BUCKET_URL##/${request.path[pathname]}",
                                 "connectTimeoutInSeconds": 60,
                                 "readTimeoutInSeconds": 10,
                                 "sendTimeoutInSeconds": 10,
@@ -75,7 +75,7 @@
             {
                 "backend": {
                     "type": "HTTP_BACKEND",
-                    "url": "##OBJECT_STORAGE_URL##/index.html",
+                    "url": "##BUCKET_URL##/index.html",
                     "connectTimeoutInSeconds": 60,
                     "readTimeoutInSeconds": 10,
                     "sendTimeoutInSeconds": 10,
