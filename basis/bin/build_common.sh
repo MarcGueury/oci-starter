@@ -19,8 +19,26 @@ build_ui() {
   elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
     docker image rm ui:latest
     docker build -t ui:latest .
+  elif [ "$TF_VAR_deploy_strategy" == "function" ]; then 
+    oci os object bulk-upload -ns $TF_VAR_namespace -bn ${TF_VAR_prefix}-public-bucket --src-dir ui --overwrite --content-type auto
   fi 
 }
+
+build_function() {
+  # First create the Function using terraform
+  # Run env.sh to get function image 
+  cd $SCRIPT_DIR/..
+  . env.sh
+  terraform/apply.sh --auto-approve
+  # Run env.sh to get function ocid 
+  . env.sh
+  # Apply the WA for APIGW Multiple Backend
+  cp app_src/apigw_deployment.json $TMP_DIR/.
+  sed -i "s&##OBJECT_STORAGE_URL##&${OBJECT_STORAGE_URL}&" $TMP_DIR/apigw_deployment.json
+  sed -i "s&##FN_FUNCTION_OCID##&${FN_FUNCTION_OCID}&" $TMP_DIR/apigw_deployment.json
+  oci api-gateway deployment update --force --deployment-id $APIGW_DEPLOYMENT_OCID --from-json file://$TMP_DIR/apigw_deployment.json
+}
+
 
 # SCRIPT_DIR should be set by the calling scripts 
 cd $SCRIPT_DIR
@@ -29,6 +47,3 @@ if [ ! -v TF_VAR_deploy_strategy ]; then
   echo '. env.sh'
   exit
 fi  
-
-
-

@@ -1,5 +1,5 @@
-variable fn_image {default=""}
-variable fn_db_url {default=""}
+variable "fn_image" { default = "" }
+variable "fn_db_url" { default = "" }
 
 
 resource "oci_logging_log_group" "starter_log_group" {
@@ -23,14 +23,14 @@ resource "oci_functions_application" "starter_fn_application" {
 
 resource "oci_functions_function" "starter_fn_function" {
   #Required
-  count = var.fn_image==""?0:1
+  count          = var.fn_image == "" ? 0 : 1
   application_id = oci_functions_application.starter_fn_application.id
   display_name   = "${var.prefix}-fn-function"
   image          = var.fn_image
   memory_in_mbs  = "2048"
   config = {
-    DB_URL = var.fn_db_url,
-    DB_USER = var.db_user,
+    DB_URL      = var.fn_db_url,
+    DB_USER     = var.db_user,
     DB_PASSWORD = var.db_password,
   }
   #Optional
@@ -40,12 +40,11 @@ resource "oci_functions_function" "starter_fn_function" {
   }
 }
 
-resource oci_apigateway_deployment starter_apigw_deployment {
-  count = var.fn_image==""?0:1
+resource "oci_apigateway_deployment" "starter_apigw_deployment" {
   compartment_id = var.compartment_ocid
-  display_name = "${var.prefix}-apigw-deployment"
-  gateway_id  = local.apigw_ocid
-  path_prefix = "/app"
+  display_name   = "${var.prefix}-apigw-deployment"
+  gateway_id     = local.apigw_ocid
+  path_prefix    = "/app"
   specification {
     logging_policies {
       access_log {
@@ -57,24 +56,33 @@ resource oci_apigateway_deployment starter_apigw_deployment {
       }
     }
     routes {
+      path    = "/{pathname*}"
+      methods = [ "ANY" ]
       backend {
-        connect_timeout_in_seconds = "60"
-        is_ssl_verify_disabled  = "true"
-        read_timeout_in_seconds = "10"
-        send_timeout_in_seconds = "10"
-        type = "ORACLE_FUNCTIONS_BACKEND"
-        function_id = oci_functions_function.starter_fn_function[0].id
+        type = "DYNAMIC_ROUTING_BACKEND"
+        selection_source {
+          type     = "SINGLE"
+          selector = "request.path[pathname]"
+        }
+        routing_backends {
+          key {
+            type   = "ANY_OF"
+            values = ["app/info"]
+            name   = "info"
+          }
+          backend {
+            type   = "STOCK_RESPONSE_BACKEND"
+            body   = "FUNCTION"
+            status = 200
+          }
+        }
       }
-      methods = [
-        "ANY",
-      ]
-      path = "/dept"
     }
   }
 }
 
-output fn_url {
-  value= join("", oci_apigateway_deployment.starter_apigw_deployment.*.endpoint )
+output "fn_url" {
+  value = join("", oci_apigateway_deployment.starter_apigw_deployment.*.endpoint)
 }
 
 resource "oci_identity_policy" "starter_fn_policy" {
@@ -85,3 +93,13 @@ resource "oci_identity_policy" "starter_fn_policy" {
     "ALLOW any-user to use functions-family in compartment id ${var.compartment_ocid} where ALL {request.principal.type= 'ApiGateway', request.resource.compartment.id = '${var.compartment_ocid}'}"
   ]
 }
+
+variable "namespace" {}
+
+resource "oci_objectstorage_bucket" "starter_bucket" {
+  compartment_id = var.compartment_ocid
+  namespace      = var.namespace
+  name           = "${var.prefix}-public-bucket"
+  access_type    = "ObjectReadWithoutList"
+}
+

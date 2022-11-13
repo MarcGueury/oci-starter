@@ -103,12 +103,16 @@ if [ -f $STATE_FILE ]; then
   # Functions
   if [ "$TF_VAR_deploy_strategy" == "function" ]; then
     # APIGW URL
-    get_attribute_from_tfstate "APIGW_HOSTNAME" "${TF_VAR_prefix}_apigw" "hostname"
+    get_attribute_from_tfstate "APIGW_HOSTNAME" "starter_apigw" "hostname"
 
-    # Function URL
-    get_attribute_from_tfstate "FUNCTION_ENDPOINT" "function" "invoke_endpoint"
-    get_attribute_from_tfstate "FUNCTION_ID" "function" "id"
-    export FUNCTION_URL=$FUNCTION_ENDPOINT/20181201/functions/$FUNCTION_ID
+    # APIGW Deployment id
+    get_attribute_from_tfstate "APIGW_DEPLOYMENT_OCID" "starter_apigw_deployment" "id"
+
+    # OBJECT Storage URL
+    export OBJECT_STORAGE_URL="https://objectstorage.${TF_VAR_region}.oraclecloud.com/n/${TF_VAR_namespace}/b/${TF_VAR_prefix}-public-bucket/o/"
+
+    # Function OCID
+    get_attribute_from_tfstate "FN_FUNCTION_OCID" "starter_fn_function" "id"
 
     echo "file=$TMP_DIR/fn_image.txt" 
     if [ -f $TMP_DIR/fn_image.txt ]; then
