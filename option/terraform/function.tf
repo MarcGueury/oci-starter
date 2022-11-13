@@ -44,7 +44,7 @@ resource "oci_apigateway_deployment" "starter_apigw_deployment" {
   compartment_id = var.compartment_ocid
   display_name   = "${var.prefix}-apigw-deployment"
   gateway_id     = local.apigw_ocid
-  path_prefix    = "/app"
+  path_prefix    = "/${var.prefix}"
   specification {
     logging_policies {
       access_log {
