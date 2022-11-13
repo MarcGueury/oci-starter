@@ -1,13 +1,9 @@
 package com.example.fn;
 
 import java.sql.*;
-import oracle.ucp.jdbc.PoolDataSource;
-import oracle.ucp.jdbc.PoolDataSourceFactory;
 import com.fnproject.fn.api.RuntimeContext;
 
 public class HelloFunction {
-  private PoolDataSource poolDataSource;
-
   private final String dbUser = System.getenv().get("DB_USER");
   private final String dbPassword = System.getenv().get("DB_PASSWORD");
   private final String dbUrl = System.getenv().get("DB_URL");
