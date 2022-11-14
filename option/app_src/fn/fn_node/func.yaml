@@ -2,6 +2,5 @@ schema_version: 20180708
 name: fn-node
 version: 0.0.1
 runtime: docker
-entrypoint: /usr/local/bin/fdk /function/func.js handler
 memory: 256
 timeout: 120

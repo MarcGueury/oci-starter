@@ -2,20 +2,15 @@ FROM oraclelinux:7-slim
 WORKDIR /function
 RUN groupadd --gid 1000 fn && adduser --uid 1000 --gid fn fn
 
-ARG release=19
-ARG update=3
-
-RUN  yum-config-manager --disable ol7_developer_EPEL && \
-     yum-config-manager --enable ol7_optional_latest && \
-     yum-config-manager --enable ol7_oracle_instantclient && \
-     yum -y install python3 oracle-release-el7 && \
-     yum -y install oracle-instantclient${release}.${update}-basiclite && \
+RUN  yum -y install oracle-release-el7 oracle-nodejs-release-el7 && \
+     yum -y install oracle-instantclient-release-el7 && \
+     yum-config-manager --disable ol7_developer_EPEL && \
+     yum -y install oracle-instantclient-basic oracle-instantclient-sqlplus nodejs&& \
      rm -rf /var/cache/yum
-     
+    
+# Install the Node program
 ADD . /function/
-RUN pip3 install --upgrade pip
-RUN pip3 install --no-cache --no-cache-dir -r requirements.txt
-RUN rm -fr /function/.pip_cache ~/.cache/pip requirements.txt func.yaml Dockerfile README.md
+RUN npm install
+RUN rm -fr /function/.pip_cache ~/.cache/pip func.yaml Dockerfile README.md
 
-ENV PYTHONPATH=/python
-ENTRYPOINT ["/usr/local/bin/fdk", "/function/func.py", "handler"]
+ENTRYPOINT ["node", "func.js"]
