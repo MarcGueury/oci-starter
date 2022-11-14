@@ -41,6 +41,7 @@ resource "oci_functions_function" "starter_fn_function" {
 }
 
 resource "oci_apigateway_deployment" "starter_apigw_deployment" {
+  count          = var.fn_image == "" ? 0 : 1
   compartment_id = var.compartment_ocid
   display_name   = "${var.prefix}-apigw-deployment"
   gateway_id     = local.apigw_ocid
@@ -56,26 +57,39 @@ resource "oci_apigateway_deployment" "starter_apigw_deployment" {
       }
     }
     routes {
+      path    = "/app/dept"
+      methods = [ "ANY" ]
+      backend {
+        type = "ORACLE_FUNCTIONS_BACKEND"
+        function_id   = oci_functions_function.starter_fn_function[0].id
+      }
+    }    
+    routes {
+      path    = "/app/info"
+      methods = [ "ANY" ]
+      backend {
+        type = "STOCK_RESPONSE_BACKEND"
+        body   = "Function ${var.language}"
+        status = 200
+      }
+    }    
+    routes {
+      path    = "/"
+      methods = [ "ANY" ]
+      backend {
+        type = "HTTP_BACKEND"
+        url    = "${local.bucket_url}/index.html"
+        connect_timeout_in_seconds = 10
+        read_timeout_in_seconds = 30
+        send_timeout_in_seconds = 30
+      }
+    }    
+    routes {
       path    = "/{pathname*}"
       methods = [ "ANY" ]
       backend {
-        type = "DYNAMIC_ROUTING_BACKEND"
-        selection_source {
-          type     = "SINGLE"
-          selector = "request.path[pathname]"
-        }
-        routing_backends {
-          key {
-            type   = "ANY_OF"
-            values = ["app/info"]
-            name   = "info"
-          }
-          backend {
-            type   = "STOCK_RESPONSE_BACKEND"
-            body   = "FUNCTION"
-            status = 200
-          }
-        }
+        type = "HTTP_BACKEND"
+        url    = "${local.bucket_url}/$${request.path[pathname]}"
       }
     }
   }
@@ -103,3 +117,6 @@ resource "oci_objectstorage_bucket" "starter_bucket" {
   access_type    = "ObjectReadWithoutList"
 }
 
+locals {
+  bucket_url = "https://objectstorage.${var.region}.oraclecloud.com/n/${var.namespace}/b/${var.prefix}-public-bucket/o"
+}

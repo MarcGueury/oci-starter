@@ -51,10 +51,10 @@ build_function() {
   # Run env.sh to get function ocid 
   . env.sh
   # Apply the WA for APIGW Multiple Backend
-  cp app_src/apigw_deployment.json $TMP_DIR/.
-  sed -i "s&##BUCKET_URL##&${BUCKET_URL}&" $TMP_DIR/apigw_deployment.json
-  sed -i "s&##FN_FUNCTION_OCID##&${FN_FUNCTION_OCID}&" $TMP_DIR/apigw_deployment.json
-  oci api-gateway deployment update --force --deployment-id $APIGW_DEPLOYMENT_OCID --from-json file://$TMP_DIR/apigw_deployment.json
+  # cp app_src/apigw_deployment.json $TMP_DIR/.
+  # sed -i "s&##BUCKET_URL##&${BUCKET_URL}&" $TMP_DIR/apigw_deployment.json
+  # sed -i "s&##FN_FUNCTION_OCID##&${FN_FUNCTION_OCID}&" $TMP_DIR/apigw_deployment.json
+  # oci api-gateway deployment update --force --deployment-id $APIGW_DEPLOYMENT_OCID --from-json file://$TMP_DIR/apigw_deployment.json
 }
 
 
