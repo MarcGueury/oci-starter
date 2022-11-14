@@ -72,14 +72,14 @@ resource oci_logging_log export_starter_fn_application_invoke {
     compartment_id = var.compartment_ocid
     source {
       category    = "invoke"
-      resource    = oci_functions_application.starter-fn-application.id
+      resource    = oci_functions_application.starter_fn_application.id
       service     = "functions"
       source_type = "OCISERVICE"
     }
   }
   display_name = "starter-fn-application-invoke"
   is_enabled         = "true"
-  log_group_id       = oci_logging_log_group.starter-log-group.id
+  log_group_id       = oci_logging_log_group.starter_log_group.id
   log_type           = "SERVICE"
   retention_duration = "30"
 }

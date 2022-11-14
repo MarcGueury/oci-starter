@@ -31,7 +31,7 @@ build_function() {
   fn update context oracle.compartment-id ${TF_VAR_compartment_ocid}
   fn update context api-url https://functions.${TF_VAR_region}.oraclecloud.com
   fn update context registry ${TF_VAR_ocir}/${TF_VAR_namespace}
-  fn build --verbose | tee > $TMP_DIR/fn_build.log
+  fn build -v | tee > $TMP_DIR/fn_build.log
   if grep --quiet "built successfully" $TMP_DIR/fn_build.log; then
      fn bump
      # Store the image name and DB_URL in files
