@@ -26,7 +26,7 @@ namespace Function
                 //Retrieve sample data
                 using var cmd = new MySqlCommand("SELECT deptno, dname, loc FROM dept", con);
                 using MySqlDataReader reader = cmd.ExecuteReader();
-                boolean bFirst = true;
+                bool bFirst = true;
                 while (reader.Read())
                 {
                     if (!bFirst)
@@ -37,7 +37,7 @@ namespace Function
                     {
                         bFirst = false;
                     }
-                    result += "{ \"deptno\": \"" + reader.GetString(0) + "\", \"dname\": \"" + reader.GetString(1) + "\", \"deptno\": \"" + reader.GetString(2) + "\"}";
+                    result += "{ \"deptno\": \"" + reader.GetString(0) + "\", \"dname\": \"" + reader.GetString(1) + "\", \"loc\": \"" + reader.GetString(2) + "\"}";
                 }
                 reader.Dispose();
             }
