@@ -29,7 +29,7 @@ namespace Function {
                   OracleDataReader reader = cmd.ExecuteReader();
                   while (reader.Read())
                   {
-                    result += "{ \"deptno\": \"" +reader.GetString(0) + "\", \"dname\": \"" +reader.GetString(0) + "\", \"deptno\": \"" +reader.GetString(0) + "\"}";
+                    result += "{ \"deptno\": \"" + reader.GetString(0) + "\", \"dname\": \"" + reader.GetString(1) + "\", \"deptno\": \"" + reader.GetString(2) + "\"}";
                   }
                   reader.Dispose();
               }

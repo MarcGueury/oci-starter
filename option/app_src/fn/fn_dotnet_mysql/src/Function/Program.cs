@@ -22,14 +22,13 @@ namespace Function
                 con.Open();
                 Console.WriteLine("Successfully connected to MySQL");
                 Console.WriteLine();
-                result += "/ debug 2 / ";
 
                 //Retrieve sample data
                 using var cmd = new MySqlCommand("SELECT deptno, dname, loc FROM dept", con);
                 using MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    result += "{ \"deptno\": \"" + reader.GetString(0) + "\", \"dname\": \"" + reader.GetString(0) + "\", \"deptno\": \"" + reader.GetString(0) + "\"}";
+                    result += "{ \"deptno\": \"" + reader.GetString(0) + "\", \"dname\": \"" + reader.GetString(1) + "\", \"deptno\": \"" + reader.GetString(2) + "\"}";
                 }
                 reader.Dispose();
             }
