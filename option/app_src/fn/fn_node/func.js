@@ -17,7 +17,6 @@ fdk.handle(async function() {
             arr.push(row);
         }
         await rs.close();
-        res.send(arr)
     } catch (err) {
         console.error(err);
     } finally {
