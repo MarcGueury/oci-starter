@@ -1,3 +1,4 @@
+using System;
 using Fnproject.Fn.Fdk;
 using Oracle.ManagedDataAccess.Client;
 using System.Runtime.CompilerServices;
@@ -9,7 +10,7 @@ namespace Function {
     public static string pwd = Environment.GetEnvironmentVariable("DB_PASSWORD");
     public static string db = Environment.GetEnvironmentVariable("DB_URL");
 
-    public string greet(string input) {
+    public string dept() {
       string result = "[";
       string conStringUser = "User Id=" + user + ";Password=" + pwd + ";Data Source=" + db + ";";
 
@@ -28,7 +29,7 @@ namespace Function {
                   OracleDataReader reader = cmd.ExecuteReader();
                   while (reader.Read())
                   {
-                    result += "{ \"deptno\": \"" +reader.GetString(0) + "\", \"dname\": \"" +reader.GetString(0) + "\", \"deptno\": \"" +reader.GetString(0) + + "\"}";
+                    result += "{ \"deptno\": \"" +reader.GetString(0) + "\", \"dname\": \"" +reader.GetString(0) + "\", \"deptno\": \"" +reader.GetString(0) + "\"}";
                   }
                   reader.Dispose();
               }
