@@ -571,10 +571,16 @@ elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   cp ../option/compute/* compute/.
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   cp_terraform function.tf 
+  if [ "$TF_VAR_language" == "ords" ]; then
+    APIGW_APPEND=apigw_append.tf
+  else 
+    APIGW_APPEND=apigw_ords_append.tf
+  fi
+
   if [ -v TF_VAR_apigw_ocid ]; then
-    cp_terraform apigw_existing.tf 
+    cp_terraform apigw_existing.tf $APIGW_APPEND
   else
-    cp_terraform apigw.tf 
+    cp_terraform apigw.tf $APIGW_APPEND
   fi
 fi
 

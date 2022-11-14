@@ -1,14 +1,6 @@
 variable "fn_image" { default = "" }
 variable "fn_db_url" { default = "" }
 
-
-resource "oci_logging_log_group" "starter_log_group" {
-  #Required
-  compartment_id = var.compartment_ocid
-  display_name   = "${var.prefix}-log-group"
-}
-
-
 resource "oci_functions_application" "starter_fn_application" {
   #Required
   compartment_id = var.compartment_ocid
@@ -40,61 +32,6 @@ resource "oci_functions_function" "starter_fn_function" {
   }
 }
 
-resource "oci_apigateway_deployment" "starter_apigw_deployment" {
-  count          = var.fn_image == "" ? 0 : 1
-  compartment_id = var.compartment_ocid
-  display_name   = "${var.prefix}-apigw-deployment"
-  gateway_id     = local.apigw_ocid
-  path_prefix    = "/${var.prefix}"
-  specification {
-    logging_policies {
-      access_log {
-        is_enabled = true
-      }
-      execution_log {
-        #Optional
-        is_enabled = true
-      }
-    }
-    routes {
-      path    = "/app/dept"
-      methods = [ "ANY" ]
-      backend {
-        type = "ORACLE_FUNCTIONS_BACKEND"
-        function_id   = oci_functions_function.starter_fn_function[0].id
-      }
-    }    
-    routes {
-      path    = "/app/info"
-      methods = [ "ANY" ]
-      backend {
-        type = "STOCK_RESPONSE_BACKEND"
-        body   = "Function ${var.language}"
-        status = 200
-      }
-    }    
-    routes {
-      path    = "/"
-      methods = [ "ANY" ]
-      backend {
-        type = "HTTP_BACKEND"
-        url    = "${local.bucket_url}/index.html"
-        connect_timeout_in_seconds = 10
-        read_timeout_in_seconds = 30
-        send_timeout_in_seconds = 30
-      }
-    }    
-    routes {
-      path    = "/{pathname*}"
-      methods = [ "ANY" ]
-      backend {
-        type = "HTTP_BACKEND"
-        url    = "${local.bucket_url}/$${request.path[pathname]}"
-      }
-    }
-  }
-}
-
 output "fn_url" {
   value = join("", oci_apigateway_deployment.starter_apigw_deployment.*.endpoint)
 }
@@ -108,6 +45,8 @@ resource "oci_identity_policy" "starter_fn_policy" {
   ]
 }
 
+#-- Object Storage ----------------------------------------------------------
+
 variable "namespace" {}
 
 resource "oci_objectstorage_bucket" "starter_bucket" {
@@ -119,4 +58,28 @@ resource "oci_objectstorage_bucket" "starter_bucket" {
 
 locals {
   bucket_url = "https://objectstorage.${var.region}.oraclecloud.com/n/${var.namespace}/b/${var.prefix}-public-bucket/o"
+}
+
+#-- Log ---------------------------------------------------------------------
+resource "oci_logging_log_group" "starter_log_group" {
+  #Required
+  compartment_id = var.compartment_ocid
+  display_name   = "${var.prefix}-log-group"
+}
+
+resource oci_logging_log export_starter_fn_application_invoke {
+  configuration {
+    compartment_id = var.compartment_ocid
+    source {
+      category    = "invoke"
+      resource    = oci_functions_application.starter-fn-application.id
+      service     = "functions"
+      source_type = "OCISERVICE"
+    }
+  }
+  display_name = "starter-fn-application-invoke"
+  is_enabled         = "true"
+  log_group_id       = oci_logging_log_group.starter-log-group.id
+  log_type           = "SERVICE"
+  retention_duration = "30"
 }
