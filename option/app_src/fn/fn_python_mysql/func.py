@@ -2,21 +2,24 @@ import io
 import json
 import logging
 import os
-import oracledb
+import mysql.connector
 
 from fdk import response
 
 def handler(ctx, data: io.BytesIO = None):
     a = []
     try:
-        conn = oracledb.connect(
+        db_url = os.getenv('DB_URL')
+        mysql_host = db_url.split(':')[0]        
+        conn = conn = mysql.connector.connect(
           user=os.getenv('DB_USER'),
           password=os.getenv('DB_PASSWORD'),
-          dsn=os.getenv('DB_URL'))
-        print("Successfully connected to Oracle Database")
+          host=mysql_host,
+          database='db1')        
         cursor = conn.cursor()
-        a = []
-        for row in cursor.execute('select deptno, dname, loc from dept'):
+        cursor.execute('select deptno, dname, loc from dept');
+        myresult = cursor.fetchall()
+        for row in myresult:
             a.append( {"deptno": row[0], "dname": row[1], "loc": row[2]} )
         print(a)
     except Exception as e:
@@ -28,5 +31,3 @@ def handler(ctx, data: io.BytesIO = None):
         ctx, response_data=json.dumps(a),
         headers={"Content-Type": "application/json"}
     )
-
-    

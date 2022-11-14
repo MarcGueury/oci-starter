@@ -1,2 +1,2 @@
 fdk
-mysql-connector
+mysql-connector-python
