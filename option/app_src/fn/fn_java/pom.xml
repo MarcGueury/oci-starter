@@ -17,12 +17,12 @@
             <artifactId>api</artifactId>
             <version>${fdk.version}</version>
         </dependency>
-    <dependency>
-      <groupId>com.oracle.database.jdbc</groupId>
-      <artifactId>ojdbc8</artifactId>
-      <version>19.3.0.0</version>
-    </dependency>  
-      <dependency>
+        <dependency>
+           <groupId>com.oracle.database.jdbc</groupId>
+           <artifactId>ojdbc8</artifactId>
+           <version>19.3.0.0</version>
+        </dependency>  
+        <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
             <version>1.1.4</version>

@@ -38,14 +38,8 @@ public class HelloFunction {
     sb.append("[");
     try {
       System.out.println("Before classForName");
-      Connection conn;
-      if (dbUrl.indexOf("oracle") > 0) {
-        Class.forName("oracle.jdbc.driver.OracleDriver");
-        conn = poolDataSource.getConnection();
-      } else {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-      }
+      Class.forName("oracle.jdbc.driver.OracleDriver");
+      Connection conn = poolDataSource.getConnection();
       System.out.println("After connection");
       Statement stmt = conn.createStatement();
       ResultSet rs = stmt.executeQuery("SELECT * FROM dept");

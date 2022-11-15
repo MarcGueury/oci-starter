@@ -115,6 +115,7 @@ export TF_VAR_db_existing_strategy="new"
 # export TF_VAR_atp_ocid="${var.atp_ocid}"
 # export TF_VAR_db_ocid="${var.db_ocid}"
 # export TF_VAR_mysql_ocid="${var.mysql_ocid}"
+# export TF_VAR_apigw_ocid="${var.apigw_ocid}"
 export TF_VAR_db_user="admin"
 # XXXXXX export TF_VAR_vault_secret_authtoken_ocid=XXXXXXX
 # export TF_VAR_db_password="${var.db_password}"
@@ -275,6 +276,11 @@ while [[ $# -gt 0 ]]; do
       ;;     
     -bastion_ocid)
       export TF_VAR_bastion_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;           
+    -apigw_ocid)
+      export TF_VAR_apigw_ocid="$2"
       shift # past argument
       shift # past value
       ;;                                   
@@ -475,10 +481,13 @@ fi
 
 #-- APP ---------------------------------------------------------------------
 
-APP=$TF_VAR_language
-
-if [ "$TF_VAR_language" == "java" ]; then
-  APP=${TF_VAR_language}_${TF_VAR_java_framework}
+if [[ $TF_VAR_deploy_strategy == "function" ]]; then
+  APP=fn/fn_$TF_VAR_language
+else
+  APP=$TF_VAR_language
+  if [ "$TF_VAR_language" == "java" ]; then
+    APP=${TF_VAR_language}_${TF_VAR_java_framework}
+  fi
 fi
 
 case $TF_VAR_db_strategy in
@@ -499,6 +508,12 @@ APP_DB=${APP}_${APP_DB}
 echo APP=$APP
 mkdir app_src
 mkdir db_src
+
+# Function Common 
+if [[ $TF_VAR_deploy_strategy == "function" ]]; then
+  cp -r ../option/app_src/fn/fn_common/* app_src/.
+fi  
+
 # Generic version for Oracle DB
 if [ -d "../option/app_src/$APP" ]; then
   cp -r ../option/app_src/$APP/* app_src/.
@@ -556,6 +571,17 @@ elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   cp ../option/compute/* compute/.
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   cp_terraform function.tf 
+  if [ "$TF_VAR_language" == "ords" ]; then
+    APIGW_APPEND=apigw_ords_append.tf
+  else 
+    APIGW_APPEND=apigw_append.tf
+  fi
+
+  if [ -v TF_VAR_apigw_ocid ]; then
+    cp_terraform apigw_existing.tf $APIGW_APPEND
+  else
+    cp_terraform apigw.tf $APIGW_APPEND
+  fi
 fi
 
 #-- Bastion -----------------------------------------------------------------

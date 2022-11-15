@@ -13,6 +13,8 @@ env.sh
 output
 option/app_src/dotnet/src/obj
 option/app_src/dotnet_mysql/src/obj
-option/app_src/java_helidon/target/classes
-option/app_src/java_helidon_mysql/target/classes
+option/app_src/java_helidon/target
+option/app_src/java_helidon_mysql/target
+option/app_src/java_springboot/target
+option/app_src/fn/fn_java/target
 

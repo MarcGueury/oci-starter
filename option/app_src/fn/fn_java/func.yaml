@@ -1,5 +1,5 @@
 schema_version: 20180708
-name: fn-starter-java
+name: fn-java
 version: 0.0.26
 runtime: java
 build_image: fnproject/fn-java-fdk-build:jdk17-1.0.157

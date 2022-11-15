@@ -21,7 +21,11 @@ if [ "$1" != "--auto-approve" ]; then
 fi
 
 . env.sh
-if [ -d oke ]; then
+if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   oke/oke_destroy.sh --auto-approve
+elif [ "$TF_VAR_deploy_strategy" == "function" ]; then
+  # delete the UI website
+  oci os object bulk-delete -bn ${TF_VAR_prefix}-public-bucket --force
 fi
+
 terraform/destroy.sh --auto-approve

@@ -5,11 +5,6 @@ cd $SCRIPT_DIR
 
 set -e
 
-TMP_DIR=../tmp
-if [ ! -d $TMP_DIR ]; then
-  mkdir $TMP_DIR
-fi
-
 resource_manager_get_stack() {
   if [ ! -f ../tmp/resource_manager_stackid ]; then
     echo "Stack does not exists ( file ../tmp/resource_manager_stackid not found )"

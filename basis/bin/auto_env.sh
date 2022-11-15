@@ -30,12 +30,18 @@ if ! command -v jq &> /dev/null; then
   exit 1
 fi
 
+export TMP_DIR=$SCRIPT_DIR/../tmp
+if [ ! -d $TMP_DIR ]; then
+  mkdir $TMP_DIR
+fi
+
 #-- PRE terraform ----------------------------------------------------------
 # XXXXXX -> Should detect when a new output is created
 if [ -v STARTER_VARIABLES_SET ]; then
   echo "Variables already set"
 else 
   export STARTER_VARIABLES_SET="PRE"
+
 
   if [ "$OCI_CLI_CLOUD_SHELL" == "True" ];  then
     # Cloud Shell
@@ -72,7 +78,7 @@ else
   echo TF_VAR_region=$TF_VAR_region
 
   # Kubernetes and OCIR
-  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
+  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] | [ "$TF_VAR_deploy_strategy" == "function" ]; then
     export TF_VAR_namespace=`oci os ns get | jq -r .data`
     echo TF_VAR_namespace=$TF_VAR_namespace
     export TF_VAR_username=`oci iam user get --user-id $TF_VAR_user_ocid | jq -r '.data.name'`
@@ -97,12 +103,24 @@ if [ -f $STATE_FILE ]; then
   # Functions
   if [ "$TF_VAR_deploy_strategy" == "function" ]; then
     # APIGW URL
-    get_attribute_from_tfstate "APIGW_HOSTNAME" "${TF_VAR_prefix}_apigw" "hostname"
+    get_attribute_from_tfstate "APIGW_HOSTNAME" "starter_apigw" "hostname"
 
-    # Function URL
-    get_attribute_from_tfstate "FUNCTION_ENDPOINT" "function" "invoke_endpoint"
-    get_attribute_from_tfstate "FUNCTION_ID" "function" "id"
-    export FUNCTION_URL=$FUNCTION_ENDPOINT/20181201/functions/$FUNCTION_ID
+    # APIGW Deployment id
+    get_attribute_from_tfstate "APIGW_DEPLOYMENT_OCID" "starter_apigw_deployment" "id"
+
+    # OBJECT Storage URL
+    export BUCKET_URL="https://objectstorage.${TF_VAR_region}.oraclecloud.com/n/${TF_VAR_namespace}/b/${TF_VAR_prefix}-public-bucket/o"
+
+    # Function OCID
+    get_attribute_from_tfstate "FN_FUNCTION_OCID" "starter_fn_function" "id"
+
+    echo "file=$TMP_DIR/fn_image.txt" 
+    if [ -f $TMP_DIR/fn_image.txt ]; then
+      export TF_VAR_fn_image=`cat $TMP_DIR/fn_image.txt`
+      echo TF_VAR_fn_image=$TF_VAR_fn_image
+      export TF_VAR_fn_db_url=`cat $TMP_DIR/fn_db_url.txt`
+      echo TF_VAR_fn_db_url=$TF_VAR_fn_db_url
+    fi   
   fi
 
   if [ "$TF_VAR_deploy_strategy" == "compute" ]; then

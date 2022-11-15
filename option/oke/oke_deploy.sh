@@ -56,8 +56,6 @@ fi
 
 # Using & as separator
 # XXXXXX
-TMP_DIR=$SCRIPT_DIR/../tmp
-mkdir $TMP_DIR
 sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/app.yaml > $TMP_DIR/app.yaml
 sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" ui_src/ui.yaml > $TMP_DIR/ui.yaml
 
