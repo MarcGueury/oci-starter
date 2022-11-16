@@ -123,7 +123,7 @@ resource "oci_core_security_list" "starter_seclist_node" {
   }
   egress_security_rules {
     description      = "Allow nodes to communicate with OKE to ensure correct start-up and continued functioning"
-    destination      = "all-fra-services-in-oracle-services-network"
+    destination      = data.oci_core_services.all_services.services[0].cidr_block
     destination_type = "SERVICE_CIDR_BLOCK"
     protocol  = "6"
     stateless = "false"
@@ -198,7 +198,7 @@ resource oci_core_security_list starter_seclist_api {
 
   egress_security_rules {
     description      = "Allow Kubernetes Control Plane to communicate with OKE"
-    destination      = "all-fra-services-in-oracle-services-network"
+    destination      = data.oci_core_services.all_services.services[0].cidr_block
     destination_type = "SERVICE_CIDR_BLOCK"
     protocol  = "6"
     stateless = "false"
