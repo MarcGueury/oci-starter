@@ -119,6 +119,7 @@ export TF_VAR_db_existing_strategy="new"
 export TF_VAR_db_user="admin"
 # XXXXXX export TF_VAR_vault_secret_authtoken_ocid=XXXXXXX
 # export TF_VAR_db_password="${var.db_password}"
+default TF_VAR_licence_model LICENSE_INCLUDED
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -317,7 +318,20 @@ while [[ $# -gt 0 ]]; do
       fi
       shift # past argument
       shift # past value
-      ;;                                            
+      ;;    
+    -license)
+      # BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
+      if [ $2 == "BRING_YOUR_OWN_LICENSE" ] || [ $2 == "byol" ] ; then 
+        export TF_VAR_licence_model="BRING_YOUR_OWN_LICENSE"
+      elif [ $2 == "LICENSE_INCLUDED" ] || [ $2 == "included" ]  ; then  
+        export TF_VAR_licence_model="LICENSE_INCLUDED"
+      else
+        unknown_value "$1" "byol/BRING_YOUR_OWN_LICENSE/included/LICENSE_INCLUDED"
+      fi
+      shift # past argument
+      shift # past value
+      ;;            
+
     -*|--*)
       echo "Unknown option $1"
       exit 1
@@ -389,10 +403,16 @@ echo '#!/bin/bash' > env.sh
 echo 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )' >> env.sh
 echo '' >> env.sh
 echo '# Env Variables' >> env.sh
+if [ -z TF_VAR_compartment_ocid ]; then
+  echo "# export TF_VAR_compartment_ocid=xxxxx"
+fi
 export |grep TF_VAR >> env.sh
 echo '' >> env.sh
 echo '# Get other env variables automatically' >> env.sh
 echo '. $SCRIPT_DIR/bin/auto_env.sh' >> env.sh
+
+# Add comment
+sudo sed -i '/TF_VAR_licence_model/ i # TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED' env.sh
 
 fi  
 

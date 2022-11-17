@@ -62,14 +62,14 @@ else
 
   if [ -z "$TF_VAR_compartment_ocid" ]; then
     echo "WARNING: compartment_ocid is not defined."
-    echo "         The components will be created in the 'oci-starter' compartment"
     # echo "        The components will be created in the root compartment."
     # export TF_VAR_compartment_ocid=$TF_VAR_tenancy_ocid
 
+    echo "         The components will be created in the 'oci-starter' compartment"
     STARTER_OCID=`oci iam compartment list --name oci-starter | jq .data[0].id -r`
     if [ -z "$STARTER_OCID" ]; then
       echo "Creating a new 'oci-starter' compartment"
-      oci iam compartment create --compartment-id $TF_VAR_tenancy_ocid --description oci-starter --name oci-starter --wait-for-state ACTIVE > $TMP_DIR/compartment.log
+      oci iam compartment create --compartment-id $TF_VAR_tenancy_ocid --description oci-starter --name oci-starter > $TMP_DIR/compartment.log
       STARTER_OCID=`cat $TMP_DIR/compartment.log | grep \"id\" | sed 's/"//g' | sed "s/.*id: //g" | sed "s/,//g"`
     else
       echo "Using the existing 'oci-starter' Compartment"
