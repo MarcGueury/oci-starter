@@ -60,6 +60,11 @@ else
     # echo TF_VAR_private_key_path=$TF_VAR_private_key_path
   fi
 
+  # Namespace
+  export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_devops_rsa.pub)
+  export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_devops_rsa)
+
+
   if [ -z "$TF_VAR_compartment_ocid" ]; then
     echo "WARNING: compartment_ocid is not defined."
     # echo "        The components will be created in the root compartment."
@@ -69,23 +74,27 @@ else
     STARTER_OCID=`oci iam compartment list --name oci-starter | jq .data[0].id -r`
     if [ -z "$STARTER_OCID" ]; then
       echo "Creating a new 'oci-starter' compartment"
-      oci iam compartment create --compartment-id $TF_VAR_tenancy_ocid --description oci-starter --name oci-starter > $TMP_DIR/compartment.log
+      oci iam compartment create --compartment-id $TF_VAR_tenancy_ocid --description oci-starter --name oci-starter --wait-for-state ACTIVE > $TMP_DIR/compartment.log
       STARTER_OCID=`cat $TMP_DIR/compartment.log | grep \"id\" | sed 's/"//g' | sed "s/.*id: //g" | sed "s/,//g"`
+      while [ "$NAME" != "oci-starter" ]
+      do
+        NAME=`oci iam compartment get --compartment-id=$STARTER_OCID | jq -r .data.name 2> /dev/null`
+        echo "Waiting"
+        sleep 2
+      done
     else
       echo "Using the existing 'oci-starter' Compartment"
     fi 
     export TF_VAR_compartment_ocid=$STARTER_OCID
+    echo "TF_VAR_compartment_ocid=$STARTER_OCID"
+    echo "Created"
   fi
 
-  # Namespace
-  export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_devops_rsa.pub)
-  export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_devops_rsa)
-  export TF_VAR_compartment_name=`oci iam compartment get --compartment-id=$TF_VAR_compartment_ocid | jq -r .data.name`
+
 
   # Echo
   echo TF_VAR_tenancy_ocid=$TF_VAR_tenancy_ocid
   echo TF_VAR_compartment_ocid=$TF_VAR_compartment_ocid
-  echo TF_VAR_compartment_name=$TF_VAR_compartment_name
   echo TF_VAR_region=$TF_VAR_region
 
   # Kubernetes and OCIR
