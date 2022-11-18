@@ -66,7 +66,7 @@ build_option() {
        -atp_ocid $EX_ATP_OCID \
        -mysql_ocid $EX_MYSQL_OCID \
        -auth_token $OCI_TOKEN \
-       -apgw_ocid $EX_APIGW_OCID \
+       -apigw_ocid $EX_APIGW_OCID \
        -bastion_ocid $EX_BASTION_OCID \
        -fnapp_ocid $EX_FNAPP_OCID > ${TEST_DIR}.log 2>&1 
   mv output $TEST_DIR               
@@ -138,7 +138,7 @@ loop_lang () {
 loop_deploy() {
   OPTION_DEPLOY=function 
   loop_lang
-  OPTION_DEPLOY=oke
+  OPTION_DEPLOY=kubernetes
   loop_lang
   OPTION_DEPLOY=compute
   loop_lang
