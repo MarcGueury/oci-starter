@@ -46,7 +46,6 @@ build_test_destroy () {
   cat ${TEST_DIR}_time.txt
 }
 
-XXXXXX
 build_option() {
   if [ "$OPTION_LANG" == "java" ]; then
     NAME=${OPTION_LANG}-${OPTION_JAVA_FRAMEWORK}-${OPTION_DB}-${OPTION_UI}
@@ -105,6 +104,7 @@ loop_lang () {
 
   OPTION_LANG=java 
   if [ "$OPTION_DEPLOY" == "function" ]; then
+    OPTION_JAVA_FRAMEWORK=fn
     loop_db
   else
     loop_java_framework
