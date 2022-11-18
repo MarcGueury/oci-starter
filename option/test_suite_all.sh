@@ -1,15 +1,13 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-. $HOME/bin/env_oci_starter_testsuite.sh
-export EX_MYSQL_OCID=$EX_OKE_MYSQL_OCID
-export EX_VNC_OCID=$EX_OKE_VNC_OCID
-export EX_SUBNET_OCID=$EX_OKE_SUBNET_OCID
-
+export TEST_HOME=$SCRIPT_DIR/test_all
+. $HOME/bin/env_oci_starter_testsuite.sh kubernetes
 
 start_test () {
   export TEST_NAME=$1
-  cd $SCRIPT_DIR/test_oke
+  export TEST_DIR=$TEST_HOME/$OPTION_DEPLOY/$TEST_NAME
+  cd $TEST_HOME/oci-starter
   echo "-- Start test $TEST_NAME ---------------------------------------"   
   cp -r oci-starter $TEST_NAME
   cd $TEST_NAME
@@ -17,9 +15,8 @@ start_test () {
 
 build_test_destroy () {
   SECONDS=0
-  TEST_DIR=$SCRIPT_DIR/test_oke/$TEST_NAME
   pwd
-  cd $TEST_DIR/output
+  cd $TEST_DIR
   ./build.sh > build.log 2>&1  
   echo "build_secs=" $SECONDS >  ${TEST_DIR}_time.txt
   if [ -f /tmp/result.html ]; then
@@ -49,6 +46,7 @@ build_test_destroy () {
   cat ${TEST_DIR}_time.txt
 }
 
+XXXXXX
 build_option() {
   if [ "$OPTION_LANG" == "java" ]; then
     NAME=${OPTION_LANG}-${OPTION_JAVA_FRAMEWORK}-${OPTION_DB}-${OPTION_UI}
@@ -56,8 +54,10 @@ build_option() {
     NAME=${OPTION_LANG}-${OPTION_DB}-${OPTION_UI}
   fi
   start_test $NAME
+  cd $TEST_HOME/oci-starter
   ./oci_starter.sh -prefix $NAME -compartment_ocid $EX_COMPARTMENT_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID -oke_ocid $EX_OKE_OCID -atp_ocid $EX_ATP_OCID -mysql_ocid $EX_MYSQL_OCID -bastion_ocid $EX_BASTION_OCID \
-                  -language $OPTION_LANG -java_framework $OPTION_JAVA_FRAMEWORK -database $OPTION_DB -ui $OPTION_UI -deploy kubernetes -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN  > $SCRIPT_DIR/test_oke/${TEST_NAME}.log 2>&1 
+                  -language $OPTION_LANG -java_framework $OPTION_JAVA_FRAMEWORK -database $OPTION_DB -ui $OPTION_UI -deploy  "" -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN  > $SCRIPT_DIR/test_oke/${TEST_NAME}.log 2>&1 
+  mv output $TEST_DIR               
   build_test_destroy
 }
 
@@ -92,8 +92,23 @@ loop_java_framework () {
 }
 
 loop_lang () {
+  mkdir $TEST_HOME/$OPTION_DEPLOY
+  if [ "$OPTION_DEPLOY" == "kubernetes" ]; then
+    export EX_MYSQL_OCID=$EX_OKE_MYSQL_OCID
+    export EX_VNC_OCID=$EX_OKE_VNC_OCID
+    export EX_SUBNET_OCID=$EX_OKE_SUBNET_OCID
+  else
+    export EX_MYSQL_OCID=$EX_SHARED_MYSQL_OCID
+    export EX_VNC_OCID=$EX_SHARED_VNC_OCID
+    export EX_SUBNET_OCID=$EX_SHARED_SUBNET_OCID
+  fi
+
   OPTION_LANG=java 
-  loop_java_framework
+  if [ "$OPTION_DEPLOY" == "function" ]; then
+    loop_db
+  else
+    loop_java_framework
+  fi
   OPTION_LANG=node 
   loop_db
   OPTION_LANG=python
@@ -106,16 +121,25 @@ loop_lang () {
   loop_ui
 }
 
-if [ -d test_oke ]; then
-  echo "test_oke directory already exists"
+loop_deploy() {
+  OPTION_DEPLOY=function 
+  loop_lang
+  OPTION_DEPLOY=oke
+  loop_lang
+  OPTION_DEPLOY=compute
+  loop_lang
+}
+
+if [ -d $TEST_HOME ]; then
+  echo "$TEST_HOME directory already exists"
   exit;
 fi
 
 # Avoid already set variables
 unset "${!TF_VAR@}"
 
-mkdir test_oke
-cd test_oke
-git clone https://github.com/MarcGueury/oci-starter
+mkdir $TEST_HOME
+cd $TEST_HOME
+git clone https://github.com/mgueury/oci-starter
 
-loop_lang
+loop_deploy

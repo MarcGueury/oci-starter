@@ -1,17 +1,14 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-# export EX_COMPARTMENT_OCID=
-# export EX_VNC_OCID=
-# export EX_SUBNET_OCID=
-# export EX_OKE_OCID=
-# export EX_ATP_OCID=
-# export EX_DB_OCID=
-# export EX_MYSQL_OCID=
-# export OCI_TOKEN=
-# export TEST_DB_PASSWORD=
 . $HOME/bin/env_oci_starter_testsuite.sh compute
 
+#----------------------------------------------------------------------------
+export EX_MYSQL_OCID=$EX_SHARED_MYSQL_OCID
+export EX_VNC_OCID=$EX_SHARED_VNC_OCID
+export EX_SUBNET_OCID=$EX_SHARED_SUBNET_OCID
+
+#----------------------------------------------------------------------------
 start_test () {
   export TEST_NAME=$1
   cd $SCRIPT_DIR/test
