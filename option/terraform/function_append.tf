@@ -48,26 +48,3 @@ locals {
   bucket_url = "https://objectstorage.${var.region}.oraclecloud.com/n/${var.namespace}/b/${var.prefix}-public-bucket/o"
 }
 
-#-- Log ---------------------------------------------------------------------
-resource "oci_logging_log_group" "starter_log_group" {
-  #Required
-  compartment_id = var.compartment_ocid
-  display_name   = "${var.prefix}-log-group"
-}
-
-resource oci_logging_log export_starter_fn_application_invoke {
-  configuration {
-    compartment_id = var.compartment_ocid
-    source {
-      category    = "invoke"
-      resource    = local.fnapp_ocid
-      service     = "functions"
-      source_type = "OCISERVICE"
-    }
-  }
-  display_name = "starter-fn-application-invoke"
-  is_enabled         = "true"
-  log_group_id       = oci_logging_log_group.starter_log_group.id
-  log_type           = "SERVICE"
-  retention_duration = "30"
-}
