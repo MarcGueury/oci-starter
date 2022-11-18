@@ -12,8 +12,8 @@ start_test () {
 
 build_test_destroy () {
   SECONDS=0
-  pwd
   cd $TEST_DIR
+  pwd
   ./build.sh > build.log 2>&1  
   echo "build_secs=" $SECONDS >  ${TEST_DIR}_time.txt
   if [ -f /tmp/result.html ]; then
