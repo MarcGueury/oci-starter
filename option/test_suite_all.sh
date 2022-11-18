@@ -44,7 +44,7 @@ build_test_destroy () {
 }
 
 build_option() {
-  if [ "$OPTION_LANG" == "java" ]; then
+  if [ "$OPTION_LANG" == "java" ] && [ "$OPTION_DEPLOY" != "function" ]; then
     NAME=${OPTION_LANG}-${OPTION_JAVA_FRAMEWORK}-${OPTION_DB}-${OPTION_UI}
   else
     NAME=${OPTION_LANG}-${OPTION_DB}-${OPTION_UI}
@@ -101,7 +101,8 @@ loop_lang () {
 
   OPTION_LANG=java 
   if [ "$OPTION_DEPLOY" == "function" ]; then
-    OPTION_JAVA_FRAMEWORK=fn
+    # Dummy value, not used
+    OPTION_JAVA_FRAMEWORK=helidon
     loop_db
   else
     loop_java_framework
