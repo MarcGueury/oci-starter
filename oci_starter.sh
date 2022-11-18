@@ -408,8 +408,9 @@ fi
 echo '#!/bin/bash' > env.sh
 echo 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )' >> env.sh
 OCI_STARTER_CREATION_DATE=`date '+%Y-%m-%d-%H-%M-%S-%6N'`
-echo "declare -x OCI_STARTER_CREATION_DATE=$OCI_STARTER_CREATION_DATE" >> env.shecho '# Env Variables' >> env.sh
+echo "declare -x OCI_STARTER_CREATION_DATE=$OCI_STARTER_CREATION_DATE" >> env.sh
 echo '' >> env.sh
+echo '# Env Variables' >> env.sh
 if [ -z "$TF_VAR_compartment_ocid" ]; then
   echo "# declare -x TF_VAR_compartment_ocid=ocid1.compartment.xxxxx" >> env.sh
 fi
