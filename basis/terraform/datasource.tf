@@ -17,12 +17,6 @@ data "oci_identity_regions" "current_region" {
   }
 }
 
-# Randoms
-resource "random_string" "id" {
-  length  = 4
-  special = false
-}
-
 # Gets a list of supported images based on the shape, operating_system and operating_system_version provided
 data "oci_core_images" "node_pool_images" {
   compartment_id           = var.tenancy_ocid
