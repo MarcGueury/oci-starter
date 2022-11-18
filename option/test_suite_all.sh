@@ -52,7 +52,7 @@ build_option() {
   start_test $NAME
   cd $TEST_HOME/oci-starter
   ./oci_starter.sh -prefix $NAME -compartment_ocid $EX_COMPARTMENT_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID -oke_ocid $EX_OKE_OCID -atp_ocid $EX_ATP_OCID -mysql_ocid $EX_MYSQL_OCID -bastion_ocid $EX_BASTION_OCID \
-                  -language $OPTION_LANG -java_framework $OPTION_JAVA_FRAMEWORK -database $OPTION_DB -ui $OPTION_UI -deploy  "" -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN  > $SCRIPT_DIR/test_oke/${TEST_NAME}.log 2>&1 
+                  -language $OPTION_LANG -java_framework $OPTION_JAVA_FRAMEWORK -database $OPTION_DB -ui $OPTION_UI -deploy $OPTION_DEPLOY -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN  > $SCRIPT_DIR/test_oke/${TEST_NAME}.log 2>&1 
   mv output $TEST_DIR               
   build_test_destroy
 }
