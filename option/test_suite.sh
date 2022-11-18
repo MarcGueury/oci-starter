@@ -64,7 +64,25 @@ unset "${!TF_VAR@}"
 
 mkdir test
 cd test
-git clone https://github.com/MarcGueury/oci-starter
+# git clone https://github.com/MarcGueury/oci-starter
+git clone https://github.com/mgueury/oci-starter
+
+# Java Compute + Existing MYSQL + Existing Subnet
+start_test 14_PYTHON_COMPUTE_EX_ATP_SUBNET
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language python -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+# OKE + Helidon
+start_test 50_JAVA_HELIDON_OKE_ATP
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+# OKE + SPRINGBOOT + MYSQL
+start_test 52_JAVA_SPRINGBOOT_OKE_MYSQL
+./oci_starter.sh -compartment_ocid $EX_COMPARTMENT_OCID -language java -java_framework springboot -deploy kubernetes -database mysql -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $SCRIPT_DIR/test/${TEST_NAME}.log 2>&1  
+build_test_destroy
+
+exit
 
 # Java Compute ATP 
 start_test 01_JAVA_HELIDON_COMPUTE_ATP
