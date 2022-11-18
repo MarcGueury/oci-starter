@@ -3,7 +3,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR/..
 
 if [ -z $DOCKER_PREFIX ]; then
-  echo "Set up the variables before to run this script by running:"
+  echo "oke-deploy.sh: Set up the variables before to run this script by running:"
   echo ". env.sh"
   exit
 fi

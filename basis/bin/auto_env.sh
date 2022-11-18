@@ -36,11 +36,10 @@ if [ ! -d $TMP_DIR ]; then
 fi
 
 #-- PRE terraform ----------------------------------------------------------
-# XXXXXX -> Should detect when a new output is created
-if [ -v STARTER_VARIABLES_SET ]; then
+if [ "$OCI_STARTER_VARIABLES_SET" == "$OCI_STARTER_CREATION_DATE" ]; then
   echo "Variables already set"
 else 
-  export STARTER_VARIABLES_SET="PRE"
+  export OCI_STARTER_VARIABLES_SET=$OCI_STARTER_VARIABLES_SET
 
 
   if [ "$OCI_CLI_CLOUD_SHELL" == "True" ];  then
@@ -60,25 +59,45 @@ else
     # echo TF_VAR_private_key_path=$TF_VAR_private_key_path
   fi
 
-  if [ -z "$TF_VAR_compartment_ocid" ]; then
-    echo "WARNING: compartment_ocid is not defined."
-    echo "         The components will be created in the root compartment."
-    export TF_VAR_compartment_ocid=$TF_VAR_tenancy_ocid
-  fi
-
   # Namespace
   export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_devops_rsa.pub)
   export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_devops_rsa)
-  export TF_VAR_compartment_name=`oci iam compartment get --compartment-id=$TF_VAR_compartment_ocid | jq -r .data.name`
+
+
+  if [ -z "$TF_VAR_compartment_ocid" ]; then
+    echo "WARNING: compartment_ocid is not defined."
+    # echo "        The components will be created in the root compartment."
+    # export TF_VAR_compartment_ocid=$TF_VAR_tenancy_ocid
+
+    echo "         The components will be created in the 'oci-starter' compartment"
+    STARTER_OCID=`oci iam compartment list --name oci-starter | jq .data[0].id -r`
+    if [ -z "$STARTER_OCID" ]; then
+      echo "Creating a new 'oci-starter' compartment"
+      oci iam compartment create --compartment-id $TF_VAR_tenancy_ocid --description oci-starter --name oci-starter --wait-for-state ACTIVE > $TMP_DIR/compartment.log
+      STARTER_OCID=`cat $TMP_DIR/compartment.log | grep \"id\" | sed 's/"//g' | sed "s/.*id: //g" | sed "s/,//g"`
+      while [ "$NAME" != "oci-starter" ]
+      do
+        NAME=`oci iam compartment get --compartment-id=$STARTER_OCID | jq -r .data.name 2> /dev/null`
+        echo "Waiting"
+        sleep 2
+      done
+    else
+      echo "Using the existing 'oci-starter' Compartment"
+    fi 
+    export TF_VAR_compartment_ocid=$STARTER_OCID
+    echo "TF_VAR_compartment_ocid=$STARTER_OCID"
+    echo "Created"
+  fi
+
+
 
   # Echo
   echo TF_VAR_tenancy_ocid=$TF_VAR_tenancy_ocid
   echo TF_VAR_compartment_ocid=$TF_VAR_compartment_ocid
-  echo TF_VAR_compartment_name=$TF_VAR_compartment_name
   echo TF_VAR_region=$TF_VAR_region
 
   # Kubernetes and OCIR
-  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] | [ "$TF_VAR_deploy_strategy" == "function" ]; then
+  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ]; then
     export TF_VAR_namespace=`oci os ns get | jq -r .data`
     echo TF_VAR_namespace=$TF_VAR_namespace
     export TF_VAR_username=`oci iam user get --user-id $TF_VAR_user_ocid | jq -r '.data.name'`
