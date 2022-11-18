@@ -51,8 +51,24 @@ build_option() {
   fi
   start_test $NAME
   cd $TEST_HOME/oci-starter
-  ./oci_starter.sh -prefix $NAME -compartment_ocid $EX_COMPARTMENT_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID -oke_ocid $EX_OKE_OCID -atp_ocid $EX_ATP_OCID -mysql_ocid $EX_MYSQL_OCID -bastion_ocid $EX_BASTION_OCID \
-                  -language $OPTION_LANG -java_framework $OPTION_JAVA_FRAMEWORK -database $OPTION_DB -ui $OPTION_UI -deploy $OPTION_DEPLOY -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN  > ${TEST_DIR}.log 2>&1 
+  ./oci_starter.sh \
+       -prefix $NAME \
+       -deploy $OPTION_DEPLOY \
+       -ui $OPTION_UI \
+       -language $OPTION_LANG \
+       -java_framework $OPTION_JAVA_FRAMEWORK \
+       -database $OPTION_DB \
+       -db_password $TEST_DB_PASSWORD \
+       -compartment_ocid $EX_COMPARTMENT_OCID \
+       -vcn_ocid $EX_VNC_OCID \
+       -subnet_ocid $EX_SUBNET_OCID \
+       -oke_ocid $EX_OKE_OCID \
+       -atp_ocid $EX_ATP_OCID \
+       -mysql_ocid $EX_MYSQL_OCID \
+       -auth_token $OCI_TOKEN \
+       -apgw_ocid $EX_APIGW_OCID \
+       -bastion_ocid $EX_BASTION_OCID \
+       -fnapp_ocid $EX_FNAPP_OCID > ${TEST_DIR}.log 2>&1 
   mv output $TEST_DIR               
   build_test_destroy
 }

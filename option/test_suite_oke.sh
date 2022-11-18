@@ -44,8 +44,8 @@ build_test_destroy () {
   mv /tmp/result_json.log ${TEST_DIR}_result_json.log
   mv /tmp/result_info.log ${TEST_DIR}_result_info.log
   SECONDS=0
-  ./destroy.sh --auto-approve > destroy.log 2>&1  
-  echo "destroy_secs=" $SECONDS >> ${TEST_DIR}_time.txt
+  # ./destroy.sh --auto-approve > destroy.log 2>&1  
+  # echo "destroy_secs=" $SECONDS >> ${TEST_DIR}_time.txt
   cat ${TEST_DIR}_time.txt
 }
 

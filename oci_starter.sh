@@ -290,7 +290,12 @@ while [[ $# -gt 0 ]]; do
       export TF_VAR_apigw_ocid="$2"
       shift # past argument
       shift # past value
-      ;;                                   
+      ;;   
+    -fnapp_ocid)
+      export TF_VAR_fnapp_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;                                                     
     -db_user)
       export TF_VAR_db_user="$2"
       shift # past argument
@@ -598,7 +603,11 @@ elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   mkdir compute 
   cp ../option/compute/* compute/.
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
-  cp_terraform function.tf 
+  if [ -v TF_VAR_fnapp_ocid ]; then
+    cp_terraform function_existing.tf function_append.tf
+  else
+    cp_terraform function.tf function_append.tf
+  fi
   if [ "$TF_VAR_language" == "ords" ]; then
     APIGW_APPEND=apigw_ords_append.tf
   else 
