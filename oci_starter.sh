@@ -410,10 +410,10 @@ echo 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && 
 echo '' >> env.sh
 echo '# Env Variables' >> env.sh
 if [ -z TF_VAR_compartment_ocid ]; then
-  echo "# export TF_VAR_compartment_ocid=xxxxx"
+  echo "# declare -x TF_VAR_compartment_ocid=ocid1.compartment.xxxxx" >> env.sh
 fi
 OCI_STARTER_CREATION_DATE=`date '+%Y-%m-%d-%H-%M-%S-%6N'`
-echo "declare -x OCI_STARTER_CREATION_DATE=$OCI_STARTER_CREATION_DATE"
+echo "declare -x OCI_STARTER_CREATION_DATE=$OCI_STARTER_CREATION_DATE" >> env.sh
 export |grep TF_VAR >> env.sh
 echo '' >> env.sh
 echo '# Get other env variables automatically' >> env.sh
