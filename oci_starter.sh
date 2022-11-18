@@ -412,6 +412,8 @@ echo '# Env Variables' >> env.sh
 if [ -z TF_VAR_compartment_ocid ]; then
   echo "# export TF_VAR_compartment_ocid=xxxxx"
 fi
+OCI_STARTER_CREATION_DATE=`date '+%Y-%m-%d-%H-%M-%S'`
+echo "declare -x OCI_STARTER_CREATION_DATE=$OCI_STARTER_CREATION_DATE"
 export |grep TF_VAR >> env.sh
 echo '' >> env.sh
 echo '# Get other env variables automatically' >> env.sh

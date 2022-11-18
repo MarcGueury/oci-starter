@@ -36,11 +36,10 @@ if [ ! -d $TMP_DIR ]; then
 fi
 
 #-- PRE terraform ----------------------------------------------------------
-# XXXXXX -> Should detect when a new output is created
-if [ -v STARTER_VARIABLES_SET ]; then
+if [ "$OCI_STARTER_VARIABLES_SET" == "$OCI_STARTER_CREATION_DATE" ]; then
   echo "Variables already set"
 else 
-  export STARTER_VARIABLES_SET="PRE"
+  export OCI_STARTER_VARIABLES_SET=$OCI_STARTER_VARIABLES_SET
 
 
   if [ "$OCI_CLI_CLOUD_SHELL" == "True" ];  then
