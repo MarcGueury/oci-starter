@@ -7,10 +7,7 @@ export TEST_HOME=$SCRIPT_DIR/test_all
 start_test () {
   export TEST_NAME=$1
   export TEST_DIR=$TEST_HOME/$OPTION_DEPLOY/$TEST_NAME
-  cd $TEST_HOME/oci-starter
   echo "-- Start test $TEST_NAME ---------------------------------------"   
-  cp -r oci-starter $TEST_NAME
-  cd $TEST_NAME
 }
 
 build_test_destroy () {
@@ -92,7 +89,7 @@ loop_java_framework () {
 
 loop_lang () {
   mkdir $TEST_HOME/$OPTION_DEPLOY
-  if [ "$OPTION_DEPLOY" == "kubernetes" ]; then
+  if [ "$OPTION_DEPLOY" == "kubernetes" ]; then
     export EX_MYSQL_OCID=$EX_OKE_MYSQL_OCID
     export EX_VNC_OCID=$EX_OKE_VNC_OCID
     export EX_SUBNET_OCID=$EX_OKE_SUBNET_OCID
@@ -103,7 +100,7 @@ loop_lang () {
   fi
 
   OPTION_LANG=java 
-  if [ "$OPTION_DEPLOY" == "function" ]; then
+  if [ "$OPTION_DEPLOY" == "function" ]; then
     OPTION_JAVA_FRAMEWORK=fn
     loop_db
   else
