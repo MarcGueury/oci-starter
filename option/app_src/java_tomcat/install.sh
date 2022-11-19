@@ -1,7 +1,8 @@
 export TOMCAT_HOME=/opt/tomcat
 
 # Create tomcat user, disable login and give rights
-sudo useradd -s /bin/nologin -g opc -d $TOMCAT_HOME tomcat
+# sudo useradd -s /bin/nologin -g opc -d $TOMCAT_HOME tomcat
+sudo useradd -g opc -d $TOMCAT_HOME tomcat
 
 sudo yum -y install wget
 VER=10.0.27
