@@ -23,6 +23,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" target/start.sh
 
   mkdir ../compute/app
+  cp nginx_app.locations ../compute
   cp -r target/* ../compute/app/.
 
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then

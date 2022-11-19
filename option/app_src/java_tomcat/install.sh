@@ -25,11 +25,13 @@ After=network.target
 
 [Service]
 Type=forking
+
 ExecStart=$TOMCAT_HOME/bin/start.sh
 ExecStop=$TOMCAT_HOME/bin/shutdown.sh
 SuccessExitStatus=143
 
 User=tomcat
+Group=tomcat
 UMask=0007
 RestartSec=10
 Restart=always
