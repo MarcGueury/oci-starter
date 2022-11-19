@@ -2,7 +2,7 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 export TEST_HOME=$SCRIPT_DIR/test_all
-. $HOME/bin/env_oci_starter_testsuite.sh kubernetes
+. $HOME/bin/env_oci_starter_testsuite.sh
 
 start_test () {
   export TEST_NAME=$1

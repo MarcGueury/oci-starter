@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-. $HOME/bin/env_oci_starter_testsuite.sh compute
+. $HOME/bin/env_oci_starter_testsuite.sh
 
 #----------------------------------------------------------------------------
 export EX_MYSQL_OCID=$EX_SHARED_MYSQL_OCID
