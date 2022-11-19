@@ -18,6 +18,7 @@ mvn package
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   # Replace the user and password
   cp start.sh target/.
+  cp install.sh target/.
   sed -i "s/##DB_USER##/$TF_VAR_db_user/" target/start.sh
   sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" target/start.sh
 
