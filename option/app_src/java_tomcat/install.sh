@@ -10,6 +10,10 @@ cd /tmp
 sudo mkdir -p /opt/tomcat
 wget https://archive.apache.org/dist/tomcat/tomcat-10/v${VER}/bin/apache-tomcat-${VER}.tar.gz
 sudo tar -xvf /tmp/apache-tomcat-$VER.tar.gz -C $TOMCAT_HOME --strip-components=1
+sudo cp /home/opc/app/starter-1.0.war $TOMCAT_HOME/webapps
+sed -i "s!##JDBC_URL##!$JDBC_URL!" /home/opc/app/start.sh
+sudo mv /home/opc/app/start.sh $TOMCAT_HOME/bin/.
+
 sudo chown -R tomcat: $TOMCAT_HOME
 sudo sh -c "chmod +x $TOMCAT_HOME/bin/*.sh"
 cat > /tmp/tomcat.service << EOF 
@@ -42,8 +46,5 @@ WantedBy=multi-user.target
 EOF
 
 sudo cp /tmp/tomcat.service /etc/systemd/system/tomcat.service 
-sudo cp /home/opc/app/starter-1.0.war $TOMCAT_HOME/webapps
-sudo mv /home/opc/app/start.sh $TOMCAT_HOME/bin/.
 
 sudo systemctl daemon-reload
-sudo systemctl enable --now tomcats
