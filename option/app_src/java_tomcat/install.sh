@@ -2,7 +2,8 @@ export TOMCAT_HOME=/opt/tomcat
 
 # Create tomcat user, disable login and give rights
 # sudo useradd -s /bin/nologin -g opc -d $TOMCAT_HOME tomcat
-sudo useradd -g opc -d $TOMCAT_HOME tomcat
+sudo groupadd tomcat
+sudo useradd -g tomcat -d $TOMCAT_HOME tomcat
 
 sudo yum -y install wget
 VER=10.0.27
@@ -24,19 +25,11 @@ After=network.target
 
 [Service]
 Type=forking
-
-Environment=JAVA_HOME=/usr/lib/jvm/jre-openjdk
-Environment=CATALINA_PID=$TOMCAT_HOME/temp/tomcat.pid
-Environment=CATALINA_HOME=$TOMCAT_HOME
-Environment='CATALINA_OPTS=-Xms512M -Xmx1G -Djava.net.preferIPv4Stack=true'
-Environment='JAVA_OPTS=-Djava.awt.headless=true'
-
 ExecStart=$TOMCAT_HOME/bin/start.sh
 ExecStop=$TOMCAT_HOME/bin/shutdown.sh
 SuccessExitStatus=143
 
 User=tomcat
-Group=tomcat
 UMask=0007
 RestartSec=10
 Restart=always
