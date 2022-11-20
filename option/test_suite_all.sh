@@ -15,7 +15,7 @@ build_test () {
   cd $TEST_DIR
   pwd
   ./build.sh > build_$BUILD_ID.log 2>&1  
-  echo "build_secs_$BUILD_ID=$SECONDS" >  ${TEST_DIR}_time.txt
+  echo "build_secs_$BUILD_ID=$SECONDS" >> ${TEST_DIR}_time.txt
   if [ -f /tmp/result.html ]; then
   if grep -q -i "DOCTYPE html" /tmp/result.html; then
       echo "RESULT HTML: OK"
@@ -162,4 +162,6 @@ mkdir $TEST_HOME
 cd $TEST_HOME
 git clone https://github.com/mgueury/oci-starter
 
+date
 loop_deploy
+date

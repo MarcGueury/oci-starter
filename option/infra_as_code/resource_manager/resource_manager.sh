@@ -59,7 +59,8 @@ resource_manager_apply() {
   resource_manager_get_stack 
 
   rs_echo "Create Apply Job"
-  CREATED_APPLY_JOB_ID=$(oci resource-manager job create-apply-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --wait-for-state FAILED --query 'data.id' --raw-output)
+  # Max 2000 secs wait time (1200 secs is sometimes too short for OKE+DB)
+  CREATED_APPLY_JOB_ID=$(oci resource-manager job create-apply-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --wait-for-state FAILED --max-wait-seconds 2000 --query 'data.id' --raw-output)
   echo "Created Apply Job Id: ${CREATED_APPLY_JOB_ID}"
 
   rs_echo "Get job"
