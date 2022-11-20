@@ -10,12 +10,12 @@ start_test () {
   echo "-- TEST: $OPTION_DEPLOY - $TEST_NAME ---------------------------------------"   
 }
 
-build_test_destroy () {
+build_test () {
   SECONDS=0
   cd $TEST_DIR
   pwd
-  ./build.sh > build.log 2>&1  
-  echo "build_secs=" $SECONDS >  ${TEST_DIR}_time.txt
+  ./build.sh > build_$BUILD_ID.log 2>&1  
+  echo "build_secs_$BUILD_ID=$SECONDS" >  ${TEST_DIR}_time.txt
   if [ -f /tmp/result.html ]; then
   if grep -q -i "DOCTYPE html" /tmp/result.html; then
       echo "RESULT HTML: OK"
@@ -31,15 +31,21 @@ build_test_destroy () {
   else
     echo "No file /tmp/result.html"
   fi
-  mv /tmp/result.html ${TEST_DIR}_result.html
-  mv /tmp/result.json ${TEST_DIR}_result.json
-  mv /tmp/result.info ${TEST_DIR}_result.info
-  mv /tmp/result_html.log ${TEST_DIR}_result_html.log
-  mv /tmp/result_json.log ${TEST_DIR}_result_json.log
-  mv /tmp/result_info.log ${TEST_DIR}_result_info.log
-  SECONDS=0
+  mv /tmp/result.html ${TEST_DIR}_result_$BUILD_ID.html
+  mv /tmp/result.json ${TEST_DIR}_result_$BUILD_ID.json
+  mv /tmp/result.info ${TEST_DIR}_result_$BUILD_ID.info
+  mv /tmp/result_html.log ${TEST_DIR}_result_html_$BUILD_ID.log
+  mv /tmp/result_json.log ${TEST_DIR}_result_json_$BUILD_ID.log
+  mv /tmp/result_info.log ${TEST_DIR}_result_info_$BUILD_ID.log
+}
+
+build_test_destroy () {
+  BUILD_ID=1
+  build_test
+  BUILD_ID=2
+  build_test
   ./destroy.sh --auto-approve > destroy.log 2>&1  
-  echo "destroy_secs=" $SECONDS >> ${TEST_DIR}_time.txt
+  echo "destroy_secs=$SECONDS" >> ${TEST_DIR}_time.txt
   cat ${TEST_DIR}_time.txt
 }
 
