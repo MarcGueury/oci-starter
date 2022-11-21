@@ -48,7 +48,12 @@ else
     export TF_VAR_region=$OCI_REGION
   elif [ -f $HOME/.oci/config ]; then
     ## Get the [DEFAULT] config
-    sed -n -e '/\[DEFAULT\]/,$p' $HOME/.oci/config > /tmp/ociconfig
+    if [ -z "$OCI_CLI_PROFILE" ]; then
+      OCI_PRO=DEFAULT
+    else 
+      OCI_PRO=$OCI_CLI_PROFILE
+    fi    
+    sed -n -e "/\[$OCI_PRO\]/,$$p" $HOME/.oci/config > /tmp/ociconfig
     export TF_VAR_user_ocid=`sed -n 's/user=//p' /tmp/ociconfig |head -1`
     export TF_VAR_fingerprint=`sed -n 's/fingerprint=//p' /tmp/ociconfig |head -1`
     export TF_VAR_private_key_path=`sed -n 's/key_file=//p' /tmp/ociconfig |head -1`
