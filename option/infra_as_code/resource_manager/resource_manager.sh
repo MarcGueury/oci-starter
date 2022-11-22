@@ -7,7 +7,7 @@ set -e
 
 resource_manager_get_stack() {
   if [ ! -f ../tmp/resource_manager_stackid ]; then
-    echo "Stack does not exists ( file ../tmp/resource_manager_stackid not found )"
+    rs_echo "Stack does not exists ( file ../tmp/resource_manager_stackid not found )"
     exit
   fi    
   source ../tmp/resource_manager_stackid
@@ -55,10 +55,10 @@ resource_manager_create_or_update() {
     fi
     resource_manager_get_stack
   	oci resource-manager stack update --stack-id $STACK_ID --config-source $ZIP_FILE_PATH --variables file://$VAR_FILE_PATH --force
-    echo "Updated stack id: ${STACK_ID}"
+    rs_echo "Updated stack id: ${STACK_ID}"
   else 
   	STACK_ID=$(oci resource-manager stack create --compartment-id $TF_VAR_compartment_ocid --config-source $ZIP_FILE_PATH --display-name $TF_VAR_prefix-resource-manager  --variables file://$VAR_FILE_PATH --query 'data.id' --raw-output)
-    echo "Created stack id: ${STACK_ID}"
+    rs_echo "Created stack id: ${STACK_ID}"
     echo "export STACK_ID=$STACK_ID" > $TMP_DIR/resource_manager_stackid
   fi  
 }
@@ -97,7 +97,7 @@ resource_manager_destroy() {
   resource_manager_get_stack 
   
   rs_echo "Create Destroy Job"
-  CREATED_DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --wait-for-state ACTIVE --query 'data.id' --raw-output)
+  CREATED_DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --wait-for-state FAILED --query 'data.id' --raw-output)
   echo "Created Destroy Job Id: ${CREATED_DESTROY_JOB_ID}"
 
   rs_echo "Get job"
@@ -106,8 +106,8 @@ resource_manager_destroy() {
   oci resource-manager job get-job-logs-content --job-id $CREATED_DESTROY_JOB_ID | tee > $TMP_DIR/tf_destroy.log
 
   # Check the result of the destroy JOB and stop deletion if required
-  if [ "$STATUS" == "SUCCEEDED" ]; then
-    rs_echo "ERROR: Status is not SUCCEEDED"
+  if [ "$STATUS" != "SUCCEEDED" ]; then
+    rs_echo "ERROR: Status ($STATUS) is not SUCCEEDED"
     return
   fi  
 
