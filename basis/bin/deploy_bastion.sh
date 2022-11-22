@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR/..
-. env.sh
+. env.sh -silent
 
 # Using RSYNC allow to reapply the same command several times easily. 
 if command -v rsync &> /dev/null

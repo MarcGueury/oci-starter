@@ -46,7 +46,7 @@ build_function() {
   # First create the Function using terraform
   # Run env.sh to get function image 
   cd $SCRIPT_DIR/..
-  . env.sh
+  . env.sh 
   terraform/apply.sh --auto-approve
 }
 

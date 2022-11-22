@@ -428,13 +428,13 @@ if [ -z "$TF_VAR_compartment_ocid" ]; then
 fi
 export |grep TF_VAR >> env.sh
 echo '' >> env.sh
-echo '# Get other env variables automatically' >> env.sh
-echo '. $SCRIPT_DIR/bin/auto_env.sh' >> env.sh
+echo '# Get other env variables automatically (-silent flag can be passed)' >> env.sh
+echo '. $SCRIPT_DIR/bin/auto_env.sh $1' >> env.sh
 
 # Add comment
 sudo sed -i '/TF_VAR_licence_model/ i # TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED' env.sh
-sudo sed -i '/TF_VAR_db_password/ i # Password policy: Minimum: 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345' env.sh
-sudo sed -i '/TF_VAR_auth_token/ i # Auth Token: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm' env.sh
+sudo sed -i '/TF_VAR_db_password/ i # TF_VAR_db_password policy: Minimum: 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345' env.sh
+sudo sed -i '/TF_VAR_auth_token/ i # TF_VAR_auth_token. See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm' env.sh
 
 fi  
 
