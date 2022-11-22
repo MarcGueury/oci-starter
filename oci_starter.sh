@@ -438,10 +438,10 @@ chmod +x env.sh
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
   cp ../mode/git/* $REPOSITORY_NAME/.
-elif [ -v REPOSITORY_NAME ]; then
-  mkdir $REPOSITORY_NAME
+# elif [ -v REPOSITORY_NAME ]; then
+#  mkdir $REPOSITORY_NAME
 else 
-  export REPOSITORY_NAME=output
+  export REPOSITORY_NAME=${REPOSITORY_NAME:="output"}
   mkdir $REPOSITORY_NAME
 fi
 cd ./$REPOSITORY_NAME
