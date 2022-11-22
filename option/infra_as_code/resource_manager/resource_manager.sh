@@ -17,30 +17,50 @@ rs_echo() {
   echo "Resource Manager: $1"
 }
 
-resource_manager_create() {
+resource_manager_create_or_update() {
   rs_echo "Create Stack"
 
+  ZIP_FILE_PATH=$TMP_DIR/resource_manager_$TF_VAR_prefix.zip
+  VAR_FILE_PATH=$TMP_DIR/resource_manager_variables.json
   if [ -f ../tmp/resource_manager_stackid ]; then
      echo "Stack exists already ( file ../tmp/resource_manager_stackid found )"
-     return
+     BACKUP_POSTFIX=`date '+%Y%m%d-%H%M%S'`
+     mv $ZIP_FILE_PATH $ZIP_FILE_PATH.$BACKUP_POSTFIX
+     mv $VAR_FILE_PATH $VAR_FILE_PATH.$BACKUP_POSTFIX
   fi    
 
-  ZIP_FILE_PATH=$TMP_DIR/resource_manager_$TF_VAR_prefix.zip
   if [ -f $ZIP_FILE_PATH ]; then
     rm $ZIP_FILE_PATH
   fi  
-  zip -r $ZIP_FILE_PATH *
+  zip -r $ZIP_FILE_PATH * -x "terraform.tfstate" "starter_kubeconfig" "*.sh"
 
   # Transforms the variables in a JSON format
   # This is a complex way to get them. But it works for multi line variables like TF_VAR_private_key
   excluded=$(env | sed -n 's/^\([A-Z_a-z][0-9A-Z_a-z]*\)=.*/\1/p' | grep -v 'TF_VAR_')
   sh -c 'unset $1; export -p' sh "$excluded" > $TMP_DIR/tf_var.sh
-  echo -n "{" > $TMP_DIR/variables.json
-  cat $TMP_DIR/tf_var.sh | sed "s/export TF_VAR_/\"/g" | sed "s/=\"/\": \"/g" | sed ':a;N;$!ba;s/\"\n/\", /g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/$/}/'>> $TMP_DIR/variables.json
+  echo -n "{" > $VAR_FILE_PATH
+  cat $TMP_DIR/tf_var.sh | sed "s/export TF_VAR_/\"/g" | sed "s/=\"/\": \"/g" | sed ':a;N;$!ba;s/\"\n/\", /g' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/$/}/'>> $VAR_FILE_PATH
 
-	STACK_ID=$(oci resource-manager stack create --compartment-id $TF_VAR_compartment_ocid --config-source $ZIP_FILE_PATH --display-name $TF_VAR_prefix-resource-manager  --variables file://$TMP_DIR/variables.json --query 'data.id' --raw-output)
-  echo "Created stack id: ${STACK_ID}"
-  echo "export STACK_ID=$STACK_ID" > $TMP_DIR/resource_manager_stackid
+  if [ -f ../tmp/resource_manager_stackid ]; then
+    if cmp -s $ZIP_FILE_PATH $ZIP_FILE_PATH.$BACKUP_POSTFIX; then
+      rs_echo "Zip files are identical"
+      if cmp -s $VAR_FILE_PATH $VAR_FILE_PATH.$BACKUP_POSTFIX; then
+        rs_echo "Var files are identical"
+        exit
+      else 
+        rs_echo "Var files are different"
+      fi 
+    else 
+      rs_echo "Zip files are different"
+    fi
+    resource_manager_get_stack
+  	oci resource-manager stack update --stack-id $STACK_ID --config-source $ZIP_FILE_PATH --variables file://$VAR_FILE_PATH --force
+    echo "Updated stack id: ${STACK_ID}"
+  else 
+  	STACK_ID=$(oci resource-manager stack create --compartment-id $TF_VAR_compartment_ocid --config-source $ZIP_FILE_PATH --display-name $TF_VAR_prefix-resource-manager  --variables file://$VAR_FILE_PATH --query 'data.id' --raw-output)
+    echo "Created stack id: ${STACK_ID}"
+    echo "export STACK_ID=$STACK_ID" > $TMP_DIR/resource_manager_stackid
+  fi  
 }
 
 resource_manager_plan() {
