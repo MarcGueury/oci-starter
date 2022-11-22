@@ -438,8 +438,6 @@ chmod +x env.sh
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
   cp ../mode/git/* $REPOSITORY_NAME/.
-# elif [ -v REPOSITORY_NAME ]; then
-#  mkdir $REPOSITORY_NAME
 else 
   export REPOSITORY_NAME=${REPOSITORY_NAME:="output"}
   mkdir $REPOSITORY_NAME
@@ -555,7 +553,7 @@ else
   mkdir ui_src
   UI=`echo "$TF_VAR_ui_strategy" | awk '{print tolower($0)}'`
   # html is the base
-  cp ../option/ui_src/html/* ui_src/.
+  cp -r ../option/ui_src/html/* ui_src/.
   cp -r ../option/ui_src/$UI/* ui_src/.
 fi
 
