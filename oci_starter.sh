@@ -50,12 +50,6 @@ unknown_value() {
   exit
 }
 
-default() {
-  if [ ! -v $1 ]; then
-    export $1="$2"
-  fi
-}
-
 show_help() {
   cat <<EOF
 Usage: $(basename $0) [OPTIONS]
@@ -125,7 +119,7 @@ export TF_VAR_db_existing_strategy="new"
 export TF_VAR_db_user="admin"
 # XXXXXX export TF_VAR_vault_secret_authtoken_ocid=XXXXXXX
 # export TF_VAR_db_password="${var.db_password}"
-default TF_VAR_licence_model LICENSE_INCLUDED
+export TF_VAR_licence_model=${TF_VAR_licence_model:="LICENSE_INCLUDED"}
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -142,8 +136,8 @@ while [[ $# -gt 0 ]]; do
     -language)
       if [ $2 == "java" ]; then 
         export TF_VAR_language=$2
-        default TF_VAR_java_version 17
-        default TF_VAR_java_framework helidon
+        export TF_VAR_java_version=${TF_VAR_java_version:="17"}
+        export TF_VAR_java_framework=${TF_VAR_java_framework:="helidon"}
       elif [ $2 == "node" ]; then  
         export TF_VAR_language=$2
       elif [ $2 == "python" ]; then  
@@ -420,7 +414,7 @@ echo '# Get other env variables automatically' >> env.sh
 echo '. $SCRIPT_DIR/bin/auto_env.sh' >> env.sh
 
 # Add comment
-sudo sed -i '/TF_VAR_licence_model/ i # TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED' env.sh
+sed -i '/TF_VAR_licence_model/ i # TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED' env.sh
 
 fi  
 
