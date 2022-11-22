@@ -50,12 +50,6 @@ unknown_value() {
   exit
 }
 
-default_old() {
-  if [ ! -z $1 ]; then
-    export $1="$2"
-  fi
-}
-
 show_help() {
   cat <<EOF
 Usage: $(basename $0) [OPTIONS]
@@ -441,14 +435,11 @@ title "Creating Directory"
 # ./helidon version
 
 chmod +x env.sh
-
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
   cp ../mode/git/* $REPOSITORY_NAME/.
-elif [ -d REPOSITORY_NAME ]; then
-  mkdir $REPOSITORY_NAME
-else 
-  export REPOSITORY_NAME=output
+else
+  export REPOSITORY_NAME=${REPOSITORY_NAME:="output"}
   mkdir $REPOSITORY_NAME
 fi
 cd ./$REPOSITORY_NAME
