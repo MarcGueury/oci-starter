@@ -89,7 +89,6 @@ resource_manager_apply() {
   oci resource-manager job get-job-logs-content --job-id $CREATED_APPLY_JOB_ID | tee > $TMP_DIR/tf_apply.log
 
   rs_echo "Get stack state"
-  # XXXXX terraform state will be zipped in a next run
   oci resource-manager stack get-stack-tf-state --stack-id $STACK_ID --file terraform.tfstate
 }
 

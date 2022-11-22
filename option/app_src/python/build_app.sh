@@ -17,7 +17,7 @@ CONFIG_FILE=src/start.sh
 sed -i "s/##DB_USER##/$TF_VAR_db_user/" $CONFIG_FILE
 sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
 
-## XXXXX Check Node Version in env variables
+## XXXXX Check Python Version in env variables
 if [ "$OCI_CLI_CLOUD_SHELL" == "true" ]; then
   echo 
 fi

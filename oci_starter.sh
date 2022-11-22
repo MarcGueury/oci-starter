@@ -409,6 +409,13 @@ if [ "$TF_VAR_db_strategy" == "mysql" ] && [ "$TF_VAR_db_user" == "admin" ]; the
   export TF_VAR_db_user="root"
 fi
 
+# ORDS and ATP
+if [ "$TF_VAR_language" == "ords" ] && [ "$TF_VAR_db_strategy" != "atp" ]; then
+  # XXXXXXX
+  echo "CURRENT LIMITATION: OCI Starter support ORDS on ATP only"
+  exit
+fi
+
 # Create env.sh
 echo '#!/bin/bash' > env.sh
 echo 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )' >> env.sh
@@ -426,6 +433,8 @@ echo '. $SCRIPT_DIR/bin/auto_env.sh' >> env.sh
 
 # Add comment
 sudo sed -i '/TF_VAR_licence_model/ i # TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED' env.sh
+sudo sed -i '/TF_VAR_db_password/ i # Password policy: Minimum: 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345' env.sh
+sudo sed -i '/TF_VAR_auth_token/ i # Auth Token: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm' env.sh
 
 fi  
 
