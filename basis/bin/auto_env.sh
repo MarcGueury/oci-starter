@@ -1,18 +1,32 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+
 # -- Functions --------------------------------------------------------------
+auto_echo () {
+  if [ -z "$SILENT_MODE" ]; then
+    echo "$1"
+  fi  
+}
+
 get_attribute_from_tfstate () {
   RESULT=`jq -r '.resources[] | select(.name=="'$2'") | .instances[0].attributes.'$3'' $STATE_FILE`
-  echo "$1=$RESULT"
+  auto_echo "$1=$RESULT"
   export $1="$RESULT"
 }
 
 get_output_from_tfstate () {
   RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE | sed "s/ //"`
-  echo "$1=$RESULT"
+  auto_echo "$1=$RESULT"
   export $1="$RESULT"
 }
+
+# Silent mode (default is not silent)
+if [ "$1" == "-silent" ]; then
+  SILENT_MODE=true
+else
+  unset SILENT_MODE
+fi 
 
 # -- env.sh
 if grep -q "__TO_FILL__" $SCRIPT_DIR/../env.sh; then
@@ -90,8 +104,8 @@ else
       echo "Using the existing 'oci-starter' Compartment"
     fi 
     export TF_VAR_compartment_ocid=$STARTER_OCID
-    echo "TF_VAR_compartment_ocid=$STARTER_OCID"
-    echo "Created"
+    auto_echo "TF_VAR_compartment_ocid=$STARTER_OCID"
+    echo "Compartment created"
   fi
 
 
@@ -104,16 +118,16 @@ else
   # Kubernetes and OCIR
   if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ]; then
     export TF_VAR_namespace=`oci os ns get | jq -r .data`
-    echo TF_VAR_namespace=$TF_VAR_namespace
+    auto_echo TF_VAR_namespace=$TF_VAR_namespace
     export TF_VAR_username=`oci iam user get --user-id $TF_VAR_user_ocid | jq -r '.data.name'`
-    echo TF_VAR_username=$TF_VAR_username
+    auto_echo TF_VAR_username=$TF_VAR_username
     export TF_VAR_email=mail@domain.com
-    echo TF_VAR_email=$TF_VAR_email
+    auto_echo TF_VAR_email=$TF_VAR_email
     export TF_VAR_ocir=${TF_VAR_region}.ocir.io
-    echo TF_VAR_ocir=$TF_VAR_ocir
+    auto_echo TF_VAR_ocir=$TF_VAR_ocir
     
     export DOCKER_PREFIX=${TF_VAR_ocir}/${TF_VAR_namespace}
-    echo DOCKER_PREFIX=$DOCKER_PREFIX
+    auto_echo DOCKER_PREFIX=$DOCKER_PREFIX
     export KUBECONFIG=$SCRIPT_DIR/../terraform/starter_kubeconfig
   fi
 fi
@@ -138,12 +152,12 @@ if [ -f $STATE_FILE ]; then
     # Function OCID
     get_attribute_from_tfstate "FN_FUNCTION_OCID" "starter_fn_function" "id"
 
-    echo "file=$TMP_DIR/fn_image.txt" 
+    auto_echo "file=$TMP_DIR/fn_image.txt" 
     if [ -f $TMP_DIR/fn_image.txt ]; then
       export TF_VAR_fn_image=`cat $TMP_DIR/fn_image.txt`
-      echo TF_VAR_fn_image=$TF_VAR_fn_image
+      auto_echo TF_VAR_fn_image=$TF_VAR_fn_image
       export TF_VAR_fn_db_url=`cat $TMP_DIR/fn_db_url.txt`
-      echo TF_VAR_fn_db_url=$TF_VAR_fn_db_url
+      auto_echo TF_VAR_fn_db_url=$TF_VAR_fn_db_url
     fi   
   fi
 
