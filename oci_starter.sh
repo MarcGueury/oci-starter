@@ -607,8 +607,10 @@ fi
 #-- Bastion -----------------------------------------------------------------
 
 if [ -v TF_VAR_bastion_ocid ]; then
+  echo "bastion test true"
   cp_terraform bastion_existing.tf  
 else
+  echo "bastion test false"
   cp_terraform bastion.tf  
 fi 
 
