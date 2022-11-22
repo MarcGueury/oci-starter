@@ -193,7 +193,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     -java_version)
       export TF_VAR_java_version=$1
-      if [ $1 != "8" ] && [ $1 != "11" ] &&[ $1 != "17" ]; then  
+      if [ $2 != "8" ] && [ $2 != "11" ] && [ $2 != "17" ]; then  
         unknown_value "$1" "8/11/17"
       fi
       shift # past argument
