@@ -12,6 +12,8 @@ start_test () {
 
 build_test () {
   SECONDS=0
+  # Change to the TEST_HOME directory first in case that the creation of TEST_DIR failed
+  cd $TEST_HOME
   cd $TEST_DIR
   pwd
   ./build.sh > build_$BUILD_ID.log 2>&1  
