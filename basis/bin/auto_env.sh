@@ -108,12 +108,10 @@ else
     echo "Compartment created"
   fi
 
-
-
   # Echo
-  echo TF_VAR_tenancy_ocid=$TF_VAR_tenancy_ocid
-  echo TF_VAR_compartment_ocid=$TF_VAR_compartment_ocid
-  echo TF_VAR_region=$TF_VAR_region
+  auto_echo TF_VAR_tenancy_ocid=$TF_VAR_tenancy_ocid
+  auto_echo TF_VAR_compartment_ocid=$TF_VAR_compartment_ocid
+  auto_echo TF_VAR_region=$TF_VAR_region
 
   # Kubernetes and OCIR
   if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ]; then
