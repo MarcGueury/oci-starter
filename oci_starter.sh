@@ -574,8 +574,8 @@ if [[ $TF_VAR_ui_strategy == "None" ]]; then
 else
   mkdir ui_src
   UI=`echo "$TF_VAR_ui_strategy" | awk '{print tolower($0)}'`
-  # html is the base
-  cp ../option/ui_src/html/* ui_src/.
+  # basis is the base
+  cp ../option/ui_src/basis/* ui_src/.
   cp -r ../option/ui_src/$UI/* ui_src/.
 fi
 
