@@ -410,7 +410,7 @@ if [ "$TF_VAR_db_strategy" == "mysql" ] && [ "$TF_VAR_db_user" == "admin" ]; the
 fi
 
 # ORDS and ATP
-if [ "$TF_VAR_language" == "ords" ] && [ "$TF_VAR_db_strategy" != "atp" ]; then
+if [ "$TF_VAR_language" == "ords" ] && [ "$TF_VAR_db_strategy" != "autonomous" ]; then
   # XXXXXXX
   echo "CURRENT LIMITATION: OCI Starter support ORDS on ATP only"
   exit
