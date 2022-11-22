@@ -97,7 +97,7 @@ resource_manager_destroy() {
   resource_manager_get_stack 
   
   rs_echo "Create Destroy Job"
-  CREATED_DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --query 'data.id' --raw-output)
+  CREATED_DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job --stack-id $STACK_ID --execution-plan-strategy=AUTO_APPROVED --wait-for-state SUCCEEDED --wait-for-state ACTIVE --query 'data.id' --raw-output)
   echo "Created Destroy Job Id: ${CREATED_DESTROY_JOB_ID}"
 
   rs_echo "Get job"
