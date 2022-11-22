@@ -55,12 +55,10 @@ if [ ! -f $KUBECONFIG ]; then
 fi
 
 # Using & as separator
-# XXXXXX
 sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/app.yaml > $TMP_DIR/app.yaml
 sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" ui_src/ui.yaml > $TMP_DIR/ui.yaml
 
 # delete the old pod, just to be sure a new image is pulled
-# XXX use rolling update with deployment ? but maybe overkill for a sample ?
 kubectl delete pod ${TF_VAR_prefix}-app ${TF_VAR_prefix}-ui
 
 # Create objects in Kubernetes

@@ -290,7 +290,12 @@ while [[ $# -gt 0 ]]; do
       export TF_VAR_apigw_ocid="$2"
       shift # past argument
       shift # past value
-      ;;                                   
+      ;;   
+    -fnapp_ocid)
+      export TF_VAR_fnapp_ocid="$2"
+      shift # past argument
+      shift # past value
+      ;;                                                     
     -db_user)
       export TF_VAR_db_user="$2"
       shift # past argument
@@ -404,6 +409,13 @@ if [ "$TF_VAR_db_strategy" == "mysql" ] && [ "$TF_VAR_db_user" == "admin" ]; the
   export TF_VAR_db_user="root"
 fi
 
+# ORDS and ATP
+if [ "$TF_VAR_language" == "ords" ] && [ "$TF_VAR_db_strategy" != "autonomous" ]; then
+  # XXXXXXX
+  echo "CURRENT LIMITATION: OCI Starter support ORDS on ATP only"
+  exit
+fi
+
 # Create env.sh
 echo '#!/bin/bash' > env.sh
 echo 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )' >> env.sh
@@ -416,11 +428,13 @@ if [ -z "$TF_VAR_compartment_ocid" ]; then
 fi
 export |grep TF_VAR >> env.sh
 echo '' >> env.sh
-echo '# Get other env variables automatically' >> env.sh
-echo '. $SCRIPT_DIR/bin/auto_env.sh' >> env.sh
+echo '# Get other env variables automatically (-silent flag can be passed)' >> env.sh
+echo '. $SCRIPT_DIR/bin/auto_env.sh $1' >> env.sh
 
 # Add comment
 sudo sed -i '/TF_VAR_licence_model/ i # TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED' env.sh
+sudo sed -i '/TF_VAR_db_password/ i # TF_VAR_db_password policy: Minimum: 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345' env.sh
+sudo sed -i '/TF_VAR_auth_token/ i # TF_VAR_auth_token. See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm' env.sh
 
 fi  
 
@@ -560,8 +574,8 @@ if [[ $TF_VAR_ui_strategy == "None" ]]; then
 else
   mkdir ui_src
   UI=`echo "$TF_VAR_ui_strategy" | awk '{print tolower($0)}'`
-  # html is the base
-  cp ../option/ui_src/html/* ui_src/.
+  # basis is the base
+  cp ../option/ui_src/basis/* ui_src/.
   cp -r ../option/ui_src/$UI/* ui_src/.
 fi
 
@@ -598,7 +612,11 @@ elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   mkdir compute 
   cp ../option/compute/* compute/.
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
-  cp_terraform function.tf 
+  if [ -v TF_VAR_fnapp_ocid ]; then
+    cp_terraform function_existing.tf function_append.tf
+  else
+    cp_terraform function.tf function_append.tf
+  fi
   if [ "$TF_VAR_language" == "ords" ]; then
     APIGW_APPEND=apigw_ords_append.tf
   else 

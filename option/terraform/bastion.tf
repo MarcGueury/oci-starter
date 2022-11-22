@@ -1,12 +1,3 @@
-# Defines the number of instances to deploy
-variable "instance_ocpus" {
-  default = 1
-}
-
-variable "instance_shape_config_memory_in_gbs" {
-  default = 8
-}
-
 resource "oci_core_instance" "starter_bastion" {
 
   availability_domain = data.oci_identity_availability_domain.ad.name
