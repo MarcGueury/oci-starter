@@ -23,9 +23,9 @@ fi
 
 echo 
 echo "Build done"
-if [ -v UI_URL ]; then
+if [ ! -z "$UI_URL" ]; then
   # Check the URL if running in the test_suite
-  if [ -v TEST_NAME ]; then
+  if [ ! -z "$TEST_NAME" ]; then
     if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
       kubectl wait --for=condition=ready pod app
       kubectl wait --for=condition=ready pod ui
