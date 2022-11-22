@@ -414,8 +414,8 @@ echo '# Get other env variables automatically' >> env.sh
 echo '. $SCRIPT_DIR/bin/auto_env.sh' >> env.sh
 
 # Add comment
-sed -i '/TF_VAR_licence_model/ i # TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED' env.sh
-
+awk '/TF_VAR_licence_model/{print "# TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED"}1' env.sh > env.tmp
+mv env.tmp env.sh 
 fi  
 
 echo MODE=$MODE
