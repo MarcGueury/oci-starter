@@ -92,13 +92,17 @@ else
     STARTER_OCID=`oci iam compartment list --name oci-starter | jq .data[0].id -r`
     if [ -z "$STARTER_OCID" ]; then
       echo "Creating a new 'oci-starter' compartment"
-      oci iam compartment create --compartment-id $TF_VAR_tenancy_ocid --description oci-starter --name oci-starter --wait-for-state ACTIVE > $TMP_DIR/compartment.log
+      oci iam compartment create --compartment-id $TF_VAR_tenancy_ocid --description oci-starter --name oci-starter --wait-for-state ACTIVE > $TMP_DIR/compartment.log 2>&1
       STARTER_OCID=`cat $TMP_DIR/compartment.log | grep \"id\" | sed 's/"//g' | sed "s/.*id: //g" | sed "s/,//g"`
       while [ "$NAME" != "oci-starter" ]
       do
-        NAME=`oci iam compartment get --compartment-id=$STARTER_OCID | jq -r .data.name 2> /dev/null`
-        echo "Waiting"
-        sleep 2
+        oci iam compartment get --compartment-id=$STARTER_OCID > $TMP_DIR/waiting.log 2>&1
+        if grep -q "NotAuthorizedOrNotFound" $TMP_DIR/waiting.log; then
+          echo "Waiting"
+          sleep 2
+        else
+          NAME=`cat $TMP_DIR/waiting.log | jq -r .data.name`
+        fi
       done
     else
       echo "Using the existing 'oci-starter' Compartment"
