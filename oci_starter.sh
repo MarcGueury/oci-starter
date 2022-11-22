@@ -605,12 +605,9 @@ elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
 fi
 
 #-- Bastion -----------------------------------------------------------------
-
-if [ -v TF_VAR_bastion_ocid ]; then
-  echo "bastion test true"
+if [ -n "$TF_VAR_bastion_ocid" ]; then
   cp_terraform bastion_existing.tf  
 else
-  echo "bastion test false"
   cp_terraform bastion.tf  
 fi 
 
