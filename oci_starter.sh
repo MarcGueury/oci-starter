@@ -51,7 +51,7 @@ unknown_value() {
 }
 
 default() {
-  if [ ! -v $1 ]; then
+  if [ ! -z $1 ]; then
     export $1="$2"
   fi
 }
@@ -444,7 +444,7 @@ chmod +x env.sh
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
   cp ../mode/git/* $REPOSITORY_NAME/.
-elif [ -v REPOSITORY_NAME ]; then
+elif [ -z REPOSITORY_NAME ]; then
   mkdir $REPOSITORY_NAME
 else 
   export REPOSITORY_NAME=output
@@ -614,7 +614,7 @@ fi
 
 #-- Bastion -----------------------------------------------------------------
 
-if [ -v TF_VAR_bastion_ocid ]; then
+if [ -z TF_VAR_bastion_ocid ]; then
   cp_terraform bastion_existing.tf  
 else
   cp_terraform bastion.tf  
