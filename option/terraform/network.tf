@@ -74,7 +74,7 @@ resource "oci_core_security_list" "starter_security_list" {
     }
   }  
 
-  // Oracle TNS Listener port: XXX optional ?
+  // Oracle TNS Listener port
   ingress_security_rules {
     protocol  = "6" // tcp
     source    = "10.0.0.0/8"
@@ -82,7 +82,7 @@ resource "oci_core_security_list" "starter_security_list" {
 
     tcp_options {
       min = 1521
-      max = 1521
+      max = 1522
     }
   }  
 
