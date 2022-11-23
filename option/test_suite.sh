@@ -121,7 +121,7 @@ build_test_destroy
 
 # Java Compute + Existing ATP + Existing Subnet
 start_test 08_JAVA_HELIDON_COMPUTE_EX_ATP_SUBNET
-$OCI_STARTER -language java -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_SHARED_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute + Existing DB + Existing Subnet
