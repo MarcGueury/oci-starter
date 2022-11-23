@@ -13,3 +13,7 @@ variable java_version { default = "17" }
 
 variable db_user {}
 variable db_password{}
+
+# Compute Instance size
+variable "instance_ocpus" { default = 1 }
+variable "instance_shape_config_memory_in_gbs" { default = 8 }

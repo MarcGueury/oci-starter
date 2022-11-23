@@ -46,15 +46,12 @@ build_function() {
   # First create the Function using terraform
   # Run env.sh to get function image 
   cd $SCRIPT_DIR/..
-  . env.sh
+  . env.sh 
   terraform/apply.sh --auto-approve
 }
 
-
 # SCRIPT_DIR should be set by the calling scripts 
 cd $SCRIPT_DIR
-if [ ! -v TF_VAR_deploy_strategy ]; then
-  echo 'Environment variables not set. Before to run the script, please run:'
-  echo '. env.sh'
-  exit
+if [ -z "$TF_VAR_deploy_strategy" ]; then
+  . ../env.sh
 fi  

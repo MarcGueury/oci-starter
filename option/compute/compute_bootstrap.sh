@@ -13,6 +13,7 @@ fi
 
 # Application Specific installation
 if [ -f app/install.sh ]; then
+  chmod +x app/install.sh
   app/install.sh
 fi  
 
