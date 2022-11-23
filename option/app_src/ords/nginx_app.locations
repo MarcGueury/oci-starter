@@ -1,4 +1,4 @@
   
   location /app/ { 
-    proxy_pass ##ORDS_URL##/starter/rest/; 
+    proxy_pass ##ORDS_URL##/starter/module/; 
   } 
