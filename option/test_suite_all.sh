@@ -53,7 +53,7 @@ build_test_destroy () {
 
 build_option() {
   if [ "$OPTION_LANG" == "java" ] && [ "$OPTION_DEPLOY" != "function" ]; then
-    NAME=${OPTION_LANG}-${OPTION_JAVA_FRAMEWORK}-${OPTION_DB}-${OPTION_UI}
+    NAME=${OPTION_LANG}-${OPTION_JAVA_FRAMEWORK}-${OPTION_JAVA_VM}-${OPTION_DB}-${OPTION_UI}
   else
     NAME=${OPTION_LANG}-${OPTION_DB}-${OPTION_UI}
   fi
@@ -65,6 +65,7 @@ build_option() {
        -ui $OPTION_UI \
        -language $OPTION_LANG \
        -java_framework $OPTION_JAVA_FRAMEWORK \
+       -java_vm $OPTION_JAVA_VM \
        -database $OPTION_DB \
        -db_password $TEST_DB_PASSWORD \
        -compartment_ocid $EX_COMPARTMENT_OCID \
@@ -102,11 +103,18 @@ loop_db() {
   loop_ui
 }
 
+loop_java_vm() {
+  OPTION_JAVA_VM=jdk 
+  loop_db
+  OPTION_JAVA_VM=graalvm
+  loop_db
+}
+
 loop_java_framework () {
   OPTION_JAVA_FRAMEWORK=helidon 
-  loop_db
+  loop_java_vm
   OPTION_JAVA_FRAMEWORK=springboot 
-  loop_db
+  loop_java_vm
   OPTION_JAVA_FRAMEWORK=tomcat
   loop_db
 }
@@ -126,6 +134,7 @@ loop_lang () {
   fi
 
   OPTION_LANG=java 
+  OPTION_JAVA_VM=jdk 
   if [ "$OPTION_DEPLOY" == "function" ]; then
     # Dummy value, not used
     OPTION_JAVA_FRAMEWORK=helidon
@@ -165,6 +174,7 @@ unset "${!TF_VAR@}"
 mkdir $TEST_HOME
 cd $TEST_HOME
 git clone https://github.com/mgueury/oci-starter
+
 
 date
 loop_deploy
