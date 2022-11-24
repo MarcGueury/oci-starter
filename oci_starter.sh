@@ -561,6 +561,16 @@ if [ -d "../option/app_src/$APP_DB" ]; then
   cp -r ../option/app_src/$APP_DB/* app_src/.
 fi
 
+if [ "$TF_VAR_language" == "java" ]; then
+   # FROM ghcr.io/graalvm/jdk:java17
+   # FROM openjdk:17 
+   # FROM openjdk:17-jdk-slim
+   if [ "$TF_VAR_java_vm" == "graalvm" ]; then
+     sed -i "s&##DOCKER_IMAGE##&ghcr.io/graalvm/jdk:java17&" app_src/Dockerfile 
+   else
+     sed -i "s&##DOCKER_IMAGE##&openjdk:17-jdk-slim:17&" app_src/Dockerfile 
+   fi  
+fi
 
 #-- User Interface ----------------------------------------------------------
 
