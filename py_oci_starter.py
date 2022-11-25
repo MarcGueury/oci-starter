@@ -29,25 +29,29 @@ def get_mode():
     else:
         return CLI
 
-def prog_arg_array():
+def prog_arg_list():
     arr = sys.argv.copy()
     arr.pop(0)
     return arr
 
+def prog_arg_dict():
+    list_to_dict(prog_arg_list())
+
 mandatory_options = ['-language','-deploy','-db_password']
 default_options = {
-    'prefix': 'starter',
-    'java_framework': 'helidon',
-    'java_vm': 'jdk',
-    'java_version': 17,
-    'kubernetes': 'oke',
-    'ui': 'html',
-    'database': 'atp',
-    'db_user': 'admin'
+    '-prefix': 'starter',
+    '-compartment_ocid': 'tenancy_ocid',
+    '-java_framework': 'helidon',
+    '-java_vm': 'jdk',
+    '-java_version': 17,
+    '-kubernetes': 'oke',
+    '-ui': 'html',
+    '-database': 'atp',
+    '-db_user': 'admin'
 }
 
 def help():
-    return f'''
+    message = f'''
 Usage: {script_name()} [OPTIONS]
 
 oci-starter.sh
@@ -70,13 +74,17 @@ oci-starter.sh
    -db_user (default admin)
    -db_password ( mandatory )
 '''
-
-def get_params():
-    if mode == GIT:
-        return git_mode_params()
-    if mode == CLI:
-        return cli_mode_params()
-
+    if len(missing_params) > 0:
+        s = ' '
+        for missing in missing_params:
+            s += f'{missing} '
+        message += f'missing parameters:{s}\n'
+    if len(unknown_params) > 0:
+        s = ' '
+        for unknown in unknown_params:
+            s += f'{unknown} '
+        message += f'unknown parameters:{s}\n'
+    return message
 
 def list_to_dict(a_list):
     it = iter(a_list)
@@ -100,12 +108,12 @@ def unknown_parameters(supplied_params, known_params):
         supplied_set.discard(known)
     return list(supplied_set)
 
-def cli_mode_params():
-    return deprefix_keys(list_to_dict(prog_arg_array()))
+def cli_params():
+    return deprefix_keys(list_to_dict(prog_arg_list()))
 
-def git_mode_params():
+def git_params():
     keys = ['git_url', 'repository_name', 'oci_username']
-    values = prog_arg_array()
+    values = prog_arg_list()
     return dict(zip(keys, values))
 
 # the script
@@ -115,13 +123,23 @@ script_dir=os.getcwd()
 
 mode = get_mode()
 
+missing_params = []
+unknown_params = []
+
+if mode == CLI:
+    params = cli_params()
+    missing_params = missing_parameters(prog_arg_list(), mandatory_options)
+    unknown_params = unknown_parameters(list_to_dict(prog_arg_list()).keys(), list(default_options.keys()) + mandatory_options)
+    if len(missing_params) > 0 or len(unknown_params) > 0:
+        mode = ABORT
+
+if mode == GIT:
+    params = git_params()
+
 if mode == ABORT:
     print(help())
     exit()
 
-params = get_params()
-
-print(f'default_options: {default_options}')
-print(missing_parameters(['d','b','c'],['a','b','c']))
-print(unknown_parameters(['d','b','c'],['a','b','c']))
+print(f'Mode: {mode}')
+print(f'params: {params}')
 print("That's all Folks!")
