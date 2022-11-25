@@ -1,0 +1,19 @@
+micronaut:
+  application:
+    name: demo
+datasources:
+  default:
+    ocid: ''
+    walletPassword: ''
+    dialect: ORACLE
+netty:
+  default:
+    allocator:
+      max-order: 3
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+oci.config.profile: DEFAULT

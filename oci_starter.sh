@@ -174,8 +174,10 @@ while [[ $# -gt 0 ]]; do
         export TF_VAR_java_framework=$2
       elif [ $2 == "tomcat" ]; then  
         export TF_VAR_java_framework=$2        
+      elif [ $2 == "micronaut" ]; then  
+        export TF_VAR_java_framework=$2        
       else
-        unknown_value "$1" "springboot/helidon/tomcat"
+        unknown_value "$1" "springboot/helidon/tomcat/micronaut"
       fi
       shift # past argument
       shift # past value
