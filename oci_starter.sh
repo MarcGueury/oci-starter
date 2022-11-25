@@ -570,7 +570,7 @@ if [ "$TF_VAR_language" == "java" ]; then
    if [ "$TF_VAR_java_vm" == "graalvm" ]; then
      sed -i "s&##DOCKER_IMAGE##&ghcr.io/graalvm/jdk:java17&" app_src/Dockerfile 
    else
-     sed -i "s&##DOCKER_IMAGE##&openjdk:17-jdk-slim:17&" app_src/Dockerfile 
+     sed -i "s&##DOCKER_IMAGE##&openjdk:17-jdk-slim&" app_src/Dockerfile 
    fi  
 fi
 
