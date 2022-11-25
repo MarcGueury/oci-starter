@@ -27,8 +27,8 @@ if [ ! -z "$UI_URL" ]; then
   # Check the URL if running in the test_suite
   if [ ! -z "$TEST_NAME" ]; then
     if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
-      kubectl wait --for=condition=ready pod app
-      kubectl wait --for=condition=ready pod ui
+      kubectl wait --for=condition=ready pod ${TF_VAR_prefix}-app
+      kubectl wait --for=condition=ready pod ${TF_VAR_prefix}-ui
       kubectl get all
       sleep 5
     fi

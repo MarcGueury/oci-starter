@@ -20,7 +20,7 @@ RUN mvn package -DskipTests
 RUN echo "done!"
 
 # 2nd stage, build the runtime image
-FROM openjdk:17-jdk-slim
+FROM ##DOCKER_IMAGE##
 WORKDIR /helidon
 
 # Copy the binary built in the 1st stage

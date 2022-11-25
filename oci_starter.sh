@@ -50,12 +50,6 @@ unknown_value() {
   exit
 }
 
-default() {
-  if [ ! -v $1 ]; then
-    export $1="$2"
-  fi
-}
-
 show_help() {
   cat <<EOF
 Usage: $(basename $0) [OPTIONS]
@@ -125,7 +119,7 @@ export TF_VAR_db_existing_strategy="new"
 export TF_VAR_db_user="admin"
 # XXXXXX export TF_VAR_vault_secret_authtoken_ocid=XXXXXXX
 # export TF_VAR_db_password="${var.db_password}"
-default TF_VAR_licence_model LICENSE_INCLUDED
+export TF_VAR_licence_model=${TF_VAR_licence_model:="LICENSE_INCLUDED"}
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -142,8 +136,8 @@ while [[ $# -gt 0 ]]; do
     -language)
       if [ $2 == "java" ]; then 
         export TF_VAR_language=$2
-        default TF_VAR_java_version 17
-        default TF_VAR_java_framework helidon
+        export TF_VAR_java_version=${TF_VAR_java_version:="17"}
+        export TF_VAR_java_framework=${TF_VAR_java_framework:="helidon"}
       elif [ $2 == "node" ]; then  
         export TF_VAR_language=$2
       elif [ $2 == "python" ]; then  
@@ -163,8 +157,8 @@ while [[ $# -gt 0 ]]; do
         export TF_VAR_deploy_strategy=$2
       elif [ $2 == "kubernetes" ] || [ $2 == "oke" ]  ; then  
         export TF_VAR_deploy_strategy="kubernetes"
-        default TF_VAR_kubernetes_strategy OKE
-        default TF_VAR_oke_strategy "new"
+        export TF_VAR_kubernetes_strategy=${TF_VAR_kubernetes_strategy:="OKE"}
+        export TF_VAR_oke_strategy=${TF_VAR_oke_strategy:="new"}  
       elif [ $2 == "function" ]; then  
         export TF_VAR_deploy_strategy=$2
       else
@@ -199,7 +193,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     -java_version)
       export TF_VAR_java_version=$1
-      if [ $1 != "8" ] && [ $1 != "11" ] &&[ $1 != "17" ]; then  
+      if [ $2 != "8" ] && [ $2 != "11" ] && [ $2 != "17" ]; then  
         unknown_value "$1" "8/11/17"
       fi
       shift # past argument
@@ -431,10 +425,13 @@ echo '' >> env.sh
 echo '# Get other env variables automatically (-silent flag can be passed)' >> env.sh
 echo '. $SCRIPT_DIR/bin/auto_env.sh $1' >> env.sh
 
-# Add comment
-sudo sed -i '/TF_VAR_licence_model/ i # TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED' env.sh
-sudo sed -i '/TF_VAR_db_password/ i # TF_VAR_db_password policy: Minimum: 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345' env.sh
-sudo sed -i '/TF_VAR_auth_token/ i # TF_VAR_auth_token. See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm' env.sh
+# Add comments
+awk '/TF_VAR_licence_model/{print "# TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED"}1' env.sh > env.tmp
+mv env.tmp env.sh
+awk '/TF_VAR_db_password/{print "# TF_VAR_db_password policy: Minimum: 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345"}1' env.sh > env.tmp
+mv env.tmp env.sh 
+awk '/TF_VAR_auth_token/{print "# TF_VAR_auth_token. See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm"}1' env.sh > env.tmp
+mv env.tmp env.sh
 
 fi  
 
@@ -458,10 +455,8 @@ chmod +x env.sh
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
   cp ../mode/git/* $REPOSITORY_NAME/.
-elif [ -v REPOSITORY_NAME ]; then
-  mkdir $REPOSITORY_NAME
 else 
-  export REPOSITORY_NAME=output
+  export REPOSITORY_NAME=${REPOSITORY_NAME:="output"}
   mkdir $REPOSITORY_NAME
 fi
 cd ./$REPOSITORY_NAME
@@ -566,6 +561,16 @@ if [ -d "../option/app_src/$APP_DB" ]; then
   cp -r ../option/app_src/$APP_DB/* app_src/.
 fi
 
+if [ "$TF_VAR_language" == "java" ]; then
+   # FROM ghcr.io/graalvm/jdk:java17
+   # FROM openjdk:17 
+   # FROM openjdk:17-jdk-slim
+   if [ "$TF_VAR_java_vm" == "graalvm" ]; then
+     sed -i "s&##DOCKER_IMAGE##&ghcr.io/graalvm/jdk:java17&" app_src/Dockerfile 
+   else
+     sed -i "s&##DOCKER_IMAGE##&openjdk:17-jdk-slim:17&" app_src/Dockerfile 
+   fi  
+fi
 
 #-- User Interface ----------------------------------------------------------
 
@@ -631,8 +636,7 @@ elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
 fi
 
 #-- Bastion -----------------------------------------------------------------
-
-if [ -v TF_VAR_bastion_ocid ]; then
+if [ -n "$TF_VAR_bastion_ocid" ]; then
   cp_terraform bastion_existing.tf  
 else
   cp_terraform bastion.tf  
