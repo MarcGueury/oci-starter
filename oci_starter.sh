@@ -137,7 +137,7 @@ while [[ $# -gt 0 ]]; do
       if [ $2 == "java" ]; then 
         export TF_VAR_language=$2
         export TF_VAR_java_version=${TF_VAR_java_version:="17"}
-        export TF_VAR_java_framework=${TF_VAR_java_framework:="helidon"}
+        export TF_VAR_java_framework=${TF_VAR_java_framework:="springboot"}
       elif [ $2 == "node" ]; then  
         export TF_VAR_language=$2
       elif [ $2 == "python" ]; then  
