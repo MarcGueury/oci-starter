@@ -157,8 +157,8 @@ while [[ $# -gt 0 ]]; do
         export TF_VAR_deploy_strategy=$2
       elif [ $2 == "kubernetes" ] || [ $2 == "oke" ]  ; then  
         export TF_VAR_deploy_strategy="kubernetes"
-        default TF_VAR_kubernetes_strategy OKE
-        default TF_VAR_oke_strategy "new"
+        export TF_VAR_kubernetes_strategy=${TF_VAR_kubernetes_strategy:="OKE"}
+        export TF_VAR_oke_strategy=${TF_VAR_oke_strategy:="new"}  
       elif [ $2 == "function" ]; then  
         export TF_VAR_deploy_strategy=$2
       else
@@ -561,6 +561,16 @@ if [ -d "../option/app_src/$APP_DB" ]; then
   cp -r ../option/app_src/$APP_DB/* app_src/.
 fi
 
+if [ "$TF_VAR_language" == "java" ]; then
+   # FROM ghcr.io/graalvm/jdk:java17
+   # FROM openjdk:17 
+   # FROM openjdk:17-jdk-slim
+   if [ "$TF_VAR_java_vm" == "graalvm" ]; then
+     sed -i "s&##DOCKER_IMAGE##&ghcr.io/graalvm/jdk:java17&" app_src/Dockerfile 
+   else
+     sed -i "s&##DOCKER_IMAGE##&openjdk:17-jdk-slim:17&" app_src/Dockerfile 
+   fi  
+fi
 
 #-- User Interface ----------------------------------------------------------
 
