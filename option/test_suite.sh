@@ -74,7 +74,7 @@ git clone https://github.com/mgueury/oci-starter
 
 date
 
-OCI_STARTER="./oci_starter.sh -prefix test -compartment_ocid $EX_COMPARTMENT_OCID"
+OCI_STARTER="./oci_starter.sh -prefix testsuite -compartment_ocid $EX_COMPARTMENT_OCID"
 
 # Java Compute ATP / No Compartment
 start_test 01_JAVA_HELIDON_COMPUTE_ATP
