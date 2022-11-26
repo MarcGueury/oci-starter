@@ -18,7 +18,9 @@ start_test () {
 }
 
 build_test () {
-  mv output $TEST_DIR
+  if [ -d output ]; then
+    mv output $TEST_DIR
+  fi  
   SECONDS=0
   # Change to the TEST_HOME directory first in case that the creation of TEST_DIR failed
   cd $TEST_HOME
