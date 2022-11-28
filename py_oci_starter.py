@@ -35,12 +35,12 @@ def prog_arg_list():
     return arr
 
 def prog_arg_dict():
-    list_to_dict(prog_arg_list())
+    return list_to_dict(prog_arg_list())
 
 mandatory_options = ['-language','-deploy','-db_password']
+
 default_options = {
     '-prefix': 'starter',
-    '-compartment_ocid': 'tenancy_ocid',
     '-java_framework': 'helidon',
     '-java_vm': 'jdk',
     '-java_version': 17,
@@ -49,6 +49,21 @@ default_options = {
     '-database': 'atp',
     '-db_user': 'admin'
 }
+
+no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
+    '-atp_ocid', '-db_ocid', '-mysql_ocid']
+
+# conditional_options specified as <K,V> pairs where
+# K = option
+# V = option it depends on
+conditional_options = {
+    '-subnet_ocid': '-vcn_ocid'
+}
+
+def allowed_options():
+    return list(default_options.keys()) \
+        + list(conditional_options.keys()) \
+        + mandatory_options + no_default_options
 
 def help():
     message = f'''
@@ -60,7 +75,7 @@ oci-starter.sh
    -language (mandatory) java | node | python | dotnet | ords 
    -deploy (mandatory) compute | kubernetes | function
    -java_framework (default helidon | springboot | tomcat)
-   -java_runtime (default jdk | graalvm)  
+   -java_vm (default jdk | graalvm)  
    -java_version (default 17 | 11 | 8)
    -kubernetes (default oke | docker) 
    -oke_ocid ()
@@ -74,16 +89,24 @@ oci-starter.sh
    -db_user (default admin)
    -db_password ( mandatory )
 '''
-    if len(missing_params) > 0:
-        s = ' '
-        for missing in missing_params:
-            s += f'{missing} '
-        message += f'missing parameters:{s}\n'
     if len(unknown_params) > 0:
+        print('U')
         s = ' '
         for unknown in unknown_params:
             s += f'{unknown} '
-        message += f'unknown parameters:{s}\n'
+        message += f'unknown parameter(s):{s}\n'
+    if len(missing_params) > 0:
+        print('M')
+        s = ' '
+        for missing in missing_params:
+            s += f'{missing} '
+        message += f'missing parameter(s):{s}\n'
+    if len(missing_conditional_params) > 0:
+        print('C')
+        s = ' '
+        for key in missing_conditional_params:
+            s += f'{missing_conditional_params[key]} is mandatory with {key}\n'
+        message += f'missing parameters:{s}\n'
     return message
 
 def list_to_dict(a_list):
@@ -101,20 +124,21 @@ def missing_parameters(supplied_params, expected_params):
         expected_set.discard(supplied)
     return list(expected_set)
 
-def unknown_parameters(supplied_params, known_params):
-    supplied_set = set(supplied_params)
-    known_set = set(known_params)
-    for known in known_set:
-        supplied_set.discard(known)
-    return list(supplied_set)
-
 def cli_params():
-    return deprefix_keys(list_to_dict(prog_arg_list()))
+    return deprefix_keys(default_options | prog_arg_dict())
 
 def git_params():
     keys = ['git_url', 'repository_name', 'oci_username']
     values = prog_arg_list()
     return dict(zip(keys, values))
+
+def missing_conditional_parameters():
+    missing_pairs = {}
+    for key in conditional_options:
+        if prog_arg_dict().get(key) is not None:
+            if prog_arg_dict().get(conditional_options[key]) is None:
+                missing_pairs[key] = conditional_options[key]
+    return missing_pairs
 
 # the script
 print(title())
@@ -127,11 +151,13 @@ missing_params = []
 unknown_params = []
 
 if mode == CLI:
-    params = cli_params()
-    missing_params = missing_parameters(prog_arg_list(), mandatory_options)
-    unknown_params = unknown_parameters(list_to_dict(prog_arg_list()).keys(), list(default_options.keys()) + mandatory_options)
-    if len(missing_params) > 0 or len(unknown_params) > 0:
+    missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options)
+    unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
+    missing_conditional_params = missing_conditional_parameters()
+    if len(missing_params) > 0 or len(unknown_params) > 0 or len(missing_conditional_params) > 0:
         mode = ABORT
+    else:
+        params = cli_params()
 
 if mode == GIT:
     params = git_params()
