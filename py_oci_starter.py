@@ -190,29 +190,29 @@ def help():
 Usage: {script_name()} [OPTIONS]
 
 oci-starter.sh
-   -prefix (default starter)
+   -apigw_ocid (optional)
+   -atp_ocid (optional)
+   -auth_token (optional)
+   -bastion_ocid' (optional)
    -compartment_ocid (default tenancy_ocid)
-   -language (mandatory) java | node | python | dotnet | ords 
+   -database (default atp | dbsystem | mysql)
+   -db_ocid (optional)
+   -db_password (mandatory)
+   -db_user (default admin)
    -deploy (mandatory) compute | kubernetes | function
+   -fnapp_ocid (optional)
    -java_framework (default helidon | springboot | tomcat)
-   -java_vm (default jdk | graalvm)  
    -java_version (default 17 | 11 | 8)
+   -java_vm (default jdk | graalvm)  
    -kubernetes (default oke | docker) 
+   -language (mandatory) java | node | python | dotnet | ords 
+   -license (default included | byol )
+   -mysql_ocid (optional)
    -oke_ocid (optional)
+   -prefix (default starter)
+   -subnet_ocid (optional)
    -ui (default html | reactjs | jet | angular | none) 
    -vcn_ocid (optional)
-   -subnet_ocid (optional)
-   -database (default atp | dbsystem | mysql)
-   -atp_ocid (optional)
-   -db_ocid (optional)
-   -mysql_ocid (optional)
-   -db_user (default admin)
-   -db_password (mandatory)
-   -auth_token (optional)
-   -license (default included | byol )
-   -fnapp_ocid (optional)
-   -apigw_ocid (optional)
-   -bastion_ocid' (optional)
 
 '''
     if len(unknown_params) > 0:
