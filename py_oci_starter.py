@@ -49,12 +49,11 @@ default_options = {
     '-kubernetes': 'oke',
     '-ui': 'html',
     '-database': 'atp',
-    '-db_user': 'admin',
     '-license': 'included'
 }
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
-    '-atp_ocid', '-db_ocid', '-mysql_ocid']
+    '-atp_ocid', '-db_ocid', '-mysql_ocid', '-db_user']
 
 def allowed_options():
     return list(default_options.keys()) \
@@ -118,6 +117,9 @@ def db_rules():
                 error(f"-database {db_deps['dep']} required if {dep} is set")
     if params['database'] != 'autonomous' and params['language'] == 'ords':
         error(f'OCI starter only supports ORDS on ATP (Autonomous)')
+    if params.get('db_user') == None:
+        default_users = {'autonomous':'admin', 'database':'system', 'mysql':'root'}
+        params['db_user'] = default_users[params['database']]
 
 def language_rules():
     if params['language'] != 'java':
