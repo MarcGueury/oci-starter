@@ -11,6 +11,8 @@ import sys, os
 ABORT='ABORT'
 GIT='GIT'
 CLI='CLI'
+EXISTING='existing'
+NEW='new'
 
 # functions
 def title():
@@ -43,31 +45,36 @@ default_options = {
     '-prefix': 'starter',
     '-java_framework': 'helidon',
     '-java_vm': 'jdk',
-    '-java_version': 17,
+    '-java_version': '17',
     '-kubernetes': 'oke',
     '-ui': 'html',
     '-database': 'atp',
-    '-db_user': 'admin'
+    '-db_user': 'admin',
+    '-license': 'included'
 }
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
     '-atp_ocid', '-db_ocid', '-mysql_ocid']
 
-# conditional_options specified as <K,V> pairs where
-# K = option
-# V = option it depends on
-conditional_options = {
-    '-subnet_ocid': '-vcn_ocid'
-}
-
 def allowed_options():
     return list(default_options.keys()) \
-        + list(conditional_options.keys()) \
         + mandatory_options + no_default_options
 
 allowed_values = {
-    '-language': {'java','node','python','ords'}
+    '-language': {'java','node','python','ords'},
+    '-deploy': {'compute','kubernetes','function'},
+    '-java_framework': {'springboot','helidon','tomcat'},
+    '-java_vm': {'jdk','graalvm'},
+    '-java_version': {'8', '11', '17'},
+    '-kubernetes':{'oke','docker'},
+    '-ui': {'html','jet','angular','reactjs','none'},
+    '-database': {'atp','dbsystem','mysql'},
+    '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'}
 }
+
+# ambiguous options - need to be either got rid of or published and handled
+ambiguous_options = ['-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', \
+    '-zip', '-infra-as-code']
 
 def check_values():
     illegals = {}
@@ -78,39 +85,103 @@ def check_values():
                 illegals[arg] = arg_val
     return illegals
 
-tf_var_map = {
-    'apigw_ocid': 'TF_VAR_apigw_ocid',
-    'auth_token': 'TF_VAR_auth_token',
-    'atp_ocid': 'TF_VAR_atp_ocid',
-    'bastion_ocid': 'TF_VAR_bastion_ocid',
-    'compartment_ocid': 'TF_VAR_compartment_ocid',
-    'database': 'TF_VAR_db_strategy',
-    'db_ocid': 'TF_VAR_db_ocid',
-    'db_password': 'TF_VAR_db_password',
-    'db_user': 'TF_VAR_db_user',
-    'deploy': 'TF_VAR_deploy_strategy',
-    'fnapp_ocid': 'TF_VAR_fnapp_ocid',
-    'java_framework': 'TF_VAR_java_framework',
-    'java_version': 'TF_VAR_java_version',
-    'java_vm': 'TF_VAR_java_vm',
-    'kubernetes': 'TF_VAR_kubernetes_strategy',
-    'language': 'TF_VAR_language',
-    'license': 'TF_VAR_license_model',
-    'mysql_ocid': 'TF_VAR_mysql_ocid',
-    'oke_ocid': 'TF_VAR_oke_ocid',
-    'prefix': 'TF_VAR_prefix',
-    'subnet_ocid': 'TF_VAR_subnet_ocid',
-    'ui': 'TF_VAR_ui_strategy',
-    'vcn_ocid': 'TF_VAR_vcn_ocid',
-}
+def get_tf_var(param):
+    special_cases = {
+        'database': 'TF_VAR_db_strategy',
+        'deploy': 'TF_VAR_deploy_strategy',
+        'kubernetes': 'TF_VAR_kubernetes_strategy',
+        'license': 'TF_VAR_license_model',
+        'ui': 'TF_VAR_ui_strategy',
+        'oke': 'TF_VAR_oke_strategy',
+    }
+    if param in special_cases:
+        return special_cases.get(param)
+    else:
+        return 'TF_VAR_' + param
 
-# db rules
-# deploy rules
-# java rules
-# k8s rules
-# mysql rules
-# ui rules
-# vcn rules
+def longhand(key, abbreviations):
+    current = params[key]
+    if current in abbreviations:
+        return abbreviations[current]
+    else:
+        return current
+        
+def db_rules():
+    params['database'] = longhand('database', {'atp': 'autonomous', 'dbsystem': 'database'})
+    params['db_existing_strategy'] = NEW
+    db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'mysql_ocid':'mysql'}
+    for dep in db_deps:
+        if params.get(dep) is not None:
+            if params['database'] == db_deps['dep']:
+                params['db_existing_strategy'] = EXISTING
+            else:
+                error(f"-database {db_deps['dep']} required if {dep} is set")
+    if params['database'] != 'autonomous' and params['language'] == 'ords':
+        error(f'OCI starter only supports ORDS on ATP (Autonomous)')
+
+def language_rules():
+    if params['language'] != 'java':
+        params.pop('java_framework')
+        params.pop('java_vm')
+        params.pop('java_version')
+    elif params['java_framework'] == 'helidon' and params['java_version'] != '17':
+        warning('Helidon only supports Java 17. Forcing Java version to 17')
+        params['java_version'] = 17
+
+def kubernetes_rules():
+    params['deploy'] = longhand('kubernetes',{'oke':'kubernetes'})
+    if params['deploy'] == 'kubernetes':
+        if params.get('kubernetes') == 'docker':
+            params['kubernetes'] = 'Docker image only'
+        else:
+            params['kubernetes'] = 'OKE'
+            params['oke'] = NEW
+
+def vcn_rules():
+    if 'vcn_ocid' in params:
+        params['vcn_strategy'] = EXISTING
+    elif 'subnet_ocid' in params:
+        error('-vcn_ocid required for -subnet_ocid')
+
+def ui_rules():
+    params['ui'] = longhand('ui', {'reactjs':'ReactJS','none':'None'})
+
+def auth_token_rules():
+    if params.get('auth_token') is None:
+        warning('-auth_token is not set. Will need to be set in env.sh')
+        params['auth_token'] = '__TO_FILL__'
+
+def compartment_rules():
+    if params.get('compartment_ocid') is None:
+        warning('-compartment_ocid is not set. Components will be created in root compartment. Shame on you!')
+
+def license_rules():
+    params['license'] = longhand('license', {'included': 'LICENSE_INCLUDED','byol': 'BRING_YOUR_OWN_LICENSE'})
+
+def apply_rules():
+    language_rules()
+    kubernetes_rules()
+    ui_rules()
+    db_rules()
+    vcn_rules()
+    auth_token_rules()
+    compartment_rules()
+    license_rules()
+
+def error(msg):
+    errors.append(f'Error: {msg}')
+
+def warning(msg):
+    warnings.append(f'WARNING: {msg}')
+
+def print_warnings():
+    print(get_warnings())
+
+def get_warnings():
+    s = ''
+    for warning in warnings:
+        s += (f'{warning}\n')
+    return s
 
 def help():
     message = f'''
@@ -135,27 +206,31 @@ oci-starter.sh
    -mysql_ocid (optional)
    -db_user (default admin)
    -db_password (mandatory)
+   -auth_token (optional)
+   -license (default included | byol )
+
 '''
     if len(unknown_params) > 0:
-        s = ' '
+        s = ''
         for unknown in unknown_params:
             s += f'{unknown} '
         message += f'Unknown parameter(s):{s}\n'
     if len(missing_params) > 0:
-        s = ' '
+        s = ''
         for missing in missing_params:
             s += f'{missing} '
         message += f'Missing parameter(s):{s}\n'
-    if len(missing_conditional_params) > 0:
-        s = ''
-        for key in missing_conditional_params:
-            s += f'Missing parameter: {missing_conditional_params[key]} is mandatory with {key}\n'
-        message += s
     if len(illegal_params) > 0:
         s = ''
         for arg in illegal_params:
             s += f'Illegal value: "{illegal_params[arg]}" found for {arg}.  Permitted values: {allowed_values[arg]}\n'
         message += s
+    if len(errors) > 0:
+        s = ''
+        for error in errors:
+            s += f'{error}\n'
+        message += s
+    message += get_warnings()
     return message
 
 def list_to_dict(a_list):
@@ -181,13 +256,11 @@ def git_params():
     values = prog_arg_list()
     return dict(zip(keys, values))
 
-def missing_conditional_parameters():
-    missing_pairs = {}
-    for key in conditional_options:
-        if prog_arg_dict().get(key) is not None:
-            if prog_arg_dict().get(conditional_options[key]) is None:
-                missing_pairs[key] = conditional_options[key]
-    return missing_pairs
+def env_sh():
+    contents = []
+    contents.append('#!/bin/bash')
+    contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
+    return contents
 
 # the script
 print(title())
@@ -199,17 +272,21 @@ mode = get_mode()
 missing_params = []
 unknown_params = []
 illegal_params = {}
+warnings=[]
+errors=[]
 
 if mode == CLI:
+    params=cli_params()
+    apply_rules()
     missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options)
     unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
-    missing_conditional_params = missing_conditional_parameters()
     illegal_params = check_values()
-    if len(missing_params) > 0 or len(unknown_params) > 0 or len(missing_conditional_params) > 0 \
-        or len(illegal_params) > 0:
+    if len(missing_params) > 0 or len(unknown_params) > 0  \
+        or len(illegal_params) > 0 or len(errors) > 0:
         mode = ABORT
     else:
-        params = cli_params()
+        print_warnings()
+        print(env_sh())
 
 if mode == GIT:
     params = git_params()
