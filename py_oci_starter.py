@@ -53,10 +53,13 @@ default_options = {
 }
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
-    '-atp_ocid', '-db_ocid', '-mysql_ocid', '-db_user']
+    '-atp_ocid', '-db_ocid', '-mysql_ocid', '-db_user', \
+    '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid']
+
+hidden_options = ['-zip', '-infra-as-code']
 
 def allowed_options():
-    return list(default_options.keys()) \
+    return list(default_options.keys()) + hidden_options \
         + mandatory_options + no_default_options
 
 allowed_values = {
@@ -71,9 +74,6 @@ allowed_values = {
     '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'}
 }
 
-# ambiguous options - need to be either got rid of or published and handled
-ambiguous_options = ['-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', \
-    '-zip', '-infra-as-code']
 
 def check_values():
     illegals = {}
@@ -210,6 +210,9 @@ oci-starter.sh
    -db_password (mandatory)
    -auth_token (optional)
    -license (default included | byol )
+   -fnapp_ocid (optional)
+   -apigw_ocid (optional)
+   -bastion_ocid' (optional)
 
 '''
     if len(unknown_params) > 0:
