@@ -115,6 +115,8 @@ loop_java_framework () {
   loop_java_vm
   OPTION_JAVA_FRAMEWORK=springboot 
   loop_java_vm
+  OPTION_JAVA_FRAMEWORK=micronaut
+  loop_java_vm
   OPTION_JAVA_FRAMEWORK=tomcat
   loop_db
 }

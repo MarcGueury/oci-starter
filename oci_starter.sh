@@ -137,7 +137,7 @@ while [[ $# -gt 0 ]]; do
       if [ $2 == "java" ]; then 
         export TF_VAR_language=$2
         export TF_VAR_java_version=${TF_VAR_java_version:="17"}
-        export TF_VAR_java_framework=${TF_VAR_java_framework:="helidon"}
+        export TF_VAR_java_framework=${TF_VAR_java_framework:="springboot"}
       elif [ $2 == "node" ]; then  
         export TF_VAR_language=$2
       elif [ $2 == "python" ]; then  
@@ -174,8 +174,10 @@ while [[ $# -gt 0 ]]; do
         export TF_VAR_java_framework=$2
       elif [ $2 == "tomcat" ]; then  
         export TF_VAR_java_framework=$2        
+      elif [ $2 == "micronaut" ]; then  
+        export TF_VAR_java_framework=$2        
       else
-        unknown_value "$1" "springboot/helidon/tomcat"
+        unknown_value "$1" "springboot/helidon/tomcat/micronaut"
       fi
       shift # past argument
       shift # past value
@@ -568,7 +570,7 @@ if [ "$TF_VAR_language" == "java" ]; then
    if [ "$TF_VAR_java_vm" == "graalvm" ]; then
      sed -i "s&##DOCKER_IMAGE##&ghcr.io/graalvm/jdk:java17&" app_src/Dockerfile 
    else
-     sed -i "s&##DOCKER_IMAGE##&openjdk:17-jdk-slim:17&" app_src/Dockerfile 
+     sed -i "s&##DOCKER_IMAGE##&openjdk:17-jdk-slim&" app_src/Dockerfile 
    fi  
 fi
 
