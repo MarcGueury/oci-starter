@@ -263,7 +263,7 @@ def git_params():
     values = prog_arg_list()
     return dict(zip(keys, values))
 
-def env_sh():
+def env_sh_contents():
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
     contents = ['#!/bin/bash']
     contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
@@ -291,6 +291,13 @@ def get_tf_var_comment(param):
     if comment is not None:
         return f'# {get_tf_var(param)} : {comment}'
 
+def write_env_sh(output_dir, contents):
+    env_sh_path = output_dir + os.sep + "env.sh"
+    env_sh = open(env_sh_path, "w")
+    env_sh.writelines('%s\n' % line for line in contents)
+    env_sh.close()
+    os.chmod(env_sh_path, 0o755)
+
 # the script
 print(title())
 
@@ -315,10 +322,10 @@ if mode == CLI:
         mode = ABORT
     else:
         print_warnings()
-        print('\n<env.sh>')
-        for line in env_sh():
-            print(line)
-        print('</env.sh>\n')
+        output_dir = "output"
+        if not os.path.isdir(output_dir):
+            os.mkdir(output_dir)
+        write_env_sh(output_dir, env_sh_contents())
 
 if mode == GIT:
     params = git_params()
@@ -332,3 +339,4 @@ if mode == ABORT:
 print(f'Mode: {mode}')
 print(f'params: {params}')
 print("That's all Folks!")
+print(title())
