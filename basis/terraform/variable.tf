@@ -19,7 +19,6 @@ variable "instance_ocpus" { default = 1 }
 variable "instance_shape_config_memory_in_gbs" { default = 8 }
 
 # Landing Zones
-
 variable lz_appdev_cmp_ocid { default="" }
 variable lz_database_cmp_ocid { default="" }
 variable lz_network_cmp_ocid { default="" }
