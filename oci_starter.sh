@@ -110,12 +110,12 @@ if [ $MODE == "GIT " ]; then
   cp ../mode/git/* $REPOSITORY_NAME/.
 else 
   export REPOSITORY_NAME=${REPOSITORY_NAME:="output"}
-  # mkdir $REPOSITORY_NAME (py_oci_starter.py creates the output directory anyway)
+  # mkdir $REPOSITORY_NAME (py_oci_starter.py creates the output directory anyway)
 fi
 cd ./$REPOSITORY_NAME
 
 cp -r ../basis/* .
-# mv ../env.sh . (py_oci_starter.py writes env.sh to the output directory anyway)
+# mv ../env.sh . (py_oci_starter.py writes env.sh to the output directory anyway)
 
 #-- README.md ------------------------------------------------------------------
 
