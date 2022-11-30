@@ -6,7 +6,7 @@ variable license_model{
 resource "oci_database_autonomous_database" "starter_atp" {
   #Required
   admin_password           = var.db_password
-  compartment_id           = var.compartment_ocid
+  compartment_id           = local.lz_database_cmp_ocid
   cpu_core_count           = "1"
   data_storage_size_in_tbs = "1"
   db_name                  = "${var.prefix}atp"

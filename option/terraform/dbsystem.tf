@@ -17,7 +17,7 @@ variable license_model{
 
 resource "oci_database_db_system" "starter_dbsystem" {
   availability_domain = data.oci_identity_availability_domain.ad.name
-  compartment_id      = var.compartment_ocid
+  compartment_id      = local.lz_database_cmp_ocid
   database_edition    = var.db_edition
 
   db_home {
@@ -48,6 +48,6 @@ resource "oci_database_db_system" "starter_dbsystem" {
 
 # Compatibility with db_existing.tf 
 data "oci_database_db_homes" "starter_db_homes" {
-  compartment_id = var.compartment_ocid
+  compartment_id = local.lz_database_cmp_ocid
   db_system_id   = oci_database_db_system.starter_dbsystem.id
 }

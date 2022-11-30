@@ -47,7 +47,7 @@ locals {
 #----------------------------------------------------------------------------
 
 resource "oci_core_security_list" "starter_seclist_lb" {
-  compartment_id = var.compartment_ocid
+  compartment_id = local.lz_network_cmp_ocid
   vcn_id         = oci_core_vcn.starter_vcn.id
   display_name   = "${var.prefix}-seclist-lb"
 
@@ -77,7 +77,7 @@ resource "oci_core_security_list" "starter_seclist_lb" {
 #---------------
 
 resource "oci_core_security_list" "starter_seclist_node" {
-  compartment_id = var.compartment_ocid
+  compartment_id = local.lz_network_cmp_ocid
   vcn_id         = oci_core_vcn.starter_vcn.id
   display_name   = "${var.prefix}-seclist-node"
 
@@ -192,7 +192,7 @@ resource "oci_core_security_list" "starter_seclist_node" {
 #---------------
 
 resource oci_core_security_list starter_seclist_api {
-  compartment_id = var.compartment_ocid
+  compartment_id = local.lz_network_cmp_ocid
   vcn_id         = oci_core_vcn.starter_vcn.id
   display_name   = "${var.prefix}-seclist-node"
 
@@ -267,7 +267,7 @@ resource "oci_core_subnet" "starter_nodepool_subnet" {
   #Required
   availability_domain = data.oci_identity_availability_domain.ad1.name
   cidr_block          = "10.0.10.0/24"
-  compartment_id      = var.compartment_ocid
+  compartment_id      = local.lz_network_cmp_ocid
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
@@ -279,7 +279,7 @@ resource "oci_core_subnet" "starter_nodepool_subnet" {
 resource "oci_core_subnet" "starter_lb_subnet" {
   #Required
   cidr_block          = "10.0.20.0/24"
-  compartment_id      = var.compartment_ocid
+  compartment_id      = local.lz_network_cmp_ocid
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
@@ -291,7 +291,7 @@ resource "oci_core_subnet" "starter_lb_subnet" {
 resource "oci_core_subnet" "starter_api_subnet" {
   #Required
   cidr_block          = "10.0.30.0/24"
-  compartment_id      = var.compartment_ocid
+  compartment_id      = local.lz_network_cmp_ocid
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
@@ -304,7 +304,7 @@ resource "oci_core_subnet" "starter_api_subnet" {
 
 resource "oci_containerengine_cluster" "starter_oke" {
   #Required
-  compartment_id     = var.compartment_ocid
+  compartment_id     = local.lz_appdev_cmp_ocid
   kubernetes_version = data.oci_containerengine_cluster_option.starter_cluster_option.kubernetes_versions[length(data.oci_containerengine_cluster_option.starter_cluster_option.kubernetes_versions)-1]
   name               = "${var.prefix}-oke"
   vcn_id             = oci_core_vcn.starter_vcn.id
@@ -341,7 +341,7 @@ resource "oci_containerengine_cluster" "starter_oke" {
 resource "oci_containerengine_node_pool" "starter_node_pool" {
   #Required
   cluster_id         = oci_containerengine_cluster.starter_oke.id
-  compartment_id     = var.compartment_ocid
+  compartment_id     = local.lz_appdev_cmp_ocid
   kubernetes_version = data.oci_containerengine_node_pool_option.starter_node_pool_option.kubernetes_versions[length(data.oci_containerengine_node_pool_option.starter_node_pool_option.kubernetes_versions)-1]
   name               = "${var.prefix}-pool"
   node_shape         = var.oke_shape

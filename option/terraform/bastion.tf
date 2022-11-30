@@ -1,7 +1,7 @@
 resource "oci_core_instance" "starter_bastion" {
 
   availability_domain = data.oci_identity_availability_domain.ad.name
-  compartment_id      = var.compartment_ocid
+  compartment_id      = local.lz_appdev_cmp_ocid
   display_name        = "${var.prefix}-bastion"
   shape               = "VM.Standard.E4.Flex"
 
