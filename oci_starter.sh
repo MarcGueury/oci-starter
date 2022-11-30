@@ -431,9 +431,9 @@ echo '. $SCRIPT_DIR/bin/auto_env.sh $1' >> env.sh
 # Add comments
 awk '/TF_VAR_licence_model/{print "# TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED"}1' env.sh > env.tmp
 mv env.tmp env.sh
-awk '/TF_VAR_db_password/{print "# TF_VAR_db_password policy: Minimum: Length 12 characters - 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: Live:Lab__12345"}1' env.sh > env.tmp
+awk '/TF_VAR_db_password=/{print "# TF_VAR_db_password policy: Minimum: Length 12 characters - 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: Live:Lab__12345"}1' env.sh > env.tmp
 mv env.tmp env.sh 
-awk '/TF_VAR_db_password/{print "# If not filled, during the first build, it will be randomly generated."}1' env.sh > env.tmp
+awk '/TF_VAR_db_password=/{print "# If not filled, during the first build, it will be randomly generated."}1' env.sh > env.tmp
 mv env.tmp env.sh 
 awk '/TF_VAR_auth_token/{print "# TF_VAR_auth_token. See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm"}1' env.sh > env.tmp
 mv env.tmp env.sh
