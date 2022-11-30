@@ -3,7 +3,7 @@
 #
 # Date : 2022_09_25: Test OK
 # 
-FILE=id_devops_rsa
+FILE=id_starter_rsa
 if [ -f "$FILE" ]; then
     echo "$FILE exists."
 else 

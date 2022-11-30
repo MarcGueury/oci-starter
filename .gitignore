@@ -5,8 +5,8 @@ src/function/command.md
 src/helidon
 src/target
 tfstate.tf
-id_devops_rsa
-id_devops_rsa.pub
+id_starter_rsa
+id_starter_rsa.pub
 helper
 variables.sh
 env.sh

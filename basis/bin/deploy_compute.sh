@@ -6,8 +6,8 @@ cd $SCRIPT_DIR/..
 # Using RSYNC allow to reapply the same command several times easily
 if command -v rsync &> /dev/null
 then
-  rsync -av -e "ssh -o StrictHostKeyChecking=no -i id_devops_rsa" compute/* opc@$COMPUTE_IP:.
+  rsync -av -e "ssh -o StrictHostKeyChecking=no -i id_starter_rsa" compute/* opc@$COMPUTE_IP:.
 else
-  scp -r -o StrictHostKeyChecking=no -i id_devops_rsa compute/* opc@$COMPUTE_IP:/home/opc/.
+  scp -r -o StrictHostKeyChecking=no -i id_starter_rsa compute/* opc@$COMPUTE_IP:/home/opc/.
 fi
-ssh -o StrictHostKeyChecking=no -i id_devops_rsa opc@$COMPUTE_IP "export TF_VAR_java_version=\"$TF_VAR_java_version\";export TF_VAR_language=\"$TF_VAR_language\";export JDBC_URL=\"$JDBC_URL\";export DB_URL=\"$DB_URL\";bash compute_bootstrap.sh 2>&1 | tee -a compute_bootstrap.log"
+ssh -o StrictHostKeyChecking=no -i id_starter_rsa opc@$COMPUTE_IP "export TF_VAR_java_version=\"$TF_VAR_java_version\";export TF_VAR_language=\"$TF_VAR_language\";export JDBC_URL=\"$JDBC_URL\";export DB_URL=\"$DB_URL\";bash compute_bootstrap.sh 2>&1 | tee -a compute_bootstrap.log"

@@ -28,7 +28,7 @@ else
   unset SILENT_MODE
 fi 
 
-if [ $TF_VAR_db_password == "__TO_FILL__" ]; then
+if [ "$TF_VAR_db_password" == "__TO_FILL__" ]; then
   echo "Generating password for the database"
   export TF_VAR_db_password=`python3 $SCRIPT_DIR/gen_password.py`
   sed -i "s&TF_VAR_db_password=\"__TO_FILL__\"&TF_VAR_db_password=\"$TF_VAR_db_password\"&" $SCRIPT_DIR/../env.sh
@@ -87,8 +87,8 @@ else
   fi
 
   # Namespace
-  export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_devops_rsa.pub)
-  export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_devops_rsa)
+  export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_starter_rsa.pub)
+  export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_starter_rsa)
 
 
   if [ -z "$TF_VAR_compartment_ocid" ]; then

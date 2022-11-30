@@ -1,7 +1,6 @@
 #!/bin/bash
 # Build_ui.sh
 #
-# Parameter build or docker
 # Compute:
 # - build the code 
 # - create a $ROOT/compute/ui directory with the compiled files

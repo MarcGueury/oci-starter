@@ -19,6 +19,18 @@ resource "oci_core_instance" "starter_instance" {
     hostname_label            = "${var.prefix}-instance"
   }
 
+  # XXXX Should be there only for Java
+  agent_config {
+    plugins_config {
+      desired_state =  "ENABLED"
+      name = "Oracle Java Management Service"
+    }
+    plugins_config {
+      desired_state =  "ENABLED"
+      name = "Management Agent"
+    }
+  }
+
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
   }
