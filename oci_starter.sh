@@ -81,6 +81,7 @@ title oci_starter.sh
 # Avoid issue when developing
 unset "${!TF_VAR@}"
 
+# keeping this section here so that $MODE etc. are accessible after py_oci_starter.py has run
 if [ "$#" -eq 3 ]; then
   export MODE=GIT
   export GIT_URL=$1
@@ -89,382 +90,32 @@ if [ "$#" -eq 3 ]; then
   echo GIT_URL=$GIT_URL
 else
   export MODE=CLI
-  if [ "$#" -eq 0 ]; then
-    show_help
-  fi
-
-# Default
-# export TF_VAR_tenancy_ocid="${var.tenancy_ocid}"
-# export TF_VAR_region="${var.region}"
-# export TF_VAR_compartment_ocid="${var.compartment_id}"
-export TF_VAR_prefix="starter"
-# export TF_VAR_language="${var.language}"
-# export TF_VAR_java_framework=helidon
-# export TF_VAR_java_vm=jdk
-# export TF_VAR_java_version=17
-export TF_VAR_vcn_strategy="new"
-# export TF_VAR_vcn_ocid="${var.vcn_ocid}"
-# export TF_VAR_subnet_ocid="${var.subnet_ocid}"
-export TF_VAR_ui_strategy="html"
-# export TF_VAR_deploy_strategy="${var.deploy_strategy}"
-#export TF_VAR_kubernetes_strategy="oke"
-# export TF_VAR_oke_strategy="new"
-# export TF_VAR_oke_ocid="${var.oke_ocid}"
-export TF_VAR_db_strategy="autonomous"
-export TF_VAR_db_existing_strategy="new"
-# export TF_VAR_atp_ocid="${var.atp_ocid}"
-# export TF_VAR_db_ocid="${var.db_ocid}"
-# export TF_VAR_mysql_ocid="${var.mysql_ocid}"
-# export TF_VAR_apigw_ocid="${var.apigw_ocid}"
-export TF_VAR_db_user="admin"
-# XXXXXX export TF_VAR_vault_secret_authtoken_ocid=XXXXXXX
-# export TF_VAR_db_password="${var.db_password}"
-export TF_VAR_licence_model=${TF_VAR_licence_model:="LICENSE_INCLUDED"}
-
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    -p|-prefix)
-      export TF_VAR_prefix="$2"
-      shift # past argument
-      shift # past value
-      ;;
-    -compartment_ocid)
-      export TF_VAR_compartment_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;
-    -language)
-      if [ $2 == "java" ]; then 
-        export TF_VAR_language=$2
-        export TF_VAR_java_version=${TF_VAR_java_version:="17"}
-        export TF_VAR_java_framework=${TF_VAR_java_framework:="springboot"}
-      elif [ $2 == "node" ]; then  
-        export TF_VAR_language=$2
-      elif [ $2 == "python" ]; then  
-        export TF_VAR_language=$2
-      elif [ $2 == "dotnet" ]; then  
-        export TF_VAR_language=$2
-      elif [ $2 == "ords" ]; then  
-        export TF_VAR_language=$2
-      else
-        unknown_value "$1" "java/node/python/ords"
-      fi
-      shift # past argument
-      shift # past value
-      ;;
-    -deploy)
-      if [ $2 == "compute" ]; then 
-        export TF_VAR_deploy_strategy=$2
-      elif [ $2 == "kubernetes" ] || [ $2 == "oke" ]  ; then  
-        export TF_VAR_deploy_strategy="kubernetes"
-        export TF_VAR_kubernetes_strategy=${TF_VAR_kubernetes_strategy:="OKE"}
-        export TF_VAR_oke_strategy=${TF_VAR_oke_strategy:="new"}  
-      elif [ $2 == "function" ]; then  
-        export TF_VAR_deploy_strategy=$2
-      else
-        unknown_value "$1" "compute/kubernetes/function"
-      fi
-      shift # past argument
-      shift # past value
-      ;;      
-    -java_framework)
-      if [ $2 == "springboot" ]; then 
-        export TF_VAR_java_framework=$2
-      elif [ $2 == "helidon" ]; then  
-        export TF_VAR_java_framework=$2
-      elif [ $2 == "tomcat" ]; then  
-        export TF_VAR_java_framework=$2        
-      elif [ $2 == "micronaut" ]; then  
-        export TF_VAR_java_framework=$2        
-      else
-        unknown_value "$1" "springboot/helidon/tomcat/micronaut"
-      fi
-      shift # past argument
-      shift # past value
-      ;;   
-    -java_vm)
-      if [ $2 == "jdk" ]; then 
-        export TF_VAR_java_vm="jdk"
-      elif [ $2 == "graalvm" ]; then  
-        export TF_VAR_java_vm="graalvm"
-      else
-        unknown_value "$1" "jdk/graalvm"
-      fi
-      shift # past argument
-      shift # past value
-      ;;
-    -java_version)
-      export TF_VAR_java_version=$1
-      if [ $2 != "8" ] && [ $2 != "11" ] && [ $2 != "17" ]; then  
-        unknown_value "$1" "8/11/17"
-      fi
-      shift # past argument
-      shift # past value
-      ;;      
-    -kubernetes)
-      if [ $2 == "oke" ]; then 
-        export TF_VAR_kubernetes_strategy="OKE"
-      elif [ $2 == "docker" ]; then  
-        export TF_VAR_kubernetes_strategy="Docker image only"
-      else
-        unknown_value "$1" "oke/docker"
-      fi
-      shift # past argument
-      shift # past value
-      ;;          
-    -oke_ocid)
-      export TF_VAR_oke_strategy="existing"
-      export TF_VAR_oke_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;
-    -ui)
-      if [ $2 == "html" ]; then 
-        export TF_VAR_ui_strategy="html"
-      elif [ $2 == "jet" ]; then  
-        export TF_VAR_ui_strategy="jet"        
-      elif [ $2 == "angular" ]; then  
-        export TF_VAR_ui_strategy="angular"        
-      elif [ $2 == "reactjs" ]; then  
-        export TF_VAR_ui_strategy="ReactJS"
-      elif [ $2 == "none" ]; then  
-        export TF_VAR_ui_strategy="None"        
-      else
-        unknown_value "$1" "html/reactjs/none"
-      fi
-      shift # past argument
-      shift # past value
-      ;;   
-    -vcn_ocid)
-      export TF_VAR_vcn_strategy="existing"
-      export TF_VAR_vcn_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;
-    -subnet_ocid)
-      export TF_VAR_subnet_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;     
-    -d|-database)
-      if [ $2 == "atp" ] || [ $2 == "autonomous" ]; then 
-        export TF_VAR_db_strategy="autonomous"
-      elif [ $2 == "dbsystem" ] || [ $2 == "database" ]; then  
-        export TF_VAR_db_strategy="database"
-      elif [ $2 == "mysql" ]; then  
-        export TF_VAR_db_strategy="mysql"        
-      else
-        unknown_value "$1" "atp/dbsystem/mysql"
-      fi
-      shift # past argument
-      shift # past value
-      ;;  
-    -atp_ocid)
-      export TF_VAR_db_existing_strategy="existing"
-      export TF_VAR_atp_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;    
-    -db_ocid)
-      export TF_VAR_db_existing_strategy="existing"
-      export TF_VAR_db_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;    
-    -mysql_ocid)
-      export TF_VAR_db_existing_strategy="existing"
-      export TF_VAR_mysql_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;     
-    -bastion_ocid)
-      export TF_VAR_bastion_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;           
-    -apigw_ocid)
-      export TF_VAR_apigw_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;   
-    -fnapp_ocid)
-      export TF_VAR_fnapp_ocid="$2"
-      shift # past argument
-      shift # past value
-      ;;                                                     
-    -db_user)
-      export TF_VAR_db_user="$2"
-      shift # past argument
-      shift # past value
-      ;;                            
-    -db_password)
-      export TF_VAR_db_password="$2"
-      shift # past argument
-      shift # past value
-      ;;   
-    -auth_token)
-      export TF_VAR_auth_token="$2"
-      shift # past argument
-      shift # past value
-      ;;        
-    -zip)
-      export MODE=ZIP
-      export REPOSITORY_NAME="$2"
-      shift # past argument
-      shift # past value
-      ;;      
-    -iac|-infra_as_code)
-      if [ $2 == "terraform_local" ]; then 
-        export TF_VAR_infra_as_code=$2
-      elif [ $2 == "terraform_object_storage" ]; then  
-        export TF_VAR_infra_as_code=$2
-      elif [ $2 == "resource_manager" ]; then  
-        export TF_VAR_infra_as_code=$2        
-      else
-        unknown_value "$1" "terraform_local/terraform_object_storage/resource_manager"
-      fi
-      shift # past argument
-      shift # past value
-      ;;    
-    -license)
-      # BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
-      if [ $2 == "BRING_YOUR_OWN_LICENSE" ] || [ $2 == "byol" ] ; then 
-        export TF_VAR_licence_model="BRING_YOUR_OWN_LICENSE"
-      elif [ $2 == "LICENSE_INCLUDED" ] || [ $2 == "included" ]  ; then  
-        export TF_VAR_licence_model="LICENSE_INCLUDED"
-      else
-        unknown_value "$1" "byol/BRING_YOUR_OWN_LICENSE/included/LICENSE_INCLUDED"
-      fi
-      shift # past argument
-      shift # past value
-      ;;            
-
-    -*|--*)
-      echo "Unknown option $1"
-      exit 1
-      ;;
-    *)
-      POSITIONAL_ARGS+=("$1") # save positional arg
-      shift # past argument
-      ;;
-  esac
-done
-
-# XXXX The check should be placed somewhere else such that they are applied in all modes !!!
-mandatory "language" $TF_VAR_language
-mandatory "deploy" $TF_VAR_deploy_strategy
-mandatory "db_password" $TF_VAR_db_password
-
-if [ "$TF_VAR_db_existing_strategy" == "existing" ]; then
-  if [ "$TF_VAR_db_strategy" == "autonomous" ]; then
-     mandatory "atp_ocid" $TF_VAR_atp_ocid
-  fi
-
-  if [ "$TF_VAR_db_strategy" == "database" ]; then
-     mandatory "db_ocid" $TF_VAR_db_ocid
-  fi
-
-  if [ "$TF_VAR_db_strategy" == "mysql" ]; then
-     mandatory "mysql_ocid" $TF_VAR_mysql_ocid
-  fi
-fi    
-
-if [ "$TF_VAR_language" != "java" ]; then  
-  unset TF_VAR_java_framework
 fi
 
-if [ "$TF_VAR_deploy_strategy" != "compute" ] && [ -z "$TF_VAR_auth_token" ]; then
-  echo "WARNING: token is not defined."
-  echo "         You will need to define it in the file env.sh"
-  export TF_VAR_auth_token="__TO_FILL__"
-fi
+rm -rf ./output # 
 
-if [ -z "$TF_VAR_compartment_ocid" ]; then
-  echo "WARNING: compartment_ocid is not defined."
-  echo "         The components will be created in the root compartment."
-fi
+echo "Generating env.sh using py_oci_starter.py:"
 
-# To avoid issue, Helidon support only jdk 17
-if [ "$TF_VAR_java_framework" == "helidon" ] && [ "$TF_VAR_java_version" != "17" ]; then  
-  echo "WARNING: Helidon supports only Java 17."
-  echo "         Forcing the version to 17"
-  export TF_VAR_java_version=17
-fi
+python3 py_oci_starter.py "$@"
 
-# Default user of database
-if [ "$TF_VAR_db_strategy" == "database" ] && [ "$TF_VAR_db_user" == "admin" ]; then  
-  echo "WARNING: Default user in Oracle Database System is system"
-  echo "         Forcing the db_user to system"
-  export TF_VAR_db_user="system"
-fi
+# running this now so the rest of the script has access to the TF_VARs...
+. ./output/env.sh
 
-# Default user of MySQL
-if [ "$TF_VAR_db_strategy" == "mysql" ] && [ "$TF_VAR_db_user" == "admin" ]; then  
-  echo "WARNING: Default user in MySQL is root"
-  echo "         Forcing the db_user to root"
-  export TF_VAR_db_user="root"
-fi
+echo "py_oci_starter.py finished"
 
-# ORDS and ATP
-if [ "$TF_VAR_language" == "ords" ] && [ "$TF_VAR_db_strategy" != "autonomous" ]; then
-  # XXXXXXX
-  echo "CURRENT LIMITATION: OCI Starter support ORDS on ATP only"
-  exit
-fi
-
-# Create env.sh
-echo '#!/bin/bash' > env.sh
-echo 'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )' >> env.sh
-OCI_STARTER_CREATION_DATE=`date '+%Y-%m-%d-%H-%M-%S-%6N'`
-echo "declare -x OCI_STARTER_CREATION_DATE=$OCI_STARTER_CREATION_DATE" >> env.sh
-echo '' >> env.sh
-echo '# Env Variables' >> env.sh
-if [ -z "$TF_VAR_compartment_ocid" ]; then
-  echo "# declare -x TF_VAR_compartment_ocid=ocid1.compartment.xxxxx" >> env.sh
-fi
-export |grep TF_VAR >> env.sh
-echo '' >> env.sh
-echo '# Get other env variables automatically (-silent flag can be passed)' >> env.sh
-echo '. $SCRIPT_DIR/bin/auto_env.sh $1' >> env.sh
-
-# Add comments
-awk '/TF_VAR_licence_model/{print "# TF_VAR_licence_model=BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED"}1' env.sh > env.tmp
-mv env.tmp env.sh
-awk '/TF_VAR_db_password/{print "# TF_VAR_db_password policy: Minimum: 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345"}1' env.sh > env.tmp
-mv env.tmp env.sh 
-awk '/TF_VAR_auth_token/{print "# TF_VAR_auth_token. See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm"}1' env.sh > env.tmp
-mv env.tmp env.sh
-
-fi  
-
-echo MODE=$MODE
-
-title "Creating Directory"  
-# java -version
-# node --version
-# python -version
-# docker -version
-# fn version
-
-# uname -a
-# curl -L -O https://helidon.io/cli/latest/darwin/helidon
-# chmod +x ./helidon
-# ls -al helidon
-# ./helidon version
-
-chmod +x env.sh
+echo $TF_VAR_language
 
 if [ $MODE == "GIT " ]; then
   git clone $GIT_URL
   cp ../mode/git/* $REPOSITORY_NAME/.
 else 
   export REPOSITORY_NAME=${REPOSITORY_NAME:="output"}
-  mkdir $REPOSITORY_NAME
+  # mkdir $REPOSITORY_NAME (py_oci_starter.py creates the output directory anyway)
 fi
 cd ./$REPOSITORY_NAME
 
 cp -r ../basis/* .
-mv ../env.sh .
+# mv ../env.sh . (py_oci_starter.py writes env.sh to the output directory anyway)
 
 #-- README.md ------------------------------------------------------------------
 

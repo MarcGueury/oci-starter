@@ -291,12 +291,15 @@ def get_tf_var_comment(param):
     if comment is not None:
         return f'# {get_tf_var(param)} : {comment}'
 
-def write_env_sh(output_dir, contents):
-    env_sh_path = output_dir + os.sep + "env.sh"
-    env_sh = open(env_sh_path, "w")
-    env_sh.writelines('%s\n' % line for line in contents)
-    env_sh.close()
-    os.chmod(env_sh_path, 0o755)
+def write_env_sh(output_dir):
+    output_path = output_dir + os.sep + 'env.sh'
+    file_output(output_path, env_sh_contents())
+    os.chmod(output_path, 0o755)
+
+def file_output(file_path, contents):
+    output_file = open(file_path, "w")
+    output_file.writelines('%s\n' % line for line in contents)
+    output_file.close()
 
 # the script
 print(title())
@@ -325,7 +328,7 @@ if mode == CLI:
         output_dir = "output"
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
-        write_env_sh(output_dir, env_sh_contents())
+        write_env_sh(output_dir)
 
 if mode == GIT:
     params = git_params()
