@@ -6,6 +6,7 @@
 # Authors: Marc Gueury & Ewan Slater
 # Date: 2022-11-24
 import sys, os
+from datetime import datetime
 
 # constants
 ABORT='ABORT'
@@ -56,6 +57,7 @@ no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
     '-atp_ocid', '-db_ocid', '-mysql_ocid', '-db_user', \
     '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid']
 
+# hidden_options - allowed but not advertised
 hidden_options = ['-zip', '-infra-as-code']
 
 def allowed_options():
@@ -85,16 +87,16 @@ def check_values():
     return illegals
 
 def get_tf_var(param):
-    special_cases = {
+    special_case = {
         'database': 'TF_VAR_db_strategy',
         'deploy': 'TF_VAR_deploy_strategy',
         'kubernetes': 'TF_VAR_kubernetes_strategy',
         'license': 'TF_VAR_license_model',
         'ui': 'TF_VAR_ui_strategy',
         'oke': 'TF_VAR_oke_strategy',
-    }
-    if param in special_cases:
-        return special_cases.get(param)
+    }.get(param)
+    if special_case is not None:
+        return special_case
     else:
         return 'TF_VAR_' + param
 
@@ -262,10 +264,32 @@ def git_params():
     return dict(zip(keys, values))
 
 def env_sh():
-    contents = []
-    contents.append('#!/bin/bash')
+    timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
+    contents = ['#!/bin/bash']
     contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
+    contents.append(f'declare -x OCI_STARTER_CREATION_DATE={timestamp}')
+    contents.append('')
+    contents.append('# Env Variables')
+    if params.get('compartment_ocid') == None:
+        contents.append('# declare -x TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
+    for param in params:
+        var_comment = get_tf_var_comment(param)
+        if var_comment is not None:
+            contents.append(var_comment)
+        contents.append(f'declare -x {get_tf_var(param)}={params[param]}')
+    contents.append('')
+    contents.append('# Get other env variables automatically (-silent flag can be passed)')
+    contents.append('. $SCRIPT_DIR/bin/auto_env.sh $1')
     return contents
+
+def get_tf_var_comment(param):
+    comment = {
+        'auth_token': 'See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm',
+        'db_password': 'Requires at least 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345',
+        'license': 'BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED'
+    }.get(param)
+    if comment is not None:
+        return f'# {get_tf_var(param)} : {comment}'
 
 # the script
 print(title())
@@ -291,7 +315,10 @@ if mode == CLI:
         mode = ABORT
     else:
         print_warnings()
-        print(env_sh())
+        print('\n<env.sh>')
+        for line in env_sh():
+            print(line)
+        print('</env.sh>\n')
 
 if mode == GIT:
     params = git_params()
