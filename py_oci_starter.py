@@ -93,8 +93,7 @@ def get_tf_var(param):
         'deploy': 'TF_VAR_deploy_strategy',
         'kubernetes': 'TF_VAR_kubernetes_strategy',
         'license': 'TF_VAR_license_model',
-        'ui': 'TF_VAR_ui_strategy',
-        'oke': 'TF_VAR_oke_strategy',
+        'ui': 'TF_VAR_ui_strategy'
     }.get(param)
     if special_case is not None:
         return special_case
@@ -114,7 +113,9 @@ def db_rules():
     db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'mysql_ocid':'mysql'}
     for dep in db_deps:
         if params.get(dep) is not None:
-            params['database'] = db_deps[dep]
+            params['db_existing_strategy'] = EXISTING
+        elif params['database'] == params.get(db_deps[dep]) and params['db_existing_strategy'] == EXISTING:
+            error(f"-{dep} required if db_existing_strategy is existing")
     if params['database'] != 'autonomous' and params['language'] == 'ords':
         error(f'OCI starter only supports ORDS on ATP (Autonomous)')
     if params.get('db_user') == None:
@@ -132,12 +133,15 @@ def language_rules():
 
 def kubernetes_rules():
     params['deploy'] = longhand('deploy',{'oke':'kubernetes'})
+    if params['oke_ocid'] is not None:
+       params['oke_strategy'] = EXISTING
     if params['deploy'] == 'kubernetes':
         if params.get('kubernetes') == 'docker':
             params['kubernetes'] = 'Docker image only'
         else:
             params['kubernetes'] = 'OKE'
-            params['oke'] = NEW
+            if params.get('oke') == None:
+               params['oke_strategy'] = NEW
 
 def vcn_rules():
     if 'vcn_ocid' in params:
