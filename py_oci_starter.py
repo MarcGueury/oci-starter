@@ -50,7 +50,8 @@ default_options = {
     '-kubernetes': 'oke',
     '-ui': 'html',
     '-database': 'atp',
-    '-license': 'included'
+    '-license': 'included',
+    '-vcn_strategy': NEW    
 }
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
