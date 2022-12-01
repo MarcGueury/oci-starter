@@ -84,7 +84,7 @@ start_test 01_JAVA_HELIDON_COMPUTE_ATP
 build_test_destroy
 
 start_test 01B_JAVA_HELIDON_COMPUTE_ATP_RESOURCE_MANAGER
-./oci_starter.sh -language java -deploy compute -db_password $TEST_DB_PASSWORD -iac resource_manager > $TEST_DIR.log 2>&1  
+./oci_starter.sh -language java -deploy compute -db_password $TEST_DB_PASSWORD -infra_as_code resource_manager > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute ATP + Existing Subnet
@@ -108,7 +108,7 @@ build_test_destroy
 
 # SpringBoot Resource Manager
 start_test 05B_JAVA_SPRINGBOOT_COMPUTE_ATP_RESOURCE_MANAGER
-$OCI_STARTER -language java -java_framework springboot -deploy compute -db_password $TEST_DB_PASSWORD -iac resource_manager > $TEST_DIR.log 2>&1   
+$OCI_STARTER -language java -java_framework springboot -deploy compute -db_password $TEST_DB_PASSWORD -infra_as_code resource_manager > $TEST_DIR.log 2>&1   
 build_test_destroy
 
 # DB System
@@ -153,7 +153,7 @@ build_test_destroy
 
 # OKE + SPRINGBOOT + MYSQL + RESOURCE MANAGER
 start_test 52_JAVA_SPRINGBOOT_OKE_MYSQL_RESOURCEMANAGER
-$OCI_STARTER -iac resource_manager -language java -java_framework springboot -deploy kubernetes -database mysql -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
+$OCI_STARTER -infra_as_code resource_manager -language java -java_framework springboot -deploy kubernetes -database mysql -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Function + JAVA + ATP
@@ -163,7 +163,7 @@ build_test_destroy
 
 # Function + NODE + RESOURCEMANAGER
 start_test 101_NODE_FUNCTION_RESOURCEMANAGER
-$OCI_STARTER -iac resource_manager -language node -deploy function -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
+$OCI_STARTER -infra_as_code resource_manager -language node -deploy function -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 date
