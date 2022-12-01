@@ -74,7 +74,7 @@ allowed_values = {
     '-java_version': {'8', '11', '17'},
     '-kubernetes':{'oke','docker'},
     '-ui': {'html','jet','angular','reactjs','none'},
-    '-database': {'atp','dbsystem','mysql'},
+    '-database': {'atp','database','mysql'},
     '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'}
 }
 
@@ -109,7 +109,7 @@ def longhand(key, abbreviations):
         return current
         
 def db_rules():
-    params['database'] = longhand('database', {'atp': 'autonomous', 'database': 'dbsystem'})
+    params['database'] = longhand('database', {'atp': 'autonomous', 'dbsystem': 'database'})
     params['db_existing_strategy'] = NEW
     db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'mysql_ocid':'mysql'}
     for dep in db_deps:
