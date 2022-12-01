@@ -81,7 +81,7 @@ title oci_starter.sh
 # Avoid issue when developing
 unset "${!TF_VAR@}"
 
-# keeping this section here so that $MODE etc. are accessible after py_oci_starter.py has run
+# keeping this section here so that $MODE etc. are accessible after py_oci_starter.py has run
 if [ "$#" -eq 3 ]; then
   export MODE=GIT
   export GIT_URL=$1

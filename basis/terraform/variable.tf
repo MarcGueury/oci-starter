@@ -17,3 +17,16 @@ variable db_password{}
 # Compute Instance size
 variable "instance_ocpus" { default = 1 }
 variable "instance_shape_config_memory_in_gbs" { default = 8 }
+
+# Landing Zones
+variable lz_appdev_cmp_ocid { default="" }
+variable lz_database_cmp_ocid { default="" }
+variable lz_network_cmp_ocid { default="" }
+variable lz_security_cmp_ocid { default="" }
+
+locals {
+  lz_appdev_cmp_ocid = var.lz_appdev_cmp_ocid == "" ? var.compartment_ocid : var.lz_appdev_cmp_ocid
+  lz_database_cmp_ocid = var.lz_database_cmp_ocid == "" ? var.compartment_ocid : var.lz_database_cmp_ocid
+  lz_network_cmp_ocid = var.lz_network_cmp_ocid == "" ? var.compartment_ocid : var.lz_network_cmp_ocid
+  lz_security_cmp_ocid = var.lz_security_cmp_ocid == "" ? var.compartment_ocid : var.lz_security_cmp_ocid
+}

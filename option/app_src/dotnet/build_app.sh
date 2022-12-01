@@ -1,11 +1,9 @@
 #!/bin/bash
 # Build_app.sh
 #
-#!/bin/bash
-# Parameter build or docker
-# Compute:
+# Compute: 
 # - build the code 
-# - create a $ROOT/app directory with the compiled files
+# - create a $ROOT/compute/app directory with the compiled files
 # - and a start.sh to start the program
 # Docker:
 # - build the image

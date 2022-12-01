@@ -4,6 +4,9 @@ cd $SCRIPT_DIR
 export TEST_HOME=$SCRIPT_DIR/test_all
 . $HOME/bin/env_oci_starter_testsuite.sh
 
+# No color for terraforms logs
+export nocolorarg=1
+
 start_test () {
   export TEST_NAME=$1
   export TEST_DIR=$TEST_HOME/$OPTION_DEPLOY/$TEST_NAME
