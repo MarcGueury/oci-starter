@@ -256,7 +256,7 @@ def missing_parameters(supplied_params, expected_params):
     return list(expected_set)
 
 def cli_params():
-    return deprefix_keys(default_options | prog_arg_dict())
+    return deprefix_keys( {**default_options, **prog_arg_dict()} )
 
 def git_params():
     keys = ['git_url', 'repository_name', 'oci_username']
@@ -273,23 +273,22 @@ def env_sh_contents():
     if params.get('compartment_ocid') == None:
         contents.append('# declare -x TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
     for param in params:
-        var_comment = get_tf_var_comment(param)
-        if var_comment is not None:
-            contents.append(var_comment)
-        contents.append(f'declare -x {get_tf_var(param)}={params[param]}')
+        var_comment = get_tf_var_comment(contents, param)
+        contents.append(f'declare -x {get_tf_var(param)}="{params[param]}"')
     contents.append('')
     contents.append('# Get other env variables automatically (-silent flag can be passed)')
     contents.append('. $SCRIPT_DIR/bin/auto_env.sh $1')
     return contents
 
-def get_tf_var_comment(param):
-    comment = {
-        'auth_token': 'See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm',
-        'db_password': 'Requires at least 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345',
-        'license': 'BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED'
+def get_tf_var_comment(contents, param):
+    comments = {
+        'auth_token': ['See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm'],
+        'db_password': ['Requires at least 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345','If not filled, during the first build, it will be randomly generated.'],
+        'license': ['BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED']
     }.get(param)
-    if comment is not None:
-        return f'# {get_tf_var(param)} : {comment}'
+    if comments is not None:
+       for comment in comments:
+          contents.append(f'# {get_tf_var(param)} : {comment}')
 
 def write_env_sh(output_dir):
     output_path = output_dir + os.sep + 'env.sh'
@@ -316,19 +315,21 @@ errors=[]
 
 if mode == CLI:
     params=cli_params()
-    apply_rules()
     missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options)
-    unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
-    illegal_params = check_values()
-    if len(missing_params) > 0 or len(unknown_params) > 0  \
-        or len(illegal_params) > 0 or len(errors) > 0:
-        mode = ABORT
-    else:
-        print_warnings()
-        output_dir = "output"
-        if not os.path.isdir(output_dir):
-            os.mkdir(output_dir)
-        write_env_sh(output_dir)
+    if len(missing_params) > 0:
+       mode = ABORT
+    else:   
+       apply_rules()
+       unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
+       illegal_params = check_values()
+       if len(unknown_params) > 0 or len(illegal_params) > 0 or len(errors) > 0:
+          mode = ABORT
+       else:
+          print_warnings()
+          output_dir = "output"
+          if not os.path.isdir(output_dir):
+             os.mkdir(output_dir)
+          write_env_sh(output_dir)
 
 if mode == GIT:
     params = git_params()
