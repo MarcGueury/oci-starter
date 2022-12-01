@@ -133,7 +133,7 @@ def language_rules():
 
 def kubernetes_rules():
     params['deploy'] = longhand('deploy',{'oke':'kubernetes'})
-    if params['oke_ocid'] is not None:
+    if params.get('oke_ocid') is not None:
        params['oke_strategy'] = EXISTING
     if params['deploy'] == 'kubernetes':
         if params.get('kubernetes') == 'docker':
