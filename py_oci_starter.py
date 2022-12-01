@@ -55,7 +55,8 @@ default_options = {
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
     '-atp_ocid', '-db_ocid', '-mysql_ocid', '-db_user', \
-    '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid']
+    '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token', \
+    '-subnet_ocid' ]
 
 # hidden_options - allowed but not advertised
 hidden_options = ['-zip', '-infra-as-code']
@@ -67,7 +68,7 @@ def allowed_options():
 allowed_values = {
     '-language': {'java','node','python','ords'},
     '-deploy': {'compute','kubernetes','function'},
-    '-java_framework': {'springboot','helidon','tomcat'},
+    '-java_framework': {'springboot','helidon','tomcat','micronaut'},
     '-java_vm': {'jdk','graalvm'},
     '-java_version': {'8', '11', '17'},
     '-kubernetes':{'oke','docker'},
