@@ -67,7 +67,7 @@ def allowed_options():
         + mandatory_options + no_default_options
 
 allowed_values = {
-    '-language': {'java','node','python','ords'},
+    '-language': {'java','node','python','dotnet','ords'},
     '-deploy': {'compute','kubernetes','function'},
     '-java_framework': {'springboot','helidon','tomcat','micronaut'},
     '-java_vm': {'jdk','graalvm'},
