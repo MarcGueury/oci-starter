@@ -114,20 +114,20 @@ def db_rules():
     for dep in db_deps:
         if params.get(dep) is not None:
             params['db_existing_strategy'] = EXISTING
-        elif params['database'] == params.get(db_deps[dep]) and params['db_existing_strategy'] == EXISTING:
+        elif params.get('database') == params.get(db_deps[dep]) and params.get('db_existing_strategy') == EXISTING:
             error(f"-{dep} required if db_existing_strategy is existing")
-    if params['database'] != 'autonomous' and params['language'] == 'ords':
+    if params.get('database') != 'autonomous' and params.get('language') == 'ords':
         error(f'OCI starter only supports ORDS on ATP (Autonomous)')
     if params.get('db_user') == None:
         default_users = {'autonomous':'admin', 'database':'system', 'mysql':'root'}
         params['db_user'] = default_users[params['database']]
 
 def language_rules():
-    if params['language'] != 'java':
+    if param.get('language') != 'java':
         params.pop('java_framework')
         params.pop('java_vm')
         params.pop('java_version')
-    elif params['java_framework'] == 'helidon' and params['java_version'] != '17':
+    elif params.get('java_framework') == 'helidon' and params.get('java_version') != '17':
         warning('Helidon only supports Java 17. Forcing Java version to 17')
         params['java_version'] = 17
 
@@ -135,7 +135,7 @@ def kubernetes_rules():
     params['deploy'] = longhand('deploy',{'oke':'kubernetes'})
     if params.get('oke_ocid') is not None:
        params['oke_strategy'] = EXISTING
-    if params['deploy'] == 'kubernetes':
+    if params.get('deploy') == 'kubernetes':
         if params.get('kubernetes') == 'docker':
             params['kubernetes'] = 'Docker image only'
         else:
@@ -153,7 +153,7 @@ def ui_rules():
     params['ui'] = longhand('ui', {'reactjs':'ReactJS','none':'None'})
 
 def auth_token_rules():
-    if params.get('auth_token') is None:
+    if params.get('deploy') != 'compute' and params.get('auth_token') is None:
         warning('-auth_token is not set. Will need to be set in env.sh')
         params['auth_token'] = '__TO_FILL__'
 
