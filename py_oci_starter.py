@@ -113,10 +113,10 @@ def db_rules():
     db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'mysql_ocid':'mysql'}
     for dep in db_deps:
         if params.get(dep) is not None:
-            if params['database'] == db_deps['dep']:
+            if params['database'] == db_deps[dep]:
                 params['db_existing_strategy'] = EXISTING
             else:
-                error(f"-database {db_deps['dep']} required if {dep} is set")
+                error(f"-database {db_deps[dep]} required if {dep} is set")
     if params['database'] != 'autonomous' and params['language'] == 'ords':
         error(f'OCI starter only supports ORDS on ATP (Autonomous)')
     if params.get('db_user') == None:
