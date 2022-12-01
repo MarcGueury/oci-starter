@@ -1,17 +1,17 @@
-variable "db_edition" {
+variable db_edition {
   default = "ENTERPRISE_EDITION"
 }
 
-variable "n_character_set" {
+variable n_character_set {
   default = "AL16UTF16"
 }
 
-variable "character_set" {
+variable character_set {
   default = "AL32UTF8"
 }
 
 # BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
-variable license_model{
+variable license_model {
   default="BRING_YOUR_OWN_LICENSE"
 }
 
@@ -23,7 +23,7 @@ resource "oci_database_db_system" "starter_dbsystem" {
   db_home {
     database {
       admin_password = var.db_password
-      db_name        = "${var.prefix}"
+      db_name        = substr(var.prefix,0,8)
       pdb_name       = "PDB1"
     }
 

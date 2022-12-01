@@ -134,7 +134,7 @@ def language_rules():
         params['java_version'] = 17
 
 def kubernetes_rules():
-    params['deploy'] = longhand('kubernetes',{'oke':'kubernetes'})
+    params['deploy'] = longhand('deploy',{'oke':'kubernetes'})
     if params['deploy'] == 'kubernetes':
         if params.get('kubernetes') == 'docker':
             params['kubernetes'] = 'Docker image only'
