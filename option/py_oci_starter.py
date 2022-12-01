@@ -8,14 +8,14 @@
 import sys, os
 from datetime import datetime
 
-# constants
+# constants
 ABORT='ABORT'
 GIT='GIT'
 CLI='CLI'
 EXISTING='existing'
 NEW='new'
 
-# functions
+# functions
 def title():
     s = "-- " + script_name() + " "
     return s.ljust(78,'-')
@@ -50,14 +50,12 @@ default_options = {
     '-kubernetes': 'oke',
     '-ui': 'html',
     '-database': 'atp',
-    '-license': 'included',
-    '-vcn_strategy': NEW    
+    '-license': 'included'
 }
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
     '-atp_ocid', '-db_ocid', '-mysql_ocid', '-db_user', \
-    '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token', \
-    '-subnet_ocid' ]
+    '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid']
 
 # hidden_options - allowed but not advertised
 hidden_options = ['-zip', '-infra-as-code']
@@ -67,9 +65,9 @@ def allowed_options():
         + mandatory_options + no_default_options
 
 allowed_values = {
-    '-language': {'java','node','python','dotnet','ords'},
+    '-language': {'java','node','python','ords'},
     '-deploy': {'compute','kubernetes','function'},
-    '-java_framework': {'springboot','helidon','tomcat','micronaut'},
+    '-java_framework': {'springboot','helidon','tomcat'},
     '-java_vm': {'jdk','graalvm'},
     '-java_version': {'8', '11', '17'},
     '-kubernetes':{'oke','docker'},
@@ -94,7 +92,8 @@ def get_tf_var(param):
         'deploy': 'TF_VAR_deploy_strategy',
         'kubernetes': 'TF_VAR_kubernetes_strategy',
         'license': 'TF_VAR_license_model',
-        'ui': 'TF_VAR_ui_strategy'
+        'ui': 'TF_VAR_ui_strategy',
+        'oke': 'TF_VAR_oke_strategy',
     }.get(param)
     if special_case is not None:
         return special_case
@@ -109,40 +108,38 @@ def longhand(key, abbreviations):
         return current
         
 def db_rules():
-    params['database'] = longhand('database', {'atp': 'autonomous', 'database': 'dbsystem'})
+    params['database'] = longhand('database', {'atp': 'autonomous', 'dbsystem': 'database'})
     params['db_existing_strategy'] = NEW
     db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'mysql_ocid':'mysql'}
     for dep in db_deps:
         if params.get(dep) is not None:
-            params['db_existing_strategy'] = EXISTING
-        elif params.get('database') == params.get(db_deps[dep]) and params.get('db_existing_strategy') == EXISTING:
-            error(f"-{dep} required if db_existing_strategy is existing")
-    if params.get('database') != 'autonomous' and params.get('language') == 'ords':
+            if params['database'] == db_deps['dep']:
+                params['db_existing_strategy'] = EXISTING
+            else:
+                error(f"-database {db_deps['dep']} required if {dep} is set")
+    if params['database'] != 'autonomous' and params['language'] == 'ords':
         error(f'OCI starter only supports ORDS on ATP (Autonomous)')
     if params.get('db_user') == None:
         default_users = {'autonomous':'admin', 'database':'system', 'mysql':'root'}
         params['db_user'] = default_users[params['database']]
 
 def language_rules():
-    if params.get('language') != 'java':
+    if params['language'] != 'java':
         params.pop('java_framework')
         params.pop('java_vm')
         params.pop('java_version')
-    elif params.get('java_framework') == 'helidon' and params.get('java_version') != '17':
+    elif params['java_framework'] == 'helidon' and params['java_version'] != '17':
         warning('Helidon only supports Java 17. Forcing Java version to 17')
         params['java_version'] = 17
 
 def kubernetes_rules():
-    params['deploy'] = longhand('deploy',{'oke':'kubernetes'})
-    if params.get('oke_ocid') is not None:
-       params['oke_strategy'] = EXISTING
-    if params.get('deploy') == 'kubernetes':
+    params['deploy'] = longhand('kubernetes',{'oke':'kubernetes'})
+    if params['deploy'] == 'kubernetes':
         if params.get('kubernetes') == 'docker':
             params['kubernetes'] = 'Docker image only'
         else:
             params['kubernetes'] = 'OKE'
-            if params.get('oke') == None:
-               params['oke_strategy'] = NEW
+            params['oke'] = NEW
 
 def vcn_rules():
     if 'vcn_ocid' in params:
@@ -154,7 +151,7 @@ def ui_rules():
     params['ui'] = longhand('ui', {'reactjs':'ReactJS','none':'None'})
 
 def auth_token_rules():
-    if params.get('deploy') != 'compute' and params.get('auth_token') is None:
+    if params.get('auth_token') is None:
         warning('-auth_token is not set. Will need to be set in env.sh')
         params['auth_token'] = '__TO_FILL__'
 
@@ -259,14 +256,14 @@ def missing_parameters(supplied_params, expected_params):
     return list(expected_set)
 
 def cli_params():
-    return deprefix_keys( {**default_options, **prog_arg_dict()} )
+    return deprefix_keys(default_options | prog_arg_dict())
 
 def git_params():
     keys = ['git_url', 'repository_name', 'oci_username']
     values = prog_arg_list()
     return dict(zip(keys, values))
 
-def env_sh_contents():
+def env_sh():
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
     contents = ['#!/bin/bash']
     contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
@@ -276,32 +273,23 @@ def env_sh_contents():
     if params.get('compartment_ocid') == None:
         contents.append('# declare -x TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
     for param in params:
-        var_comment = get_tf_var_comment(contents, param)
-        contents.append(f'declare -x {get_tf_var(param)}="{params[param]}"')
+        var_comment = get_tf_var_comment(param)
+        if var_comment is not None:
+            contents.append(var_comment)
+        contents.append(f'declare -x {get_tf_var(param)}={params[param]}')
     contents.append('')
     contents.append('# Get other env variables automatically (-silent flag can be passed)')
     contents.append('. $SCRIPT_DIR/bin/auto_env.sh $1')
     return contents
 
-def get_tf_var_comment(contents, param):
-    comments = {
-        'auth_token': ['See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm'],
-        'db_password': ['Requires at least 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345','If not filled, during the first build, it will be randomly generated.'],
-        'license': ['BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED']
+def get_tf_var_comment(param):
+    comment = {
+        'auth_token': 'See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm',
+        'db_password': 'Requires at least 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345',
+        'license': 'BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED'
     }.get(param)
-    if comments is not None:
-       for comment in comments:
-          contents.append(f'# {get_tf_var(param)} : {comment}')
-
-def write_env_sh(output_dir):
-    output_path = output_dir + os.sep + 'env.sh'
-    file_output(output_path, env_sh_contents())
-    os.chmod(output_path, 0o755)
-
-def file_output(file_path, contents):
-    output_file = open(file_path, "w")
-    output_file.writelines('%s\n' % line for line in contents)
-    output_file.close()
+    if comment is not None:
+        return f'# {get_tf_var(param)} : {comment}'
 
 # the script
 print(title())
@@ -318,21 +306,19 @@ errors=[]
 
 if mode == CLI:
     params=cli_params()
+    apply_rules()
     missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options)
-    if len(missing_params) > 0:
-       mode = ABORT
-    else:   
-       apply_rules()
-       unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
-       illegal_params = check_values()
-       if len(unknown_params) > 0 or len(illegal_params) > 0 or len(errors) > 0:
-          mode = ABORT
-       else:
-          print_warnings()
-          output_dir = "output"
-          if not os.path.isdir(output_dir):
-             os.mkdir(output_dir)
-          write_env_sh(output_dir)
+    unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
+    illegal_params = check_values()
+    if len(missing_params) > 0 or len(unknown_params) > 0  \
+        or len(illegal_params) > 0 or len(errors) > 0:
+        mode = ABORT
+    else:
+        print_warnings()
+        print('\n<env.sh>')
+        for line in env_sh():
+            print(line)
+        print('</env.sh>\n')
 
 if mode == GIT:
     params = git_params()
@@ -346,4 +332,3 @@ if mode == ABORT:
 print(f'Mode: {mode}')
 print(f'params: {params}')
 print("That's all Folks!")
-print(title())
