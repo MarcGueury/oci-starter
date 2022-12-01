@@ -4,6 +4,9 @@ cd $SCRIPT_DIR
 export TEST_HOME=$SCRIPT_DIR/test
 . $HOME/bin/env_oci_starter_testsuite.sh
 
+# No color for terraforms logs
+export nocolorarg=1
+
 #----------------------------------------------------------------------------
 export EX_MYSQL_OCID=$EX_SHARED_MYSQL_OCID
 export EX_VNC_OCID=$EX_SHARED_VNC_OCID

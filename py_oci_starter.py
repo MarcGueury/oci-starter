@@ -141,7 +141,7 @@ def kubernetes_rules():
             params['kubernetes'] = 'Docker image only'
         else:
             params['kubernetes'] = 'OKE'
-            if params.get('oke') == None:
+            if params.get('oke_strategy') == None:
                params['oke_strategy'] = NEW
 
 def vcn_rules():
@@ -163,6 +163,8 @@ def compartment_rules():
         warning('-compartment_ocid is not set. Components will be created in root compartment. Shame on you!')
 
 def license_rules():
+    if params.get('license') is None:
+       params['license'] = os.environ.get('TF_VAR_license')
     params['license'] = longhand('license', {'included': 'LICENSE_INCLUDED','byol': 'BRING_YOUR_OWN_LICENSE'})
 
 def apply_rules():
