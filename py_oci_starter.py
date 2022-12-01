@@ -57,7 +57,7 @@ default_options = {
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
     '-atp_ocid', '-db_ocid', '-mysql_ocid', '-db_user', \
     '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token', \
-    '-subnet_ocid' ]
+    '-subnet_ocid', '-infra_as_code' ]
 
 # hidden_options - allowed but not advertised
 hidden_options = ['-zip', '-infra-as-code']
@@ -75,9 +75,9 @@ allowed_values = {
     '-kubernetes':{'oke','docker'},
     '-ui': {'html','jet','angular','reactjs','none'},
     '-database': {'atp','database','mysql'},
-    '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'}
+    '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'},
+    '-infra_as_code': {'terraform_local','terraform_object_storage','resource_manager'}
 }
-
 
 def check_values():
     illegals = {}

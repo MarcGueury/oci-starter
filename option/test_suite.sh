@@ -23,35 +23,35 @@ start_test () {
 build_test () {
   if [ -d output ]; then
     mv output $TEST_DIR
+    SECONDS=0
+    # Change to the TEST_HOME directory first in case that the creation of TEST_DIR failed
+    cd $TEST_HOME
+    cd $TEST_DIR
+    pwd
+    ./build.sh > build_$BUILD_ID.log 2>&1  
+    echo "build_secs_$BUILD_ID=$SECONDS" >> ${TEST_DIR}_time.txt
+    if [ -f /tmp/result.html ]; then
+    if grep -q -i "DOCTYPE html" /tmp/result.html; then
+        echo "RESULT HTML: OK"
+      else
+        echo "RESULT HTML: ***** BAD ******"
+      fi
+      if grep -q -i "deptno" /tmp/result.json; then
+        echo "RESULT JSON: OK                "`cat /tmp/result.json | cut -c 1-80`... 
+      else
+        echo "RESULT JSON: ***** BAD ******  "`cat /tmp/result.json | cut -c 1-80`... 
+      fi
+      echo "RESULT INFO:                   "`cat /tmp/result.info | cut -c 1-80`
+    else
+      echo "No file /tmp/result.html"
+    fi
+    mv /tmp/result.html ${TEST_DIR}_result_$BUILD_ID.html
+    mv /tmp/result.json ${TEST_DIR}_result_$BUILD_ID.json
+    mv /tmp/result.info ${TEST_DIR}_result_$BUILD_ID.info
+    mv /tmp/result_html.log ${TEST_DIR}_result_html_$BUILD_ID.log
+    mv /tmp/result_json.log ${TEST_DIR}_result_json_$BUILD_ID.log
+    mv /tmp/result_info.log ${TEST_DIR}_result_info_$BUILD_ID.log
   fi  
-  SECONDS=0
-  # Change to the TEST_HOME directory first in case that the creation of TEST_DIR failed
-  cd $TEST_HOME
-  cd $TEST_DIR
-  pwd
-  ./build.sh > build_$BUILD_ID.log 2>&1  
-  echo "build_secs_$BUILD_ID=$SECONDS" >> ${TEST_DIR}_time.txt
-  if [ -f /tmp/result.html ]; then
-  if grep -q -i "DOCTYPE html" /tmp/result.html; then
-      echo "RESULT HTML: OK"
-    else
-      echo "RESULT HTML: ***** BAD ******"
-    fi
-    if grep -q -i "deptno" /tmp/result.json; then
-      echo "RESULT JSON: OK                "`cat /tmp/result.json | cut -c 1-80`... 
-    else
-      echo "RESULT JSON: ***** BAD ******  "`cat /tmp/result.json | cut -c 1-80`... 
-    fi
-    echo "RESULT INFO:                   "`cat /tmp/result.info | cut -c 1-80`
-  else
-    echo "No file /tmp/result.html"
-  fi
-  mv /tmp/result.html ${TEST_DIR}_result_$BUILD_ID.html
-  mv /tmp/result.json ${TEST_DIR}_result_$BUILD_ID.json
-  mv /tmp/result.info ${TEST_DIR}_result_$BUILD_ID.info
-  mv /tmp/result_html.log ${TEST_DIR}_result_html_$BUILD_ID.log
-  mv /tmp/result_json.log ${TEST_DIR}_result_json_$BUILD_ID.log
-  mv /tmp/result_info.log ${TEST_DIR}_result_info_$BUILD_ID.log
 }
 
 build_test_destroy () {
