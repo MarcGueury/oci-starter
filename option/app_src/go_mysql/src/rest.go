@@ -3,7 +3,7 @@ package main
 import (
     "fmt"
     "database/sql"
-    _ "github.com/godror/godror"
+    _ "github.com/go-sql-driver/mysql"
     "os"
     "net/http"
     "github.com/gin-gonic/gin"
@@ -21,7 +21,7 @@ var static_depts = []Dept{
 } 
 
 func dept(c *gin.Context) {
-    db, err := sql.Open("godror", os.Getenv("DB_USER")+"/"+os.Getenv("DB_PASSWORD")+"@"+os.Getenv("DB_URL"))
+    db, err := sql.Open("mysql", os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_URL")+")/db1")
     if err != nil {
         fmt.Println(err)
         return
@@ -48,7 +48,7 @@ func dept(c *gin.Context) {
 }
 
 func info(c *gin.Context) {
-    var s string =  "GoLang - Oracle"
+    var s string =  "GoLang - MySQL"
     c.Data(http.StatusOK, "text/html", []byte(s))
 }
 

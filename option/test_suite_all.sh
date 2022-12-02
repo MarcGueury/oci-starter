@@ -151,6 +151,8 @@ loop_lang () {
   else
     loop_java_framework
   fi
+  OPTION_LANG=go
+  loop_db  
   OPTION_LANG=node 
   loop_db
   OPTION_LANG=python
