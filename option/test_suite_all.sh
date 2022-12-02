@@ -81,8 +81,12 @@ build_option() {
        -apigw_ocid $EX_APIGW_OCID \
        -bastion_ocid $EX_BASTION_OCID \
        -fnapp_ocid $EX_FNAPP_OCID > ${TEST_DIR}.log 2>&1 
-  mv output $TEST_DIR               
-  build_test_destroy
+  if [ -d output ]; then 
+    mv output $TEST_DIR               
+    build_test_destroy
+  else
+    echo "Error: no output directory"  
+  fi  
 }
 
 loop_ui() {
