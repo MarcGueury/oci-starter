@@ -3,27 +3,24 @@ package main
 import (
     "fmt"
     "database/sql"
-    "github.com/godror/godror"
-    "log"
+    _ "github.com/godror/godror"
+    "os"
     "net/http"
-    "encoding/json"
-    "github.com/gorilla/mux"
+    "github.com/gin-gonic/gin"
 )
 
 type Dept struct {
-    deptno string `json:"deptno"`
-    dname string `json:"dname"`
-    loc string `json:"loc"`
+    Deptno string `json:"deptno"`
+    Dname string `json:"dname"`
+    Loc string `json:"loc"`
 }
 
-// let's declare a global Articles array
-// that we can then populate in our main function
-// to simulate a database
-var depts []Dept
+var static_depts = []Dept{
+    Dept{Deptno: "10", Dname: "Gorilla", Loc: "Zimbabwe"},
+    Dept{Deptno: "20", Dname: "Gorgonzola", Loc: "Italy"},
+} 
 
-
-func dept(){
- 
+func dept(c *gin.Context) {
     db, err := sql.Open("godror", os.Getenv("DB_USER")+"/"+os.Getenv("DB_PASSWORD")+"@"+os.Getenv("DB_URL"))
     if err != nil {
         fmt.Println(err)
@@ -38,46 +35,31 @@ func dept(){
         return
     }
     defer rows.Close()
- 
-    var dept Dept
+    fmt.Println(rows)
+
+    var d []Dept
     for rows.Next() {
-        rows.Scan(&dept)
-        depts = append(depts, dept)
+        var dept=new(Dept)
+        rows.Scan(&dept.Deptno, &dept.Dname, &dept.Loc)   
+        fmt.Println(dept.Deptno, dept.Dname, dept.Loc) 
+        d = append(d, *dept)
     }
-    return depts, nil
+    c.IndentedJSON(http.StatusOK, d)
 }
 
-func homePage(w http.ResponseWriter, r *http.Request){
-    fmt.Fprintf(w, "Welcome to the HomePage!")
-    fmt.Println("Endpoint Hit: homePage")
+func info(c *gin.Context) {
+    var s string =  "GoLang - Oracle"
+    c.Data(http.StatusOK, "text/html", []byte(s))
 }
 
-func returnAllArticles(w http.ResponseWriter, r *http.Request){
-    fmt.Println("Endpoint Hit: returnAllArticles")
-    json.NewEncoder(w).Encode(Articles)
-}
-
-// Existing code from above
-func handleRequests() {
-    // creates a new instance of a mux router
-    myRouter := mux.NewRouter().StrictSlash(true)
-    // replace http.HandleFunc with myRouter.HandleFunc
-    myRouter.HandleFunc("/", homePage)
-    myRouter.HandleFunc("/all", returnAllArticles)
-    // finally, instead of passing in nil, we want
-    // to pass in our newly created router as the second
-    // argument
-    log.Fatal(http.ListenAndServe(":10000", myRouter))
+func static(c *gin.Context) {
+    c.IndentedJSON(http.StatusOK, static_depts)
 }
 
 func main() {
-    fmt.Println("Rest API v2.0 - Mux Routers")
-    depts = []Dept{
-        Dept{deptno: "10", dname: "Gorilla", loc: "Zimbabwe"},
-        Dept{deptno: "20", dname: "Gorgonzola", loc: "Italy"},
-    }
-    handleRequests()
+    router := gin.Default()
+    router.GET("/info", info)
+    router.GET("/static", static)
+    router.GET("/dept", dept)
+    router.Run("localhost:8080")
 }
-
-
-
