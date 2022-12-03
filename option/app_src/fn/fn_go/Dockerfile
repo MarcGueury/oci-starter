@@ -11,5 +11,6 @@ RUN  yum -y install oracle-release-el7 oracle-golang-release-el7 && \
 # Install the program
 ADD . /function/
 RUN go get .
-CMD go run .
+RUN go build .
+CMD ./func
 
