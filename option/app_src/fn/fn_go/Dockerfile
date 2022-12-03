@@ -13,4 +13,3 @@ ADD . /function/
 RUN go get .
 RUN go build .
 CMD ./func
-

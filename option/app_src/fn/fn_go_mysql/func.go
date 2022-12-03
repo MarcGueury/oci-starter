@@ -7,7 +7,7 @@ import (
 	"io"
 	fdk "github.com/fnproject/fdk-go"
 	"database/sql"
-	_ "github.com/godror/godror"
+    _ "github.com/go-sql-driver/mysql"
 	"os"
 )
 
@@ -22,7 +22,7 @@ func main() {
 }
 
 func myHandler(ctx context.Context, in io.Reader, out io.Writer) {
-	db, err := sql.Open("godror", os.Getenv("DB_USER")+"/"+os.Getenv("DB_PASSWORD")+"@"+os.Getenv("DB_URL"))
+    db, err := sql.Open("mysql", os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_URL")+")/db1")
 	if err != nil {
 		fmt.Println(err)
 		return
