@@ -70,7 +70,7 @@ allowed_values = {
     '-language': {'java','node','python','dotnet','go','ords'},
     '-deploy': {'compute','kubernetes','function'},
     '-java_framework': {'springboot','helidon','tomcat','micronaut'},
-    '-java_vm': {'jdk','graalvm'},
+    '-java_vm': {'jdk','graalvm','graalvm_native'},
     '-java_version': {'8', '11', '17'},
     '-kubernetes':{'oke','docker'},
     '-ui': {'html','jet','angular','reactjs','none'},

@@ -46,6 +46,7 @@ if [ -f app/start.sh ]; then
   # Hardcode the connection to the DB in the start.sh
   sed -i "s!##JDBC_URL##!$JDBC_URL!" app/start.sh 
   sed -i "s!##DB_URL##!$DB_URL!" app/start.sh 
+  sed -i "s!##TF_VAR_java_vm##!$TF_VAR_java_vm!" app/start.sh   
   chmod +x app/start.sh
 
   # Create an "app.service" that starts when the machine starts.
