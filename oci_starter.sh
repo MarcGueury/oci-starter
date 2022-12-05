@@ -35,47 +35,6 @@ cp_dir_db_src() {
     cp ../option/db_src/$1/* db_src/.
 }
 
-mandatory() {
-  if [ -z "$2" ]; then
-    echo "Usage: oci-starter.sh [OPTIONS]"
-    echo "Error: missing option -$1"
-    exit
-  fi
-}
-
-unknown_value() {
-  echo "Usage: oci-starter.sh [OPTIONS]"
-  echo "Unknown value for parameter:  $1" 
-  echo "Allowed values: $2"
-  exit
-}
-
-show_help() {
-  cat <<EOF
-Usage: $(basename $0) [OPTIONS]
-
-oci-starter.sh
-   -prefix (default starter)
-   -compartment_ocid (default tenancy_ocid)
-   -language (mandatory) java / node / python / dotnet / ords 
-   -deploy (mandatory) compute/kubernetes/function
-   -java_framework (default helidon/springboot/tomcat)
-   -java_vm (default jdk/graalvm)  
-   -java_version (default 17/11/8)
-   -kubernetes (default oke/docker) 
-   -oke_ocid ()
-   -ui (default html/reactjs/jet/angular/none) 
-   -vcn_ocid()
-   -subnet_ocid()
-   -database (default atp/dbsystem/mysql)
-   -atp_ocid (optional)
-   -db_ocid (optional)
-   -mysql_ocid (optional)
-   -db_user (default admin)
-   -db_password( mandatory )
-EOF
-}
-
 title oci_starter.sh 
 
 # Avoid issue when developing
