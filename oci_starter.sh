@@ -51,7 +51,12 @@ else
   export MODE=CLI
 fi
 
-rm -rf ./output # 
+rm -rf ./output 
+if [ "$1" == "-zip" ]; then
+   export MODE=ZIP
+   export REPOSITORY_NAME="$2"
+   mkdir $REPOSITORY_NAME
+fi
 
 echo "Generating env.sh using py_oci_starter.py:"
 
@@ -63,11 +68,15 @@ if [ ! -d output ]; then
 fi
 . ./output/env.sh
 
+if [ "$MODE" == "ZIP" ]; then
+  mv ./output/env.sh $REPOSITORY_NAME/.
+fi
+
 echo "py_oci_starter.py finished"
 
 echo $TF_VAR_language
 
-if [ $MODE == "GIT " ]; then
+if [ $MODE == "GIT" ]; then
   git clone $GIT_URL
   cp ../mode/git/* $REPOSITORY_NAME/.
 else 
@@ -300,7 +309,7 @@ if [ "$MODE" == "GIT" ]; then
   git push origin main
 elif [ "$MODE" == "ZIP" ]; then
   # The goal is to have a file that when uncompressed create a directory prefix.
-  cd $SCRIPT_DIR
+  cd ..
   mkdir -p zip/$REPOSITORY_NAME
   mv $REPOSITORY_NAME zip/$REPOSITORY_NAME/$TF_VAR_prefix
   cd zip/$REPOSITORY_NAME

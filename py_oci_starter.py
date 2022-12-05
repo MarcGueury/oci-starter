@@ -15,6 +15,9 @@ CLI='CLI'
 EXISTING='existing'
 NEW='new'
 
+# Output Directory
+output_dir = "output"
+
 # functions
 def title():
     s = "-- " + script_name() + " "
@@ -170,7 +173,7 @@ def license_rules():
 def zip_rules():
     if 'zip' in params:
        output_dir = params['zip']
-       del param['zip']
+       del params['zip']
 
 
 def apply_rules():
@@ -324,7 +327,6 @@ unknown_params = []
 illegal_params = {}
 warnings=[]
 errors=[]
-output_dir = "output"
 
 if mode == CLI:
     params=cli_params()
