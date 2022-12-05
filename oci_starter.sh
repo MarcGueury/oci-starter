@@ -112,7 +112,7 @@ echo "### Next Steps" >> README.md
 if grep -q "__TO_FILL__" env.sh; then
   echo "- Edit the file env.sh. Some variables needs to be filled:" >> README.md
   echo >> README.md
-  echo `cat env.sh | grep __TO_FILL__` >> README.md
+  cat env.sh | grep __TO_FILL__ >> README.md
   echo >> README.md
 fi
 echo "- Run:" >> README.md
