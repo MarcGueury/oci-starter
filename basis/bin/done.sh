@@ -32,9 +32,10 @@ if [ ! -z "$UI_URL" ]; then
       kubectl get all
       sleep 5
     fi
-    wget $UI_URL/         -o /tmp/result_html.log -O /tmp/result.html
-    wget $UI_URL/app/dept -o /tmp/result_json.log -O /tmp/result.json
-    wget $UI_URL/app/info -o /tmp/result_info.log -O /tmp/result.info
+    # Needed for ORDS or Go that takes more time to start
+    wget $UI_URL/         --retry-connrefused --waitretry=3 --tries=10 -o /tmp/result_html.log -O /tmp/result.html
+    wget $UI_URL/app/dept --retry-connrefused --waitretry=3 --tries=10 -o /tmp/result_json.log -O /tmp/result.json
+    wget $UI_URL/app/info --retry-connrefused --waitretry=3 --tries=10 -o /tmp/result_info.log -O /tmp/result.info
   fi
   echo - User Interface : $UI_URL/
   echo - Rest DB API    : $UI_URL/app/dept

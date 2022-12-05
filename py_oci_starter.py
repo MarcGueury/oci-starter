@@ -15,6 +15,9 @@ CLI='CLI'
 EXISTING='existing'
 NEW='new'
 
+# Output Directory
+output_dir = "output"
+
 # functions
 def title():
     s = "-- " + script_name() + " "
@@ -170,7 +173,7 @@ def license_rules():
 def zip_rules():
     if 'zip' in params:
        output_dir = params['zip']
-       del param['zip']
+       del params['zip']
 
 
 def apply_rules():
@@ -295,7 +298,7 @@ def env_sh_contents():
 def get_tf_var_comment(contents, param):
     comments = {
         'auth_token': ['See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm'],
-        'db_password': ['Requires at least 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345','If not filled, during the first build, it will be randomly generated.'],
+        'db_password': ['Requires at least 12 characters, 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345','If not filled, it will be generated randomly during the first build.'],
         'license': ['BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED']
     }.get(param)
     if comments is not None:
@@ -324,7 +327,6 @@ unknown_params = []
 illegal_params = {}
 warnings=[]
 errors=[]
-output_dir = "output"
 
 if mode == CLI:
     params=cli_params()

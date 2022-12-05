@@ -1,5 +1,4 @@
-module starter/go-dept
-
+module starter/app
 go 1.19
 
 require (
