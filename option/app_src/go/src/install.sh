@@ -11,6 +11,7 @@ sudo yum install -y oracle-instantclient-sqlplus
 sudo yum install -y oracle-golang-release-el7
 sudo yum install -y git gcc golang
 go get .
+go build .
 
 # sudo sh -c "echo /usr/lib/oracle/18.3/client64/lib > /etc/ld.so.conf.d/oracle-instantclient.conf" 
 # sudo ldconfig

@@ -9,4 +9,5 @@ RUN  yum -y install oracle-release-el7 oracle-golang-release-el7 && \
 WORKDIR /app
 COPY src/* /app/
 RUN go get .
-CMD go run .
+RUN go build .
+CMD ./app
