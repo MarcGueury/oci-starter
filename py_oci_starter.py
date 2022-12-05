@@ -167,6 +167,12 @@ def license_rules():
        params['license'] = os.environ.get('TF_VAR_license')
     params['license'] = longhand('license', {'included': 'LICENSE_INCLUDED','byol': 'BRING_YOUR_OWN_LICENSE'})
 
+def license_rules():
+    if 'zip' in params:
+       output_dir = params['zip']
+       del param['zip']
+
+
 def apply_rules():
     language_rules()
     kubernetes_rules()
@@ -176,6 +182,7 @@ def apply_rules():
     auth_token_rules()
     compartment_rules()
     license_rules()
+    zip_rules()
 
 def error(msg):
     errors.append(f'Error: {msg}')
@@ -317,6 +324,7 @@ unknown_params = []
 illegal_params = {}
 warnings=[]
 errors=[]
+output_dir = "output"
 
 if mode == CLI:
     params=cli_params()
@@ -331,7 +339,6 @@ if mode == CLI:
           mode = ABORT
        else:
           print_warnings()
-          output_dir = "output"
           if not os.path.isdir(output_dir):
              os.mkdir(output_dir)
           write_env_sh(output_dir)
