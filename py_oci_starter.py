@@ -167,7 +167,7 @@ def license_rules():
        params['license'] = os.environ.get('TF_VAR_license')
     params['license'] = longhand('license', {'included': 'LICENSE_INCLUDED','byol': 'BRING_YOUR_OWN_LICENSE'})
 
-def license_rules():
+def zip_rules():
     if 'zip' in params:
        output_dir = params['zip']
        del param['zip']
