@@ -17,9 +17,8 @@ sed -i "s/##DB_USER##/$TF_VAR_db_user/" $CONFIG_FILE
 sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-
   if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
-    # Native Build about 14 mins. Output is ./demo
+    # This will not work with GraalVM 22+ Helidon 3 works with only GraalVM 21.3. See : https://github.com/helidon-io/helidon/issues/5299
     mvn package -Pnative-image -Dnative.image.buildStatic -DskipTests
   else 
     mvn package -DskipTests
