@@ -9,30 +9,21 @@
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
-check_java_version
 
-if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
-  mvn package -Dpackaging=native-image
-else 
-  mvn package 
+# Replace the user and password in the configuration file (XXX)
+CONFIG_FILE=src/start.sh
+sed -i "s/##DB_USER##/$TF_VAR_db_user/" $CONFIG_FILE
+sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
+
+## XXXXX Check Node Version in env variables
+if [ "$OCI_CLI_CLOUD_SHELL" == "true" ]; then
+  echo 
 fi
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-  # Replace the user and password
-  cp start.sh target/.
-  sed -i "s/##DB_USER##/$TF_VAR_db_user/" target/start.sh
-  sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" target/start.sh
-
   mkdir ../compute/app
-  cp -r target/* ../compute/app/.
-
+  cp -r src/* ../compute/app/.
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   docker image rm app:latest
   docker build -t app:latest .
-
-  if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
-    docker build -f Dockerfile.native -t app:latest .
-  else
-    docker build -t app:latest . 
-  fi  
 fi  

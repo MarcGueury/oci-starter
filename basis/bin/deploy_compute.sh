@@ -10,4 +10,4 @@ then
 else
   scp -r -o StrictHostKeyChecking=no -i id_starter_rsa compute/* opc@$COMPUTE_IP:/home/opc/.
 fi
-ssh -o StrictHostKeyChecking=no -i id_starter_rsa opc@$COMPUTE_IP "export TF_VAR_java_version=\"$TF_VAR_java_version\";export TF_VAR_language=\"$TF_VAR_language\";export JDBC_URL=\"$JDBC_URL\";export DB_URL=\"$DB_URL\";bash compute_bootstrap.sh 2>&1 | tee -a compute_bootstrap.log"
+ssh -o StrictHostKeyChecking=no -i id_starter_rsa opc@$COMPUTE_IP "export TF_VAR_java_version=\"$TF_VAR_java_version\";export TF_VAR_java_vm=\"$TF_VAR_java_vm\";export TF_VAR_language=\"$TF_VAR_language\";export JDBC_URL=\"$JDBC_URL\";export DB_URL=\"$DB_URL\";bash compute_bootstrap.sh 2>&1 | tee -a compute_bootstrap.log"

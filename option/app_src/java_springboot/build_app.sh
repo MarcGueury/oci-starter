@@ -11,7 +11,12 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
 check_java_version
 
-mvn package
+if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
+  # Native Build about 14 mins. Output is ./demo
+  mvn -Pnative native:compile
+else 
+  mvn package
+fi
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   # Replace the user and password
@@ -24,5 +29,12 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
 
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   docker image rm app:latest
-  docker build -t app:latest .
+  
+  if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
+    mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.imageName=app:latest
+  else
+    # It does not use mvn build image. Else no choice of the JIT
+    # mvn spring-boot:build-image -Dspring-boot.build-image.imageName=app:latest
+    docker build -t app:latest . 
+  fi
 fi  

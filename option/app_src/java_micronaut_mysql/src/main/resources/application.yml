@@ -7,7 +7,7 @@ datasources:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driverClassName: com.mysql.cj.jdbc.Driver
-    dialect: oracle
+    dialect: mysql
 netty:
   default:
     allocator:

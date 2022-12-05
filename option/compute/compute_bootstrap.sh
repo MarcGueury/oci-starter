@@ -27,8 +27,7 @@ if [ "$TF_VAR_language" == "java" ]; then
       sudo yum install -y graalvm22-ee-11-jdk.x86_64
     elif [ "$TF_VAR_java_version" == 17 ]; then
       sudo yum install -y graalvm22-ee-17-jdk.x86_64 
-    fi
-    
+    fi   
   else
     # jdk 
     if [ "$TF_VAR_java_version" == 8 ]; then
@@ -46,6 +45,7 @@ if [ -f app/start.sh ]; then
   # Hardcode the connection to the DB in the start.sh
   sed -i "s!##JDBC_URL##!$JDBC_URL!" app/start.sh 
   sed -i "s!##DB_URL##!$DB_URL!" app/start.sh 
+  sed -i "s!##TF_VAR_java_vm##!$TF_VAR_java_vm!" app/start.sh   
   chmod +x app/start.sh
 
   # Create an "app.service" that starts when the machine starts.

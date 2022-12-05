@@ -35,47 +35,6 @@ cp_dir_db_src() {
     cp ../option/db_src/$1/* db_src/.
 }
 
-mandatory() {
-  if [ -z "$2" ]; then
-    echo "Usage: oci-starter.sh [OPTIONS]"
-    echo "Error: missing option -$1"
-    exit
-  fi
-}
-
-unknown_value() {
-  echo "Usage: oci-starter.sh [OPTIONS]"
-  echo "Unknown value for parameter:  $1" 
-  echo "Allowed values: $2"
-  exit
-}
-
-show_help() {
-  cat <<EOF
-Usage: $(basename $0) [OPTIONS]
-
-oci-starter.sh
-   -prefix (default starter)
-   -compartment_ocid (default tenancy_ocid)
-   -language (mandatory) java / node / python / dotnet / ords 
-   -deploy (mandatory) compute/kubernetes/function
-   -java_framework (default helidon/springboot/tomcat)
-   -java_vm (default jdk/graalvm)  
-   -java_version (default 17/11/8)
-   -kubernetes (default oke/docker) 
-   -oke_ocid ()
-   -ui (default html/reactjs/jet/angular/none) 
-   -vcn_ocid()
-   -subnet_ocid()
-   -database (default atp/dbsystem/mysql)
-   -atp_ocid (optional)
-   -db_ocid (optional)
-   -mysql_ocid (optional)
-   -db_user (default admin)
-   -db_password( mandatory )
-EOF
-}
-
 title oci_starter.sh 
 
 # Avoid issue when developing
@@ -99,6 +58,9 @@ echo "Generating env.sh using py_oci_starter.py:"
 python3 py_oci_starter.py "$@"
 
 # running this now so the rest of the script has access to the TF_VARs...
+if [ ! -d output ]; then
+  exit
+fi
 . ./output/env.sh
 
 echo "py_oci_starter.py finished"
@@ -150,7 +112,7 @@ echo "### Next Steps" >> README.md
 if grep -q "__TO_FILL__" env.sh; then
   echo "- Edit the file env.sh. Some variables needs to be filled:" >> README.md
   echo >> README.md
-  echo `cat env.sh | grep __TO_FILL__` >> README.md
+  cat env.sh | grep __TO_FILL__ >> README.md
   echo >> README.md
 fi
 echo "- Run:" >> README.md
