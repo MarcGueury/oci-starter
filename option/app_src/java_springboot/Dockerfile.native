@@ -1,4 +1,0 @@
-FROM ##DOCKER_IMAGE##
-COPY target/demo /app/app
-WORKDIR /app
-ENTRYPOINT ["./app"]

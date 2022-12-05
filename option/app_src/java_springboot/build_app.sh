@@ -31,15 +31,10 @@ elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   docker image rm app:latest
   
   if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
-    docker build -f Dockerfile.native -t app:latest . 
+    mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.imageName=app:latest
   else
+    # It does not use mvn build image. Else no choice of the JIT
+    # mvn spring-boot:build-image -Dspring-boot.build-image.imageName=app:latest
     docker build -t app:latest . 
   fi
-
-  # XXXXX
-  # https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/
-  # mvn spring-boot:build-image -name app:latest
-  # -> Successfully built image 'docker.io/library/demo:0.0.1-SNAPSHOT'
-  # mvn -Pnative spring-boot:build-image -name app:latest
-  # -> Successfully built image 'docker.io/library/demo:0.0.1-SNAPSHOT'
 fi  
