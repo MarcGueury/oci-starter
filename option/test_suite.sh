@@ -31,7 +31,7 @@ build_test () {
     ./build.sh > build_$BUILD_ID.log 2>&1  
     echo "build_secs_$BUILD_ID=$SECONDS" >> ${TEST_DIR}_time.txt
     if [ -f /tmp/result.html ]; then
-    if grep -q -i "DOCTYPE html" /tmp/result.html; then
+      if grep -q -i "oci-starter" /tmp/result.html; then
         echo "RESULT HTML: OK"
       else
         echo "RESULT HTML: ***** BAD ******"
@@ -51,6 +51,8 @@ build_test () {
     mv /tmp/result_html.log ${TEST_DIR}_result_html_$BUILD_ID.log
     mv /tmp/result_json.log ${TEST_DIR}_result_json_$BUILD_ID.log
     mv /tmp/result_info.log ${TEST_DIR}_result_info_$BUILD_ID.log
+  else
+    echo "Error: no output directory"  
   fi  
 }
 
