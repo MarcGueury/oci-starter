@@ -33,9 +33,9 @@ if [ ! -z "$UI_URL" ]; then
       sleep 5
     fi
     # Needed for ORDS or Go that takes more time to start
-    curl -i $UI_URL/         --retry 5 --retry-max-time 20 -D /tmp/result_html.log > /tmp/result.html
-    curl -i $UI_URL/app/dept --retry 5 --retry-max-time 20 -D /tmp/result_json.log > /tmp/result.json
-    curl -i $UI_URL/app/info --retry 5 --retry-max-time 20 -D /tmp/result_info.log > /tmp/result.info
+    curl $UI_URL/         --retry 5 --retry-max-time 20 -D /tmp/result_html.log > /tmp/result.html
+    curl $UI_URL/app/dept --retry 5 --retry-max-time 20 -D /tmp/result_json.log > /tmp/result.json
+    curl $UI_URL/app/info --retry 5 --retry-max-time 20 -D /tmp/result_info.log > /tmp/result.info
   fi
   echo - User Interface : $UI_URL/
   echo - Rest DB API    : $UI_URL/app/dept
