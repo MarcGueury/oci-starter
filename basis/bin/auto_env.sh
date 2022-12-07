@@ -68,6 +68,17 @@ else
     # Cloud Shell
     export TF_VAR_tenancy_ocid=$OCI_TENANCY
     export TF_VAR_region=$OCI_REGION
+    if [[ "$OCI_CS_USER_OCID" == *"ocid1.saml2idp"* ]]; then
+      # Ex: ocid1.saml2idp.oc1..aaaaaaaaexfmggau73773/user@domain.com -> oracleidentitycloudservice/user@domain.com
+      # Split the string in 2 
+      IFS='/' read -r -a array <<< "$OCI_CS_USER_OCID"
+      IDP_NAME=`oci iam identity-provider get --identity-provider-id=${array[0]} | jq -r .data.name`
+      IDP_NAME_LOWER=${IDP_NAME,,}
+      export TF_VAR_username="$IDP_NAME_LOWER/${array[1]}"
+    else 
+      export TF_VAR_username=$OCI_CS_USER_OCID
+    fi
+    echo "TF_VAR_username=$TF_VAR_username"
   elif [ -f $HOME/.oci/config ]; then
     ## Get the [DEFAULT] config
     if [ -z "$OCI_CLI_PROFILE" ]; then
@@ -129,7 +140,12 @@ else
   if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ]; then
     export TF_VAR_namespace=`oci os ns get | jq -r .data`
     auto_echo TF_VAR_namespace=$TF_VAR_namespace
-    export TF_VAR_username=`oci iam user get --user-id $TF_VAR_user_ocid | jq -r '.data.name'`
+    # Find TF_VAR_username based on TF_VAR_user_ocid or the opposite
+    if [ "$TF_VAR_username" != "" ]; then
+      export TF_VAR_user_ocid=`oci iam user list --name $TF_VAR_username | jq -r .data[0].id`
+    elif [ "$TF_VAR_user_ocid" != "" ]; then
+      export TF_VAR_username=`oci iam user get --user-id $TF_VAR_user_ocid | jq -r '.data.name'`
+    fi  
     auto_echo TF_VAR_username=$TF_VAR_username
     export TF_VAR_email=mail@domain.com
     auto_echo TF_VAR_email=$TF_VAR_email
