@@ -47,7 +47,7 @@ mandatory_options = ['-language','-deploy','-db_password']
 
 default_options = {
     '-prefix': 'starter',
-    '-java_framework': 'helidon',
+    '-java_framework': 'springboot',
     '-java_vm': 'jdk',
     '-java_version': '17',
     '-kubernetes': 'oke',
