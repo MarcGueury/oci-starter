@@ -68,6 +68,8 @@ else
     # Cloud Shell
     export TF_VAR_tenancy_ocid=$OCI_TENANCY
     export TF_VAR_region=$OCI_REGION
+    curl http://169.254.169.254/opc/v2/instance/ -H "Authorization: Bearer Oracle" > /tmp/metadata
+    export TF_VAR_user_ocid=`cat /tmp/metadata | jq -r '.freeformTags["user-ocid"]'`
   elif [ -f $HOME/.oci/config ]; then
     ## Get the [DEFAULT] config
     if [ -z "$OCI_CLI_PROFILE" ]; then
