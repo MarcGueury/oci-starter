@@ -12,7 +12,7 @@ LOCASE_VOYELS = ['a', 'e', 'i', 'o', 'u', 'y']
 LOCASE_CONSONANT = [ 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z']
 UPCASE_VOYELS = ['A', 'E', 'I', 'O', 'U', 'Y']
 UPCASE_CONSONANT = [ 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Z']
-SYMBOLS = ['$', '%', '=', ':', '?', '.', '*', '_', '-']
+SYMBOLS = ['%', '!', ':', '?', '#', '_', '-']
  
 # combines all the character arrays above to form one array
 COMBINED_LIST = DIGITS + UPCASE_VOYELS + UPCASE_CONSONANT + LOCASE_VOYELS + LOCASE_CONSONANT + SYMBOLS
