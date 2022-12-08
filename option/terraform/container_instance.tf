@@ -55,9 +55,11 @@ resource "oci_container_instances_container_instance" "starter_container_instanc
     nsg_ids = []
   }
 
+/*
   lifecycle {
     ignore_changes = [
       "defined_tags"]
   }
+*/  
   state           = "ACTIVE"
 }
