@@ -10,79 +10,56 @@ variable auth_token {
     default=""
 }
 
-variable auth_token {
-    default=""
-}
-
-resource "oci_container_instances_container_instance" "starter_container_instance" {
-  #Required
+resource oci_container_instances_container_instance starter_container_instance {
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = local.lz_appdev_cmp_ocid  
-  count               = var.docker_image_ui == "" ? 0 : 1
-  display_name        = "starter-ci"
-
+  container_restart_policy = "ALWAYS"
   containers {
-    #Required
-    image_url         = "busybox"
-/*
-    imagePullSecrets = {
-      username = base64encode(local.ocir_username),
-      password = base64encode(var.auth_token),
-      registryEndpoint = local.ocir_docker_repository,
-      secretType = "BASIC"
-    }
-*/
-    #Optional
-    additional_capabilities = [
-      "CAP_NET_ADMIN"]
-    display_name = "starter-app"
+    display_name = "app"
+    image_url                      = "eu-frankfurt-1.ocir.io/frsxwtjslf35/app"
+    is_resource_principal_disabled = "false"
     environment_variables = {
       "DB_URL" = local.db_url,
       "JDBC_URL" = local.jdbc_url,
       "DB_USER" = var.db_user,
       "DB_PASSWORD" = var.db_password,
-    }
-    is_resource_principal_disabled = "false"
+      "SPRING_APPLICATION_JSON" = "{ \"db.url\": \"${local.jdbc_url}\" }"
+    }    
   }
   containers {
-    #Required
-    image_url         = "busybox"
-/*
-    imagePullSecrets = {
-      username = base64encode(local.ocir_username),
-      password = base64encode(var.auth_token),
-      registryEndpoint = local.ocir_docker_repository,
-      secretType = "BASIC"
-    }
-*/
-    #Optional
-    display_name = "starter-ui"
+    display_name = "ui"
+    image_url = "eu-frankfurt-1.ocir.io/frsxwtjslf35/ui"
     is_resource_principal_disabled = "false"
-  }
-
-  shape = "CI.Standard.E4.Flex"
-
+  }  
+  display_name = "${var.prefix}-ci"
+  graceful_shutdown_timeout_in_seconds = "0"
+  shape                                = "CI.Standard.E3.Flex"
   shape_config {
     memory_in_gbs = "4"
     ocpus         = "1"
   }
-
-  vnics {
-    #Required
-    subnet_id = data.oci_core_subnet.starter_subnet.id
-
-    #Optional
-    display_name = "starter_ci_primary_vnic"
-    hostname_label = "starter-ci"
-    is_public_ip_assigned = "true"
-    nsg_ids = []
+  image_pull_secrets {
+      username = base64encode(local.ocir_username)
+      password = base64encode(var.auth_token)
+      registry_endpoint = local.ocir_docker_repository
+      secret_type = "BASIC"
   }
+  state = "ACTIVE"
+  vnics {
+    display_name           = "${var.prefix}-ci"
+    hostname_label         = "${var.prefix}-ci"
+    is_public_ip_assigned  = "true"
+    skip_source_dest_check = "true"
+    subnet_id              = data.oci_core_subnet.starter_subnet.id
+  }
+}
 
 /*
-  lifecycle {
-    ignore_changes = [
-      "defined_tags"]
-  }
-*/  
-  state           = "ACTIVE"
+resource "oci_container_instances_container_instance" "starter_container_instance" {
+  count               = var.docker_image_ui == "" ? 0 : 1
+}
+*/
+
+locals {
+  ci_private_ip = oci_container_instances_container_instance.starter_container_instance.vnics[0].private_ip
 }
