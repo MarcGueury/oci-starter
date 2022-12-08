@@ -78,7 +78,6 @@ else
     else 
       export TF_VAR_username=$OCI_CS_USER_OCID
     fi
-    echo "TF_VAR_username=$TF_VAR_username"
   elif [ -f $HOME/.oci/config ]; then
     ## Get the [DEFAULT] config
     if [ -z "$OCI_CLI_PROFILE" ]; then
@@ -97,7 +96,7 @@ else
     # echo TF_VAR_private_key_path=$TF_VAR_private_key_path
   fi
 
-  # Namespace
+  # SSH keys
   export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_starter_rsa.pub)
   export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_starter_rsa)
 

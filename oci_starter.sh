@@ -236,10 +236,6 @@ if [[ $TF_VAR_deploy_strategy == "kubernetes" ]]; then
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" ui_src/ui.yaml
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" oke/ingress-app.yaml 
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" oke/ingress-ui.yaml
-elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
-  cp_terraform compute.tf
-  mkdir compute 
-  cp ../option/compute/* compute/.
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   if [ -v TF_VAR_fnapp_ocid ]; then
     cp_terraform function_existing.tf function_append.tf
@@ -257,6 +253,14 @@ elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   else
     cp_terraform apigw.tf $APIGW_APPEND
   fi
+elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
+  cp_terraform compute.tf
+  mkdir compute 
+  cp ../option/compute/* compute/.
+elif [[ $TF_VAR_deploy_strategy == "container_instance" ]]; then 
+  cp_terraform container_instance.tf 
+  mkdir container_instance 
+  cp ../option/container_instance/* container_instance/.
 fi
 
 #-- Bastion -----------------------------------------------------------------
