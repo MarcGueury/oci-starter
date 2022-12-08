@@ -10,6 +10,10 @@ variable auth_token {
     default=""
 }
 
+variable auth_token {
+    default=""
+}
+
 resource "oci_container_instances_container_instance" "starter_container_instance" {
   #Required
   availability_domain = data.oci_identity_availability_domain.ad.name
@@ -31,12 +35,31 @@ resource "oci_container_instances_container_instance" "starter_container_instanc
     #Optional
     additional_capabilities = [
       "CAP_NET_ADMIN"]
-    display_name = "starter-ui"
+    display_name = "starter-app"
     environment_variables = {
-      "environment" = "variable"
+      "DB_URL" = local.db_url,
+      "JDBC_URL" = local.jdbc_url,
+      "DB_USER" = var.db_user,
+      "DB_PASSWORD" = var.db_password,
     }
     is_resource_principal_disabled = "false"
   }
+  containers {
+    #Required
+    image_url         = "busybox"
+/*
+    imagePullSecrets = {
+      username = base64encode(local.ocir_username),
+      password = base64encode(var.auth_token),
+      registryEndpoint = local.ocir_docker_repository,
+      secretType = "BASIC"
+    }
+*/
+    #Optional
+    display_name = "starter-ui"
+    is_resource_principal_disabled = "false"
+  }
+
   shape = "CI.Standard.E4.Flex"
 
   shape_config {
