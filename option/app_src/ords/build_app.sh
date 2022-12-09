@@ -16,6 +16,6 @@ sed -i "s&##ORDS_URL##&$ORDS_URL&" ../oke/ingress-app.yaml
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   cp nginx_app.locations ../compute
-elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
+else
   echo "No docker image needed"
 fi  

@@ -16,11 +16,12 @@ build_ui() {
   if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
     mkdir -p ../compute/ui
     cp -r ui/* ../compute/ui/.
-  elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
-    docker image rm ui:latest
-    docker build -t ui:latest .
   elif [ "$TF_VAR_deploy_strategy" == "function" ]; then 
     oci os object bulk-upload -ns $TF_VAR_namespace -bn ${TF_VAR_prefix}-public-bucket --src-dir ui --overwrite --content-type auto
+  else then
+    # Kubernetes and Container Instances
+    docker image rm ui:latest
+    docker build -t ui:latest .
   fi 
 }
 

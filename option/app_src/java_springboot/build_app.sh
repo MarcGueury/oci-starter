@@ -26,10 +26,9 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
 
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
-
-elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
+else
   docker image rm app:latest
-  
+ 
   if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
     mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.imageName=app:latest
   else
