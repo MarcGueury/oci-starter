@@ -272,10 +272,10 @@ elif [[ $TF_VAR_deploy_strategy == "container_instance" ]]; then
 
   if [ -v TF_VAR_apigw_ocid ]; then
     cp_terraform apigw_existing.tf apigw_ci_append.tf
-    sed -i "s&##APP_URL##&${TF_VAR_prefix}&" terraform/apigw_existing.tf
+    sed -i "s&##APP_URL##&${APP_URL}&" terraform/apigw_existing.tf
   else
     cp_terraform apigw.tf apigw_ci_append.tf
-    sed -i "s&##APP_URL##&${TF_VAR_prefix}&" terraform/apigw.tf
+    sed -i "s&##APP_URL##&${APP_URL}&" terraform/apigw.tf
   fi
 fi
 
