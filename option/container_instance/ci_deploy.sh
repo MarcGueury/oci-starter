@@ -7,7 +7,7 @@ ocir_docker_push
 
 echo "$DOCKER_PREFIX/ui:latest" > $TMP_DIR/docker_image_ui.txt
 if [ "$TF_VAR_language" != "ords" ]; then
-  echo "$DOCKER_PREFIX/ui:latest" > $TMP_DIR/docker_image_app.txt
+  echo "$DOCKER_PREFIX/app:latest" > $TMP_DIR/docker_image_app.txt
 fi
 
 cd $SCRIPT_DIR/..
