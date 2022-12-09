@@ -261,17 +261,21 @@ elif [[ $TF_VAR_deploy_strategy == "container_instance" ]]; then
   cp_terraform container_instance.tf 
   mkdir container_instance 
   cp ../option/container_instance/* container_instance/.
+
   if [ "$TF_VAR_language" == "ords" ]; then
-    # TODO
-    APIGW_APPEND=apigw_ci_ords_append.tf
+    APP_URL="${local.ords_url}/starter/module/$${request.path[pathname]}"
+  elif [ "$TF_VAR_language" == "java" ] && [ "$TF_VAR_java_framework" == "tomcat "]; then
+    APP_URL="http://\${local.ci_private_ip}:8080/starter-1.0/\$\${request.path[pathname]}"
   else 
-    APIGW_APPEND=apigw_ci_append.tf
+    APP_URL="http://\${local.ci_private_ip}:8080/\$\${request.path[pathname]}"
   fi
 
   if [ -v TF_VAR_apigw_ocid ]; then
-    cp_terraform apigw_existing.tf $APIGW_APPEND
+    cp_terraform apigw_existing.tf apigw_ci_append.tf
+    sed -i "s&##APP_URL##&${TF_VAR_prefix}&" terraform/apigw_existing.tf
   else
-    cp_terraform apigw.tf $APIGW_APPEND
+    cp_terraform apigw.tf apigw_ci_append.tf
+    sed -i "s&##APP_URL##&${TF_VAR_prefix}&" terraform/apigw.tf
   fi
 fi
 

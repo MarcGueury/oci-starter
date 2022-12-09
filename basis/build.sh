@@ -7,7 +7,7 @@ cd $SCRIPT_DIR
 . env.sh
 # Run Terraform
 terraform/apply.sh --auto-approve
-exit_on_error
+
 . env.sh
 # Build the DB (via Bastion), the APP and the UI
 bin/deploy_bastion.sh

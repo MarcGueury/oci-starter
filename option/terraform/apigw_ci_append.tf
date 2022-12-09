@@ -19,7 +19,7 @@ resource "oci_apigateway_deployment" "starter_apigw_deployment" {
       methods = [ "ANY" ]
       backend {
         type = "HTTP_BACKEND"
-        url    = "http://${local.ci_private_ip}:8080/$${request.path[pathname]}"
+        url    = "##APP_URL##"
       }
     }     
     routes {
@@ -32,3 +32,4 @@ resource "oci_apigateway_deployment" "starter_apigw_deployment" {
     }
   }
 }
+
