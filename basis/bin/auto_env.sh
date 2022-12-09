@@ -1,7 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-
 # -- Functions --------------------------------------------------------------
 auto_echo () {
   if [ -z "$SILENT_MODE" ]; then
@@ -163,14 +162,16 @@ if [ -f $STATE_FILE ]; then
   # OBJECT_STORAGE_URL
   export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
 
-  # Functions
-  if [ "$TF_VAR_deploy_strategy" == "function" ]; then
+  # API GW
+  if [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
     # APIGW URL
     get_attribute_from_tfstate "APIGW_HOSTNAME" "starter_apigw" "hostname"
-
     # APIGW Deployment id
     get_attribute_from_tfstate "APIGW_DEPLOYMENT_OCID" "starter_apigw_deployment" "id"
+  fi
 
+  # Functions
+  if [ "$TF_VAR_deploy_strategy" == "function" ]; then
     # OBJECT Storage URL
     export BUCKET_URL="https://objectstorage.${TF_VAR_region}.oraclecloud.com/n/${TF_VAR_namespace}/b/${TF_VAR_prefix}-public-bucket/o"
 
