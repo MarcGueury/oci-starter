@@ -27,19 +27,8 @@ resource "oci_apigateway_deployment" "starter_apigw_deployment" {
       methods = [ "ANY" ]
       backend {
         type = "STOCK_RESPONSE_BACKEND"
-        body   = "Function ${var.language}"
+        body   = "Container Instance ${var.language}"
         status = 200
-      }
-    }    
-    routes {
-      path    = "/"
-      methods = [ "ANY" ]
-      backend {
-        type = "HTTP_BACKEND"
-        url    = "${local.bucket_url}/index.html"
-        connect_timeout_in_seconds = 10
-        read_timeout_in_seconds = 30
-        send_timeout_in_seconds = 30
       }
     }    
     routes {
@@ -47,7 +36,7 @@ resource "oci_apigateway_deployment" "starter_apigw_deployment" {
       methods = [ "ANY" ]
       backend {
         type = "HTTP_BACKEND"
-        url    = "${local.bucket_url}/$${request.path[pathname]}"
+        url    = "http://${local.ci_private_ip}/$${request.path[pathname]}"
       }
     }
   }
