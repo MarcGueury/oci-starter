@@ -264,7 +264,7 @@ elif [[ $TF_VAR_deploy_strategy == "container_instance" ]]; then
 
   if [ "$TF_VAR_language" == "ords" ]; then
     APP_URL="${local.ords_url}/starter/module/$${request.path[pathname]}"
-  elif [ "$TF_VAR_language" == "java" ] && [ "$TF_VAR_java_framework" == "tomcat "]; then
+  elif [ "$TF_VAR_language" == "java" ] && [ "$TF_VAR_java_framework" == "tomcat" ]; then
     APP_URL="http://\${local.ci_private_ip}:8080/starter-1.0/\$\${request.path[pathname]}"
   else 
     APP_URL="http://\${local.ci_private_ip}:8080/\$\${request.path[pathname]}"
