@@ -1,7 +1,3 @@
-variable ci_ip {
-  default = "141.144.242.85"
-}
-
 resource "oci_apigateway_deployment" "starter_apigw_deployment" {
   count          = var.docker_image_ui == "" ? 0 : 1
   compartment_id = local.lz_appdev_cmp_ocid

@@ -11,6 +11,16 @@ check_java_version() {
     fi
 }
 
+exit_on_error() {
+  RESULT=$?
+  if [ $RESULT -eq 0 ]; then
+    echo "Success"
+  else
+    echo "Failed"
+    exit $RESULT
+  fi  
+}
+
 build_ui() {
   cd $SCRIPT_DIR
   if [ "$TF_VAR_deploy_strategy" == "compute" ]; then

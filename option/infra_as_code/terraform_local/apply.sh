@@ -5,6 +5,6 @@ cd $SCRIPT_DIR
 
 terraform init
 terraform apply "$@"
-
+exit_on_error
 
 
