@@ -201,7 +201,11 @@ if [ -f $STATE_FILE ]; then
   if [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
     if [ -f $TMP_DIR/docker_image_ui.txt ]; then
       export TF_VAR_docker_image_ui=`cat $TMP_DIR/docker_image_ui.txt`
-      export TF_VAR_docker_image_app=`cat $TMP_DIR/docker_image_app.txt`
+      if [ -f $TMP_DIR/docker_image_ui.txt ]; then
+        export TF_VAR_docker_image_app=`cat $TMP_DIR/docker_image_app.txt`
+      else
+        export TF_VAR_docker_image_app="busybox"      
+      fi
     fi
   fi
 
