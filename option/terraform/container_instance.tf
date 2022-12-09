@@ -62,5 +62,5 @@ resource "oci_container_instances_container_instance" "starter_container_instanc
 */
 
 locals {
-  ci_private_ip = oci_container_instances_container_instance.starter_container_instance.vnics[0].private_ip
+  ci_private_ip = join("", oci_container_instances_container_instance.starter_container_instance.vnics.*.private_ip)
 }
