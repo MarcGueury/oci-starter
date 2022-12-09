@@ -6,7 +6,7 @@ cd $SCRIPT_DIR
 . bin/sshkey_generate.sh
 . env.sh
 # Run Terraform
-terraform/apply.sh --auto-approve
+. terraform/apply.sh --auto-approve
 . env.sh
 # Build the DB (via Bastion), the APP and the UI
 bin/deploy_bastion.sh
@@ -23,3 +23,4 @@ elif [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
 fi
 
 bin/done.sh
+

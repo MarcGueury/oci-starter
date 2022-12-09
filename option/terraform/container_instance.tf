@@ -55,12 +55,6 @@ resource oci_container_instances_container_instance starter_container_instance {
   }
 }
 
-/*
-resource "oci_container_instances_container_instance" "starter_container_instance" {
-  count               = var.docker_image_ui == "" ? 0 : 1
-}
-*/
-
 locals {
-  ci_private_ip = join("", oci_container_instances_container_instance.starter_container_instance.vnics.*.private_ip)
+  ci_private_ip = try(oci_container_instances_container_instance.starter_container_instance[0].vnics[0].private_ip, "")
 }

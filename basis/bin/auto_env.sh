@@ -20,6 +20,16 @@ get_output_from_tfstate () {
   export $1="$RESULT"
 }
 
+exit_on_error() {
+  RESULT=$?
+  if [ $RESULT -eq 0 ]; then
+    echo "Success"
+  else
+    echo "Failed"
+    exit $RESULT
+  fi  
+}
+
 # Silent mode (default is not silent)
 if [ "$1" == "-silent" ]; then
   SILENT_MODE=true

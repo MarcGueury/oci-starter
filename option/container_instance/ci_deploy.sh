@@ -6,7 +6,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ocir_docker_push
 
 echo "$DOCKER_PREFIX/ui:latest" > $TMP_DIR/docker_image_ui.txt
-if [ ]; then 
+if [ "$TF_VAR_language" != "ords" ]; then
   echo "$DOCKER_PREFIX/ui:latest" > $TMP_DIR/docker_image_app.txt
 fi
 
