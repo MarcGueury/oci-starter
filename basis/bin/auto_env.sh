@@ -25,7 +25,7 @@ exit_on_error() {
   if [ $RESULT -eq 0 ]; then
     echo "Success"
   else
-    echo "Failed"
+    echo "Failed (RESULT=$RESULT)"
     exit $RESULT
   fi  
 }
