@@ -236,10 +236,6 @@ if [[ $TF_VAR_deploy_strategy == "kubernetes" ]]; then
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" ui_src/ui.yaml
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" oke/ingress-app.yaml 
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" oke/ingress-ui.yaml
-elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
-  cp_terraform compute.tf
-  mkdir compute 
-  cp ../option/compute/* compute/.
 elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
   if [ -v TF_VAR_fnapp_ocid ]; then
     cp_terraform function_existing.tf function_append.tf
@@ -247,15 +243,39 @@ elif [[ $TF_VAR_deploy_strategy == "function" ]]; then
     cp_terraform function.tf function_append.tf
   fi
   if [ "$TF_VAR_language" == "ords" ]; then
-    APIGW_APPEND=apigw_ords_append.tf
+    APIGW_APPEND=apigw_fn_ords_append.tf
   else 
-    APIGW_APPEND=apigw_append.tf
+    APIGW_APPEND=apigw_fn_append.tf
   fi
 
   if [ -v TF_VAR_apigw_ocid ]; then
     cp_terraform apigw_existing.tf $APIGW_APPEND
   else
     cp_terraform apigw.tf $APIGW_APPEND
+  fi
+elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
+  cp_terraform compute.tf
+  mkdir compute 
+  cp ../option/compute/* compute/.
+elif [[ $TF_VAR_deploy_strategy == "container_instance" ]]; then 
+  cp_terraform container_instance.tf 
+  mkdir container_instance 
+  cp ../option/container_instance/* container_instance/.
+
+  if [ "$TF_VAR_language" == "ords" ]; then
+    APP_URL="\${local.ords_url}/starter/module/\$\${request.path[pathname]}"
+  elif [ "$TF_VAR_language" == "java" ] && [ "$TF_VAR_java_framework" == "tomcat" ]; then
+    APP_URL="http://\${local.ci_private_ip}:8080/starter-1.0/\$\${request.path[pathname]}"
+  else 
+    APP_URL="http://\${local.ci_private_ip}:8080/\$\${request.path[pathname]}"
+  fi
+
+  if [ -v TF_VAR_apigw_ocid ]; then
+    cp_terraform apigw_existing.tf apigw_ci_append.tf
+    sed -i "s&##APP_URL##&${APP_URL}&" terraform/apigw_existing.tf
+  else
+    cp_terraform apigw.tf apigw_ci_append.tf
+    sed -i "s&##APP_URL##&${APP_URL}&" terraform/apigw.tf
   fi
 fi
 

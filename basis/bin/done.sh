@@ -17,7 +17,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   export KUBECONFIG=$SCRIPT_DIR/../terraform/starter_kubeconfig
   export UI_URL=http://`kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}"`/${TF_VAR_prefix}
-elif [ "$TF_VAR_deploy_strategy" == "function" ]; then  
+elif [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then  
   export UI_URL=https://${APIGW_HOSTNAME}/${TF_VAR_prefix}
 fi
 
@@ -33,9 +33,9 @@ if [ ! -z "$UI_URL" ]; then
       sleep 5
     fi
     # Needed for ORDS or Go that takes more time to start
-    curl $UI_URL/         --retry 5 --retry-max-time 20 -D /tmp/result_html.log > /tmp/result.html
-    curl $UI_URL/app/dept --retry 5 --retry-max-time 20 -D /tmp/result_json.log > /tmp/result.json
-    curl $UI_URL/app/info --retry 5 --retry-max-time 20 -D /tmp/result_info.log > /tmp/result.info
+    curl $UI_URL/         -L --retry 5 --retry-max-time 20 -D /tmp/result_html.log > /tmp/result.html
+    curl $UI_URL/app/dept -L --retry 5 --retry-max-time 20 -D /tmp/result_json.log > /tmp/result.json
+    curl $UI_URL/app/info -L --retry 5 --retry-max-time 20 -D /tmp/result_info.log > /tmp/result.info
   fi
   echo - User Interface : $UI_URL/
   echo - Rest DB API    : $UI_URL/app/dept

@@ -24,6 +24,9 @@ variable lz_database_cmp_ocid { default="" }
 variable lz_network_cmp_ocid { default="" }
 variable lz_security_cmp_ocid { default="" }
 
+# OCIR
+variable username { default="" }
+
 locals {
   lz_appdev_cmp_ocid = var.lz_appdev_cmp_ocid == "" ? var.compartment_ocid : var.lz_appdev_cmp_ocid
   lz_database_cmp_ocid = var.lz_database_cmp_ocid == "" ? var.compartment_ocid : var.lz_database_cmp_ocid

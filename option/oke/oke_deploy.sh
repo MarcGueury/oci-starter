@@ -1,23 +1,9 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR/..
+. $SCRIPT_DIR/../bin/build_common.sh
 
-if [ -z $DOCKER_PREFIX ]; then
-  echo "oke-deploy.sh: Set up the variables before to run this script by running:"
-  echo ". env.sh"
-  exit
-fi
-
-# Docker Login
-docker login ${TF_VAR_ocir} -u ${TF_VAR_namespace}/${TF_VAR_username} -p "${TF_VAR_auth_token}"
-echo DOCKER_PREFIX=$DOCKER_PREFIX
-
-# Push image in registry
-docker tag app $DOCKER_PREFIX/app:latest
-docker push $DOCKER_PREFIX/app:latest
-
-docker tag ui $DOCKER_PREFIX/ui:latest
-docker push $DOCKER_PREFIX/ui:latest
+# Call build_common to push the app:latest and ui:latest to OCIR Docker registry
+ocir_docker_push
 
 # Configure KUBECTL
 export KUBECONFIG=terraform/starter_kubeconfig
@@ -49,7 +35,7 @@ if [ ! -f $KUBECONFIG ]; then
 
   # Create secrets
   kubectl create secret docker-registry ocirsecret --docker-server=$TF_VAR_ocir --docker-username="$TF_VAR_namespace/$TF_VAR_username" --docker-password="$TF_VAR_auth_token" --docker-email="$TF_VAR_email"
-  # XXXX - Tthis should be by date 
+  # XXXX - This should be by date 
   kubectl delete secret ${TF_VAR_prefix}-db-secret
   kubectl create secret generic ${TF_VAR_prefix}-db-secret --from-literal=db_user=$TF_VAR_db_user --from-literal=db_password=$TF_VAR_db_password --from-literal=db_url=$DB_URL --from-literal=jdbc_url=$JDBC_URL --from-literal=spring_application_json='{ "db.url": "'$JDBC_URL'" }'
 fi

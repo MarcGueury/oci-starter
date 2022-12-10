@@ -26,7 +26,7 @@ resource oci_logging_log export_starter_fn_application_invoke {
       source_type = "OCISERVICE"
     }
   }
-  display_name = "starter-fn-application-invoke"
+  display_name       = "starter-fn-application-invoke"
   is_enabled         = "true"
   log_group_id       = oci_logging_log_group.starter_log_group.id
   log_type           = "SERVICE"

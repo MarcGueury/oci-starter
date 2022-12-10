@@ -71,7 +71,7 @@ def allowed_options():
 
 allowed_values = {
     '-language': {'java','node','python','dotnet','go','ords'},
-    '-deploy': {'compute','kubernetes','function'},
+    '-deploy': {'compute','kubernetes','function','container_instance','ci'},
     '-java_framework': {'springboot','helidon','tomcat','micronaut'},
     '-java_vm': {'jdk','graalvm','graalvm_native'},
     '-java_version': {'8', '11', '17'},
@@ -136,7 +136,7 @@ def language_rules():
         params['java_version'] = 17
 
 def kubernetes_rules():
-    params['deploy'] = longhand('deploy',{'oke':'kubernetes'})
+    params['deploy'] = longhand('deploy',{'oke':'kubernetes', 'ci':'container_instance'})
     if params.get('oke_ocid') is not None:
        params['oke_strategy'] = EXISTING
     if params.get('deploy') == 'kubernetes':
@@ -216,7 +216,7 @@ oci-starter.sh
    -db_ocid (optional)
    -db_password (mandatory)
    -db_user (default admin)
-   -deploy (mandatory) compute | kubernetes | function
+   -deploy (mandatory) compute | kubernetes | function | container_instance 
    -fnapp_ocid (optional)
    -java_framework (default helidon | springboot | tomcat)
    -java_version (default 17 | 11 | 8)

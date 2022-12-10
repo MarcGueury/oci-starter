@@ -16,11 +16,12 @@ build_ui() {
   if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
     mkdir -p ../compute/ui
     cp -r ui/* ../compute/ui/.
-  elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
-    docker image rm ui:latest
-    docker build -t ui:latest .
   elif [ "$TF_VAR_deploy_strategy" == "function" ]; then 
     oci os object bulk-upload -ns $TF_VAR_namespace -bn ${TF_VAR_prefix}-public-bucket --src-dir ui --overwrite --content-type auto
+  else
+    # Kubernetes and Container Instances
+    docker image rm ui:latest
+    docker build -t ui:latest .
   fi 
 }
 
@@ -48,6 +49,19 @@ build_function() {
   cd $SCRIPT_DIR/..
   . env.sh 
   terraform/apply.sh --auto-approve
+}
+
+ocir_docker_push () {
+  # Docker Login
+  docker login ${TF_VAR_ocir} -u ${TF_VAR_namespace}/${TF_VAR_username} -p "${TF_VAR_auth_token}"
+  echo DOCKER_PREFIX=$DOCKER_PREFIX
+
+  # Push image in registry
+  docker tag app $DOCKER_PREFIX/app:latest
+  docker push $DOCKER_PREFIX/app:latest
+
+  docker tag ui $DOCKER_PREFIX/ui:latest
+  docker push $DOCKER_PREFIX/ui:latest
 }
 
 # SCRIPT_DIR should be set by the calling scripts 

@@ -23,7 +23,7 @@ fi
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   mkdir ../compute/app
   cp -r src/* ../compute/app/.
-elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
+else
   docker image rm app:latest
   docker build -t app:latest .
 fi  

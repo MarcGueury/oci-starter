@@ -1,7 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-
 # -- Functions --------------------------------------------------------------
 auto_echo () {
   if [ -z "$SILENT_MODE" ]; then
@@ -19,6 +18,16 @@ get_output_from_tfstate () {
   RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE | sed "s/ //"`
   auto_echo "$1=$RESULT"
   export $1="$RESULT"
+}
+
+exit_on_error() {
+  RESULT=$?
+  if [ $RESULT -eq 0 ]; then
+    echo "Success"
+  else
+    echo "Failed"
+    exit $RESULT
+  fi  
 }
 
 # Silent mode (default is not silent)
@@ -78,7 +87,6 @@ else
     else 
       export TF_VAR_username=$OCI_CS_USER_OCID
     fi
-    echo "TF_VAR_username=$TF_VAR_username"
   elif [ -f $HOME/.oci/config ]; then
     ## Get the [DEFAULT] config
     if [ -z "$OCI_CLI_PROFILE" ]; then
@@ -97,7 +105,7 @@ else
     # echo TF_VAR_private_key_path=$TF_VAR_private_key_path
   fi
 
-  # Namespace
+  # SSH keys
   export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_starter_rsa.pub)
   export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_starter_rsa)
 
@@ -137,7 +145,7 @@ else
   auto_echo TF_VAR_region=$TF_VAR_region
 
   # Kubernetes and OCIR
-  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ]; then
+  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
     export TF_VAR_namespace=`oci os ns get | jq -r .data`
     auto_echo TF_VAR_namespace=$TF_VAR_namespace
     # Find TF_VAR_username based on TF_VAR_user_ocid or the opposite
@@ -164,14 +172,16 @@ if [ -f $STATE_FILE ]; then
   # OBJECT_STORAGE_URL
   export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
 
-  # Functions
-  if [ "$TF_VAR_deploy_strategy" == "function" ]; then
+  # API GW
+  if [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
     # APIGW URL
     get_attribute_from_tfstate "APIGW_HOSTNAME" "starter_apigw" "hostname"
-
     # APIGW Deployment id
     get_attribute_from_tfstate "APIGW_DEPLOYMENT_OCID" "starter_apigw_deployment" "id"
+  fi
 
+  # Functions
+  if [ "$TF_VAR_deploy_strategy" == "function" ]; then
     # OBJECT Storage URL
     export BUCKET_URL="https://objectstorage.${TF_VAR_region}.oraclecloud.com/n/${TF_VAR_namespace}/b/${TF_VAR_prefix}-public-bucket/o"
 
@@ -187,6 +197,19 @@ if [ -f $STATE_FILE ]; then
     fi   
   fi
 
+  # Container Instance
+  if [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
+    if [ -f $TMP_DIR/docker_image_ui.txt ]; then
+      export TF_VAR_docker_image_ui=`cat $TMP_DIR/docker_image_ui.txt`
+      if [ -f $TMP_DIR/docker_image_app.txt ]; then
+        export TF_VAR_docker_image_app=`cat $TMP_DIR/docker_image_app.txt`
+      else
+        export TF_VAR_docker_image_app="busybox"      
+      fi
+    fi
+  fi
+
+  # Compute
   if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
     get_attribute_from_tfstate "COMPUTE_IP" "starter_instance" "public_ip"
   fi
