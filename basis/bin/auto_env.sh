@@ -21,7 +21,7 @@ get_output_from_tfstate () {
 }
 
 # Shared BASH Functions
-. $SCRIPT_DIR/build_common.sh
+. $SCRIPT_DIR/common.sh
 
 # Silent mode (default is not silent)
 if [ "$1" == "-silent" ]; then
