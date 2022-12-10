@@ -39,8 +39,10 @@ if [ ! -z "$UI_URL" ]; then
     do
       curl $UI_URL/app/dept -L --retry 5 --retry-max-time 20 -D /tmp/result_json.log > /tmp/result.json
       if grep -q -i "deptno" /tmp/result.json; then
+        echo "OK"
        	break
       fi
+      echo "WARNING: /app/dept does not contain 'deptno'. Retrying in 4 secs"
       sleep 4   
       x=$(( $x + 1 ))
     done
