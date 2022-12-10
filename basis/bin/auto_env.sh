@@ -1,25 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# -- Functions --------------------------------------------------------------
-auto_echo () {
-  if [ -z "$SILENT_MODE" ]; then
-    echo "$1"
-  fi  
-}
-
-get_attribute_from_tfstate () {
-  RESULT=`jq -r '.resources[] | select(.name=="'$2'") | .instances[0].attributes.'$3'' $STATE_FILE`
-  auto_echo "$1=$RESULT"
-  export $1="$RESULT"
-}
-
-get_output_from_tfstate () {
-  RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE | sed "s/ //"`
-  auto_echo "$1=$RESULT"
-  export $1="$RESULT"
-}
-
 # Shared BASH Functions
 . $SCRIPT_DIR/common.sh
 
