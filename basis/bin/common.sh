@@ -1,4 +1,5 @@
 ### Commmon functions
+
 # Check java version
 check_java_version() {
   if [ "$OCI_CLI_CLOUD_SHELL" == "true" ]; then
