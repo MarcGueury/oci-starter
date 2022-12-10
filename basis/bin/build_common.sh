@@ -71,6 +71,16 @@ replace_db_user_password_in_file() {
   sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
 }  
 
+exit_on_error() {
+  RESULT=$?
+  if [ $RESULT -eq 0 ]; then
+    echo "Success"
+  else
+    echo "Failed (RESULT=$RESULT)"
+    exit $RESULT
+  fi  
+}
+
 # SCRIPT_DIR should be set by the calling scripts 
 cd $SCRIPT_DIR
 if [ -z "$TF_VAR_deploy_strategy" ]; then

@@ -20,15 +20,8 @@ get_output_from_tfstate () {
   export $1="$RESULT"
 }
 
-exit_on_error() {
-  RESULT=$?
-  if [ $RESULT -eq 0 ]; then
-    echo "Success"
-  else
-    echo "Failed (RESULT=$RESULT)"
-    exit $RESULT
-  fi  
-}
+# Shared BASH Functions
+. $SCRIPT_DIR/build_common.sh
 
 # Silent mode (default is not silent)
 if [ "$1" == "-silent" ]; then
@@ -230,4 +223,3 @@ if [ -f $STATE_FILE ]; then
     get_output_from_tfstate "OKE_OCID" "oke_ocid"
   fi
 fi
-
