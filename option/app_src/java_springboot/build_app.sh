@@ -17,12 +17,12 @@ if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
 else 
   mvn package
 fi
+exit_on_error
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   # Replace the user and password
   cp start.sh target/.
-  sed -i "s/##DB_USER##/$TF_VAR_db_user/" target/start.sh
-  sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" target/start.sh
+  replace_db_user_password_in_file target/start.sh
 
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
@@ -36,4 +36,5 @@ else
     # mvn spring-boot:build-image -Dspring-boot.build-image.imageName=app:latest
     docker build -t app:latest . 
   fi
+  exit_on_error
 fi  

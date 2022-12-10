@@ -12,8 +12,12 @@ exit_on_error
 . env.sh
 # Build the DB (via Bastion), the APP and the UI
 bin/deploy_bastion.sh
+
 app_src/build_app.sh 
+exit_on_error
+
 ui_src/build_ui.sh 
+exit_on_error
 
 # Deploy
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
@@ -25,4 +29,3 @@ elif [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
 fi
 
 bin/done.sh
-
