@@ -11,10 +11,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
 check_java_version
 
-# Replace the user and password in the configuration file (XXX)
-CONFIG_FILE=src/main/resources/META-INF/microprofile-config.properties
-sed -i "s/##DB_USER##/$TF_VAR_db_user/" $CONFIG_FILE
-sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" $CONFIG_FILE
+replace_db_user_password_in_file src/main/resources/META-INF/microprofile-config.properties
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
@@ -23,6 +20,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   else 
     mvn package -DskipTests
   fi
+  exit_on_error  
   cp start.sh target/.
   mkdir ../compute/app
   cp -r target/* ../compute/app/.
@@ -32,5 +30,6 @@ else
     docker build -f Dockerfile.native -t app:latest . 
   else
     docker build -t app:latest . 
-  fi  
+  fi
+  exit_on_error  
 fi  

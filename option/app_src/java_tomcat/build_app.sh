@@ -12,13 +12,13 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 check_java_version
 
 mvn package
+exit_on_error
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   # Replace the user and password
   cp start.sh target/.
   cp install.sh target/.
-  sed -i "s/##DB_USER##/$TF_VAR_db_user/" target/start.sh
-  sed -i "s/##DB_PASSWORD##/$TF_VAR_db_password/" target/start.sh
+  replace_db_user_password_in_file target/start.sh
 
   mkdir ../compute/app
   cp nginx_app.locations ../compute
@@ -27,4 +27,5 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
 else
   docker image rm app:latest
   docker build -t app:latest .
+  exit_on_error
 fi  

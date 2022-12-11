@@ -32,9 +32,21 @@ if [ ! -z "$UI_URL" ]; then
       kubectl get all
       sleep 5
     fi
-    # Needed for ORDS or Go that takes more time to start
+
+    # Retry several time. Needed for ORDS or Go or Tomcat that takes more time to start
+    x=1
+    while [ $x -le 5 ]
+    do
+      curl $UI_URL/app/dept -L --retry 5 --retry-max-time 20 -D /tmp/result_json.log > /tmp/result.json
+      if grep -q -i "deptno" /tmp/result.json; then
+        echo "OK"
+       	break
+      fi
+      echo "WARNING: /app/dept does not contain 'deptno'. Retrying in 4 secs"
+      sleep 4   
+      x=$(( $x + 1 ))
+    done
     curl $UI_URL/         -L --retry 5 --retry-max-time 20 -D /tmp/result_html.log > /tmp/result.html
-    curl $UI_URL/app/dept -L --retry 5 --retry-max-time 20 -D /tmp/result_json.log > /tmp/result.json
     curl $UI_URL/app/info -L --retry 5 --retry-max-time 20 -D /tmp/result_info.log > /tmp/result.info
   fi
   echo - User Interface : $UI_URL/

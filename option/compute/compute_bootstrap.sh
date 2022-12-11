@@ -9,14 +9,9 @@ if [[ -z "$TF_VAR_language" ]] || [[ -z "$JDBC_URL" ]]; then
   exit
 fi
 
-# -- App --------------------------------------------------------------------
 
-# Application Specific installation
-if [ -f app/install.sh ]; then
-  chmod +x app/install.sh
-  app/install.sh
-fi  
-
+# -- Java --------------------------------------------------------------------
+# Set up the correct Java / VM version
 if [ "$TF_VAR_language" == "java" ]; then
   # Install the JVM (jdk or graalvm)
   if [ "$TF_VAR_java_vm" == "graalvm" ]; then
@@ -42,6 +37,13 @@ if [ "$TF_VAR_language" == "java" ]; then
     fi
   fi
 fi
+
+# -- App --------------------------------------------------------------------
+# Application Specific installation
+if [ -f app/install.sh ]; then
+  chmod +x app/install.sh
+  app/install.sh
+fi  
 
 # -- app/start.sh -----------------------------------------------------------
 if [ -f app/start.sh ]; then
