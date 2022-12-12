@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-. $SCRIPT_DIR/../bin/build_common.sh
+. $SCRIPT_DIR/../../bin/build_common.sh
 
 # fn -v deploy --app ${TF_VAR_prefix}-fn-application
 # fn invoke ${TF_VAR_prefix}-fn-application ${TF_VAR_prefix}-fn-function

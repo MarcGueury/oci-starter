@@ -15,7 +15,6 @@ get_output_from_tfstate () {
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   get_output_from_tfstate UI_URL ui_url  
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
-  export KUBECONFIG=$SCRIPT_DIR/../terraform/starter_kubeconfig
   export UI_URL=http://`kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}"`/${TF_VAR_prefix}
 elif [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then  
   export UI_URL=https://${APIGW_HOSTNAME}/${TF_VAR_prefix}

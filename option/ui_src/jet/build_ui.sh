@@ -8,7 +8,7 @@
 # Docker:
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-. $SCRIPT_DIR/../bin/build_common.sh
+. $SCRIPT_DIR/../../bin/build_common.sh
 
 if [ -d starter ]; then
   cd starter

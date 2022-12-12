@@ -12,8 +12,8 @@ check_java_version() {
 build_ui() {
   cd $SCRIPT_DIR
   if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-    mkdir -p ../compute/ui
-    cp -r ui/* ../compute/ui/.
+    mkdir -p ../../target/compute/ui
+    cp -r ui/* ../../target/compute/ui/.
   elif [ "$TF_VAR_deploy_strategy" == "function" ]; then 
     oci os object bulk-upload -ns $TF_VAR_namespace -bn ${TF_VAR_prefix}-public-bucket --src-dir ui --overwrite --content-type auto
   else
@@ -30,13 +30,13 @@ build_function() {
   fn update context oracle.compartment-id ${TF_VAR_compartment_ocid}
   fn update context api-url https://functions.${TF_VAR_region}.oraclecloud.com
   fn update context registry ${TF_VAR_ocir}/${TF_VAR_namespace}
-  fn build -v | tee > $TMP_DIR/fn_build.log
-  if grep --quiet "built successfully" $TMP_DIR/fn_build.log; then
+  fn build -v | tee > $TARGET_DIR/fn_build.log
+  if grep --quiet "built successfully" $TARGET_DIR/fn_build.log; then
      fn bump
      # Store the image name and DB_URL in files
-     grep "built successfully" $TMP_DIR/fn_build.log | sed "s/Function //" | sed "s/ built successfully.//" > $TMP_DIR/fn_image.txt
-     echo "$1" > $TMP_DIR/fn_db_url.txt
-     . ../env.sh
+     grep "built successfully" $TARGET_DIR/fn_build.log | sed "s/Function //" | sed "s/ built successfully.//" > $TARGET_DIR/fn_image.txt
+     echo "$1" > $TARGET_DIR/fn_db_url.txt
+     . ../../env.sh
      # Push the image to docker
      docker login ${TF_VAR_ocir} -u ${TF_VAR_namespace}/${TF_VAR_username} -p "${TF_VAR_auth_token}"
      docker push $TF_VAR_fn_image
@@ -44,7 +44,7 @@ build_function() {
 
   # First create the Function using terraform
   # Run env.sh to get function image 
-  cd $SCRIPT_DIR/..
+  cd $SCRIPT_DIR/../..
   . env.sh 
   terraform/apply.sh --auto-approve
 }

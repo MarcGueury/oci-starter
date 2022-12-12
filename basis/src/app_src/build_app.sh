@@ -8,21 +8,17 @@
 # Docker:
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-. $SCRIPT_DIR/../bin/build_common.sh
+. $SCRIPT_DIR/../../bin/build_common.sh
 
-# Replace the user and password in the start file
-replace_db_user_password_in_file src/start.sh
-
-## XXXXX Check Python Version in env variables
-if [ "$OCI_CLI_CLOUD_SHELL" == "true" ]; then
-  echo 
-fi
+## XXXXX Check Language version
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-  mkdir ../compute/app
-  cp -r src/* ../compute/app/.
+  mkdir ../../target/compute/app
+  cp -r src/* ../../target/compute/app/.
+  # Replace the user and password in the start file
+  replace_db_user_password_in_file ../../target/compute/app/start.sh
 else
   docker image rm app:latest
   docker build -t app:latest .
-  exit_on_error  
+  exit_on_error
 fi  

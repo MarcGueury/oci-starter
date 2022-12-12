@@ -23,9 +23,9 @@ exit_on_error
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   bin/deploy_compute.sh
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
-  oke/oke_deploy.sh
+  bin/oke_deploy.sh
 elif [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
-  container_instance/ci_deploy.sh
+  bin/ci_deploy.sh
 fi
 
 bin/done.sh

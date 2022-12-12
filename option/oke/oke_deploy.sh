@@ -6,9 +6,6 @@ cd $SCRIPT_DIR/..
 # Call build_common to push the app:latest and ui:latest to OCIR Docker registry
 ocir_docker_push
 
-# Configure KUBECTL
-export KUBECONFIG=terraform/starter_kubeconfig
-
 # One time configuration
 if [ ! -f $KUBECONFIG ]; then
   oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONFIG --region $TF_VAR_region --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
@@ -42,15 +39,18 @@ if [ ! -f $KUBECONFIG ]; then
 fi
 
 # Using & as separator
-sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" app_src/app.yaml > $TMP_DIR/app.yaml
-sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" ui_src/ui.yaml > $TMP_DIR/ui.yaml
+sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" src/app_src/app.yaml > $TARGET_DIR/app.yaml
+sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" src/ui_src/ui.yaml > $TARGET_DIR/ui.yaml
+
+# If present, replace the ORDS URL
+sed -i "s&##ORDS_URL##&$ORDS_URL&" src/oke/ingress-app.yaml > $TARGET_DIR/ingress-app.yaml
 
 # delete the old pod, just to be sure a new image is pulled
 kubectl delete pod ${TF_VAR_prefix}-app ${TF_VAR_prefix}-ui
 
 # Create objects in Kubernetes
-kubectl apply -f $TMP_DIR/app.yaml
-kubectl apply -f $TMP_DIR/ui.yaml
-kubectl apply -f oke/ingress-app.yaml
-kubectl apply -f oke/ingress-ui.yaml
+kubectl apply -f $TARGET_DIR/app.yaml
+kubectl apply -f $TARGET_DIR/ui.yaml
+kubectl apply -f $TARGET_DIR/ingress-app.yaml
+kubectl apply -f src/oke/ingress-ui.yaml
 

@@ -8,7 +8,7 @@
 # Docker:
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-. $SCRIPT_DIR/../bin/build_common.sh
+. $SCRIPT_DIR/../../bin/build_common.sh
 check_java_version
 
 if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
@@ -20,10 +20,10 @@ fi
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   cp start.sh target/.
 
-  mkdir ../compute/app
-  cp -r target/* ../compute/app/.
+  mkdir ../../target/compute/app
+  cp -r target/* ../../target/compute/app/.
   # Replace the user and password in the start file
-  replace_db_user_password_in_file ../compute/app/start.sh  
+  replace_db_user_password_in_file ../../target/compute/app/start.sh  
 else
   docker image rm app:latest
   if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
