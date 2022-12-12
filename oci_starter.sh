@@ -24,15 +24,15 @@ cp_terraform() {
     # Append a second file
     if [ ! -z "$2" ]; then
       echo "append $2"
-      echo >> terraform/$1
-      echo >> terraform/$1
+      echo >> src/terraform/$1
+      echo >> src/terraform/$1
       cat ../option/terraform/$2 >> src/terraform/$1
     fi
 }
 
 cp_dir_db_src() {
     echo "cp_dir_db_src $1"
-    cp ../option/db_src/$1/* db_src/.
+    cp ../option/db_src/$1/* src/db_src/.
 }
 
 title oci_starter.sh 
