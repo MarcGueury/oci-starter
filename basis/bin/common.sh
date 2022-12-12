@@ -96,3 +96,4 @@ get_output_from_tfstate () {
   auto_echo "$1=$RESULT"
   export $1="$RESULT"
 }
+

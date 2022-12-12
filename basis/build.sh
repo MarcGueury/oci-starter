@@ -13,6 +13,12 @@ exit_on_error
 # Build the DB (via Bastion), the APP and the UI
 bin/deploy_bastion.sh
 
+# Init target/compute
+if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
+  mkdir -p target/compute
+  cp src/compute/* target/compute/.
+fi
+
 src/app_src/build_app.sh 
 exit_on_error
 

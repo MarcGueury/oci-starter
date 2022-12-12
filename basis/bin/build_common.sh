@@ -8,10 +8,3 @@ if [ -z "$TF_VAR_deploy_strategy" ]; then
 else 
   . $BIN_DIR/common.sh
 fi 
-
-if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-   if [ ! -d $ROOT_DIR/target/compute ]; then
-      mkdir $ROOT_DIR/target/compute
-      cp $ROOT_DIR/src/compute/* $ROOT_DIR/target/compute/.
-   fi
-fi
