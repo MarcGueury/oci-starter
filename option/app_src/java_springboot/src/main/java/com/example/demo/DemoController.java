@@ -16,7 +16,8 @@ public class DemoController {
 
   @Autowired
   public DemoController(DbProperties properties) {
-    dbUrl = properties.getUrl();
+    info = properties.getInfo();
+    dbUrl = System.getenv("DB_URL");
     dbUser = System.getenv("DB_USER");
     dbPassword = System.getenv("DB_PASSWORD");
   }

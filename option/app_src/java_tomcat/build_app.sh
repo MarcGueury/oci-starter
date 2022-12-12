@@ -15,15 +15,14 @@ mvn package
 exit_on_error
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-  # Replace the user and password
-  cp start.sh target/.
-  cp install.sh target/.
-  replace_db_user_password_in_file target/start.sh
+  cp src/start.sh target/.
+  cp src/install.sh target/.
 
   mkdir ../compute/app
   cp nginx_app.locations ../compute
   cp -r target/* ../compute/app/.
-
+  # Replace the user and password in the start file
+  replace_db_user_password_in_file ../compute/app/start.sh  
 else
   docker image rm app:latest
   docker build -t app:latest .

@@ -17,6 +17,11 @@ spec:
         secretKeyRef:
           name: ##PREFIX##-db-secret
           key: spring_application_json
+    - name: JDBC_URL
+      valueFrom:
+        secretKeyRef:
+          name: ##PREFIX##-db-secret
+          key: jdbc_url          
     - name: DB_USER
       valueFrom:
         secretKeyRef:

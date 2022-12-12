@@ -7,13 +7,13 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "db")
 public class DbProperties {
 
-        private String url;	
+        private String info;	
 
-        public String getUrl() {
-                return url;
+        public String getInfo() {
+                return info;
         }
-        public void setUrl(String url) {
-                this.url = url;
+        public void setInfo(String info) {
+                this.info = info;
         }
 }
 
