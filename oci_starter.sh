@@ -167,8 +167,8 @@ esac
 
 APP_DB=${APP}_${APP_DB}
 echo APP=$APP
-mkdir app_src
-mkdir db_src
+mkdir src/app_src
+mkdir src/db_src
 
 # Function Common 
 if [[ $TF_VAR_deploy_strategy == "function" ]]; then
