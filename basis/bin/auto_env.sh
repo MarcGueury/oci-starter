@@ -80,8 +80,8 @@ else
   fi
 
   # SSH keys
-  export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_starter_rsa.pub)
-  export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_starter_rsa)
+  export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../target/ssh_key_starter.pub)
+  export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../target/ssh_key_starter)
 
 
   if [ -z "$TF_VAR_compartment_ocid" ]; then
