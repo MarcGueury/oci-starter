@@ -6,17 +6,17 @@ cd $SCRIPT_DIR
 . bin/sshkey_generate.sh
 . env.sh
 # Run Terraform
-terraform/apply.sh --auto-approve
+src/terraform/apply.sh --auto-approve
 exit_on_error
 
 . env.sh
 # Build the DB (via Bastion), the APP and the UI
 bin/deploy_bastion.sh
 
-app_src/build_app.sh 
+src/app_src/build_app.sh 
 exit_on_error
 
-ui_src/build_ui.sh 
+src/ui_src/build_ui.sh 
 exit_on_error
 
 # Deploy

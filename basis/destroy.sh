@@ -28,4 +28,4 @@ elif [ "$TF_VAR_deploy_strategy" == "function" ]; then
   oci os object bulk-delete -bn ${TF_VAR_prefix}-public-bucket --force
 fi
 
-terraform/destroy.sh --auto-approve
+src/terraform/destroy.sh --auto-approve
