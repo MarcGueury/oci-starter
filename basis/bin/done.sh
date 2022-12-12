@@ -6,12 +6,6 @@ if [ -z "$TF_VAR_deploy_strategy" ]; then
   . ./env.sh -silent
 fi 
 
-get_output_from_tfstate () {
-  RESULT=`jq -r '.outputs."'$2'".value' terraform/terraform.tfstate`
-  echo "$1=$RESULT"
-  export $1=$RESULT
-}
-
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   get_output_from_tfstate UI_URL ui_url  
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
