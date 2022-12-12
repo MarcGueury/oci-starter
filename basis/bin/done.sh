@@ -42,8 +42,8 @@ if [ ! -z "$UI_URL" ]; then
         echo "OK"
        	break
       fi
-      echo "WARNING: /app/dept does not contain 'deptno'. Retrying in 4 secs"
-      sleep 4   
+      echo "WARNING: /app/dept does not contain 'deptno'. Retrying in 10 secs"
+      sleep 10  
       x=$(( $x + 1 ))
     done
     curl $UI_URL/         -L --retry 5 --retry-max-time 20 -D /tmp/result_html.log > /tmp/result.html

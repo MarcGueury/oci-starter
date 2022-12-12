@@ -31,11 +31,11 @@ BEGIN
 
   ORDS.define_template(
    p_module_name    => 'module',
-   p_pattern        => 'dept/');    
+   p_pattern        => 'dept');    
   
   ORDS.DEFINE_HANDLER(
       p_module_name    => 'module',
-      p_pattern        => 'dept/',
+      p_pattern        => 'dept',
       p_method         => 'GET',
       p_source_type    => 'resource/lob',
       p_items_per_page =>  0,
@@ -46,12 +46,12 @@ BEGIN
 
   ORDS.define_template(
    p_module_name    => 'module',
-   p_pattern        => 'info/');
+   p_pattern        => 'info');
 
   -- XXX pn_status needed ??
   ORDS.define_handler(
     p_module_name    => 'module',
-    p_pattern        => 'info/',
+    p_pattern        => 'info',
     p_method         => 'GET',
     p_source_type    => ords.source_type_plsql,
     p_source         => 'BEGIN
