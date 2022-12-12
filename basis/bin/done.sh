@@ -4,6 +4,8 @@ cd $SCRIPT_DIR/..
 
 if [ -z "$TF_VAR_deploy_strategy" ]; then
   . ./env.sh -silent
+else
+  . bin/common.sh
 fi 
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
