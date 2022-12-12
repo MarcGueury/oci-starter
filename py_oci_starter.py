@@ -282,15 +282,15 @@ def env_sh_contents():
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
     contents = ['#!/bin/bash']
     contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
-    contents.append(f'declare -x OCI_STARTER_CREATION_DATE={timestamp}')
-    contents.append(f'declare -x OCI_STARTER_VERSION=1.3')
+    contents.append(f'export OCI_STARTER_CREATION_DATE={timestamp}')
+    contents.append(f'export OCI_STARTER_VERSION=1.3')
     contents.append('')
     contents.append('# Env Variables')
     if params.get('compartment_ocid') == None:
-        contents.append('# declare -x TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
+        contents.append('# export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
     for param in params:
         var_comment = get_tf_var_comment(contents, param)
-        contents.append(f'declare -x {get_tf_var(param)}="{params[param]}"')
+        contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append('')
     contents.append('# Get other env variables automatically (-silent flag can be passed)')
     contents.append('. $SCRIPT_DIR/bin/auto_env.sh $1')
