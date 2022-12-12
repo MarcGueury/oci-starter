@@ -3,7 +3,7 @@
 #
 # Date : 2022_09_25: Test OK
 # 
-FILE=ssh_key_starter
+FILE=target/ssh_key_starter
 if [ -f "$FILE" ]; then
     echo "$FILE exists."
 else 
