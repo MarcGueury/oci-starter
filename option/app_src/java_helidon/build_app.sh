@@ -22,7 +22,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   fi
   exit_on_error  
   cp start.sh target/.
-  mkdir ../../target/compute/app
+  mkdir -p ../../target/compute/app
   cp -r target/* ../../target/compute/app/.
 else
   docker image rm app:latest

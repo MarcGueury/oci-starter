@@ -20,7 +20,7 @@ fi
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   cp start.sh target/.
 
-  mkdir ../../target/compute/app
+  mkdir -p ../../target/compute/app
   cp -r target/* ../../target/compute/app/.
   # Replace the user and password in the start file
   replace_db_user_password_in_file ../../target/compute/app/start.sh  

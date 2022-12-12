@@ -24,7 +24,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   cp start.sh target/.
   replace_db_user_password_in_file target/start.sh
 
-  mkdir ../../target/compute/app
+  mkdir -p ../../target/compute/app
   cp -r target/* ../../target/compute/app/.
 else
   docker image rm app:latest

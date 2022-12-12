@@ -18,7 +18,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   cp src/start.sh target/.
   cp src/install.sh target/.
 
-  mkdir ../../target/compute/app
+  mkdir -p ../../target/compute/app
   cp nginx_app.locations ../compute
   cp -r target/* ../../target/compute/app/.
   # Replace the user and password in the start file
