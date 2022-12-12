@@ -13,11 +13,12 @@ public class DemoController {
   private String dbUrl;
   private String dbUser;
   private String dbPassword;
+  private String dbInfo;
 
   @Autowired
   public DemoController(DbProperties properties) {
-    info = properties.getInfo();
-    dbUrl = System.getenv("DB_URL");
+    dbInfo = properties.getInfo();
+    dbUrl = System.getenv("JDBC_URL");
     dbUser = System.getenv("DB_USER");
     dbPassword = System.getenv("DB_PASSWORD");
   }
