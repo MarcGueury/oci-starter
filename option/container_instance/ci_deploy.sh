@@ -12,4 +12,4 @@ fi
 
 cd $SCRIPT_DIR/..
 . env.sh 
-terraform/apply.sh --auto-approve
+src/terraform/apply.sh --auto-approve
