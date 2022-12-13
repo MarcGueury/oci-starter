@@ -30,9 +30,9 @@ cp_terraform() {
     fi
 }
 
-cp_dir_db_src() {
-    echo "cp_dir_db_src $1"
-    cp ../option/db_src/$1/* db_src/.
+cp_dir_src_db() {
+    echo "cp_dir_src_db $1"
+    cp ../option/src/db/$1/* src/db/.
 }
 
 mandatory() {
@@ -481,9 +481,9 @@ cat > README.md <<EOF
 - env.sh        : Contains the settings of your project
 
 ### Directories
-- app_src       : Source of the Application (Command: build_app.sh)
-- ui_src        : Source of the User Interface (Command: build_ui.sh)
-- db_src        : SQL files of the database
+- src/app       : Source of the Application (Command: build_app.sh)
+- src/ui        : Source of the User Interface (Command: build_ui.sh)
+- src/db        : SQL files of the database
 - terraform     : Terraforms scripts (Command: plan.sh / apply.sh)
 EOF
 
@@ -548,22 +548,22 @@ esac
 
 APP_DB=${APP}_${APP_DB}
 echo APP=$APP
-mkdir app_src
-mkdir db_src
+mkdir src/app
+mkdir src/db
 
 # Function Common 
 if [[ $TF_VAR_deploy_strategy == "function" ]]; then
-  cp -r ../option/app_src/fn/fn_common/* app_src/.
+  cp -r ../option/src/app/fn/fn_common/* src/app/.
 fi  
 
 # Generic version for Oracle DB
-if [ -d "../option/app_src/$APP" ]; then
-  cp -r ../option/app_src/$APP/* app_src/.
+if [ -d "../option/src/app/$APP" ]; then
+  cp -r ../option/src/app/$APP/* src/app/.
 fi
 
 # Overwrite the generic version (ex for mysql)
-if [ -d "../option/app_src/$APP_DB" ]; then
-  cp -r ../option/app_src/$APP_DB/* app_src/.
+if [ -d "../option/src/app/$APP_DB" ]; then
+  cp -r ../option/src/app/$APP_DB/* src/app/.
 fi
 
 if [ "$TF_VAR_language" == "java" ]; then
@@ -571,9 +571,9 @@ if [ "$TF_VAR_language" == "java" ]; then
    # FROM openjdk:17 
    # FROM openjdk:17-jdk-slim
    if [ "$TF_VAR_java_vm" == "graalvm" ]; then
-     sed -i "s&##DOCKER_IMAGE##&ghcr.io/graalvm/jdk:java17&" app_src/Dockerfile 
+     sed -i "s&##DOCKER_IMAGE##&ghcr.io/graalvm/jdk:java17&" src/app/Dockerfile 
    else
-     sed -i "s&##DOCKER_IMAGE##&openjdk:17-jdk-slim&" app_src/Dockerfile 
+     sed -i "s&##DOCKER_IMAGE##&openjdk:17-jdk-slim&" src/app/Dockerfile 
    fi  
 fi
 
@@ -582,11 +582,11 @@ fi
 if [[ $TF_VAR_ui_strategy == "None" ]]; then
   echo "No UI"
 else
-  mkdir ui_src
+  mkdir src/ui
   UI=`echo "$TF_VAR_ui_strategy" | awk '{print tolower($0)}'`
   # basis is the base
-  cp ../option/ui_src/basis/* ui_src/.
-  cp -r ../option/ui_src/$UI/* ui_src/.
+  cp ../option/src/ui/basis/* src/ui/.
+  cp -r ../option/src/ui/$UI/* src/ui/.
 fi
 
 #-- Network -----------------------------------------------------------------
@@ -609,12 +609,12 @@ if [[ $TF_VAR_deploy_strategy == "kubernetes" ]]; then
   mkdir oke 
   cp -r ../option/oke/* oke/.
 
-  if [ -f app_src/ingress-app.yaml ]; then
-    mv app_src/ingress-app.yaml oke/.
+  if [ -f src/app/ingress-app.yaml ]; then
+    mv src/app/ingress-app.yaml oke/.
   fi
 
-  sed -i "s&##PREFIX##&${TF_VAR_prefix}&" app_src/app.yaml 
-  sed -i "s&##PREFIX##&${TF_VAR_prefix}&" ui_src/ui.yaml
+  sed -i "s&##PREFIX##&${TF_VAR_prefix}&" src/app/app.yaml 
+  sed -i "s&##PREFIX##&${TF_VAR_prefix}&" src/ui/ui.yaml
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" oke/ingress-app.yaml 
   sed -i "s&##PREFIX##&${TF_VAR_prefix}&" oke/ingress-ui.yaml
 elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
@@ -651,21 +651,21 @@ fi
 cp_terraform output.tf 
 
 if [[ $TF_VAR_db_strategy == "autonomous" ]]; then
-  cp_dir_db_src oracle
+  cp_dir_src_db oracle
   if [[ $TF_VAR_db_existing_strategy == "new" ]]; then
     cp_terraform atp.tf atp_append.tf
   else
     cp_terraform atp_existing.tf atp_append.tf
   fi   
 elif [[ $TF_VAR_db_strategy == "database" ]]; then
-  cp_dir_db_src oracle
+  cp_dir_src_db oracle
   if [[ $TF_VAR_db_existing_strategy == "new" ]]; then
     cp_terraform dbsystem.tf dbsystem_append.tf
   else
     cp_terraform dbsystem_existing.tf dbsystem_append.tf
   fi   
 elif [[ $TF_VAR_db_strategy == "mysql" ]]; then  
-  cp_dir_db_src mysql
+  cp_dir_src_db mysql
   if [[ $TF_VAR_db_existing_strategy == "new" ]]; then
     cp_terraform mysql.tf mysql_append.tf
   else
@@ -674,8 +674,8 @@ elif [[ $TF_VAR_db_strategy == "mysql" ]]; then
 fi
 
 # ORDS Case
-if [ -f app_src/oracle.sql ]; then
-  mv app_src/oracle.sql db_src/.
+if [ -f src/app/oracle.sql ]; then
+  mv src/app/oracle.sql src/db/.
 fi
 
 title "Done"

@@ -85,16 +85,16 @@ OCI_STARTER="./oci_starter.sh -prefix tsuite -compartment_ocid $EX_COMPARTMENT_O
 
 # Java Compute ATP / No Compartment
 start_test 01_JAVA_HELIDON_COMPUTE_ATP
-./oci_starter.sh -language java -deploy compute -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
+./oci_starter.sh -language java -java_framework helidon -deploy compute -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 start_test 01B_JAVA_HELIDON_COMPUTE_ATP_RESOURCE_MANAGER
-./oci_starter.sh -language java -deploy compute -db_password $TEST_DB_PASSWORD -infra_as_code resource_manager > $TEST_DIR.log 2>&1  
+./oci_starter.sh -language java -java_framework helidon -deploy compute -db_password $TEST_DB_PASSWORD -infra_as_code resource_manager > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute ATP + Existing Subnet
 start_test 02_JAVA_HELIDON_COMPUTE_ATP_EX_SUBNET
-$OCI_STARTER -language java -deploy compute -db_password $TEST_DB_PASSWORD -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -java_framework helidon -deploy compute -db_password $TEST_DB_PASSWORD -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Wrong parameter
@@ -102,7 +102,7 @@ start_test 03_WRONG
 $OCI_STARTER -toto hello > $TEST_DIR.log 2>&1  
 
 # GraalVM
-start_test 04_JAVA_HELIDON_COMPUTE_ATP_GRAALVM
+start_test 04_JAVA_SPRINGBOOT_COMPUTE_ATP_GRAALVM
 $OCI_STARTER -language java -java_vm graalvm -deploy compute -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1   
 build_test_destroy
 
@@ -117,27 +117,27 @@ $OCI_STARTER -language java -java_framework springboot -deploy compute -db_passw
 build_test_destroy
 
 # DB System
-start_test 06_JAVA_HELIDON_COMPUTE_DATABASE
+start_test 06_JAVA_SPRINGBOOT_COMPUTE_DATABASE
 $OCI_STARTER -language java -database database -deploy compute -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
 build_test_destroy
 
-# Mysql + Helidon
-start_test 07_JAVA_HELIDON_COMPUTE_MYSQL
+# Mysql + SpringBoot
+start_test 07_JAVA_SPRINGBOOT_COMPUTE_MYSQL
 $OCI_STARTER -language java -database mysql -deploy compute -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute + Existing ATP + Existing Subnet
-start_test 08_JAVA_HELIDON_COMPUTE_EX_ATP_SUBNET
+start_test 08_JAVA_SPRINGBOOT_COMPUTE_EX_ATP_SUBNET
 $OCI_STARTER -language java -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_SHARED_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute + Existing DB + Existing Subnet
-start_test 09_JAVA_HELIDON_COMPUTE_EX_DB_SUBNET
+start_test 09_JAVA_SPRINGBOOT_COMPUTE_EX_DB_SUBNET
 $OCI_STARTER -language java -deploy compute -database database -db_password $TEST_DB_PASSWORD -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute + Existing MYSQL + Existing Subnet
-start_test 10_JAVA_HELIDON_COMPUTE_EX_MYSQL_SUBNET
+start_test 10_JAVA_SPRINGBOOT_COMPUTE_EX_MYSQL_SUBNET
 $OCI_STARTER -language java -deploy compute -database mysql -db_password $TEST_DB_PASSWORD -mysql_ocid $EX_MYSQL_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
@@ -147,7 +147,7 @@ $OCI_STARTER -language ords -deploy compute -db_password $TEST_DB_PASSWORD > $TE
 build_test_destroy
 
 # OKE + Helidon
-start_test 50_JAVA_HELIDON_OKE_ATP
+start_test 50_JAVA_SPRINGBOOT_OKE_ATP
 $OCI_STARTER -language java -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
 build_test_destroy
 

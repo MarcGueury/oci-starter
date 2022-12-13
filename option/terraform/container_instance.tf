@@ -24,7 +24,7 @@ resource oci_container_instances_container_instance starter_container_instance {
       "JDBC_URL" = local.jdbc_url,
       "DB_USER" = var.db_user,
       "DB_PASSWORD" = var.db_password,
-      "SPRING_APPLICATION_JSON" = "{ \"db.url\": \"${local.jdbc_url}\" }",
+      "SPRING_APPLICATION_JSON" = "{ \"db.info\": \"Java - SpringBoot\" }",
       "JAVAX_SQL_DATASOURCE_DS1_DATASOURCE_URL" = local.jdbc_url
     }    
   }

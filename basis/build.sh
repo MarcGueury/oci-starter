@@ -6,26 +6,32 @@ cd $SCRIPT_DIR
 . bin/sshkey_generate.sh
 . env.sh
 # Run Terraform
-terraform/apply.sh --auto-approve
+src/terraform/apply.sh --auto-approve
 exit_on_error
 
 . env.sh
 # Build the DB (via Bastion), the APP and the UI
 bin/deploy_bastion.sh
 
-app_src/build_app.sh 
+# Init target/compute
+if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
+  mkdir -p target/compute
+  cp src/compute/* target/compute/.
+fi
+
+src/app/build_app.sh 
 exit_on_error
 
-ui_src/build_ui.sh 
+src/ui/build_ui.sh 
 exit_on_error
 
 # Deploy
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   bin/deploy_compute.sh
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
-  oke/oke_deploy.sh
+  bin/oke_deploy.sh
 elif [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
-  container_instance/ci_deploy.sh
+  bin/ci_deploy.sh
 fi
 
 bin/done.sh

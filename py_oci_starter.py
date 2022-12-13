@@ -166,8 +166,9 @@ def compartment_rules():
         warning('-compartment_ocid is not set. Components will be created in root compartment. Shame on you!')
 
 def license_rules():
-    if params.get('license') is None:
-       params['license'] = os.environ.get('TF_VAR_license')
+    license_model = os.getenv('LICENSE_MODEL')
+    if license_model is not None:
+       params['license'] = license_model
     params['license'] = longhand('license', {'included': 'LICENSE_INCLUDED','byol': 'BRING_YOUR_OWN_LICENSE'})
 
 def zip_rules():
@@ -288,21 +289,22 @@ def readme_contents():
 - env.sh        : Contains the settings of your project
 
 ### Directories
-- app_src       : Source of the Application (Command: build_app.sh)
-- ui_src        : Source of the User Interface (Command: build_ui.sh)
-- db_src        : SQL files of the database
-- terraform     : Terraforms scripts (Command: plan.sh / apply.sh)'''
+- src           : Sources files
+  - app         : Source of the Application (Command: build_app.sh)
+  - ui          : Source of the User Interface (Command: build_ui.sh)
+  - db          : SQL files of the database
+  - terraform   : Terraforms scripts (Command: plan.sh / apply.sh)'''
     ]
     if params['deploy'] == 'compute':
-        contents.append("- compute       : Contains the Compute scripts")
+        contents.append("  - compute     : Contains the Compute scripts")
     elif params['deploy'] == 'kubernetes':
-        contents.append("- oke           : Contains the Kubernetes scripts (Command: deploy.sh)")
+        contents.append("  - oke         : Contains the Kubernetes scripts (Command: deploy.sh)")
     contents.append('\n### Next Steps:')
     if TO_FILL in params.values():
         contents.append("- Edit the file env.sh. Some variables need to be filled:")
         for param, value in params.items():
             if value == TO_FILL:
-                contents.append(f'declare -x {get_tf_var(param)}="{params[param]}"')
+                contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
     if mode == CLI:
         contents.append("  cd output")
@@ -313,14 +315,15 @@ def env_sh_contents():
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
     contents = ['#!/bin/bash']
     contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
-    contents.append(f'declare -x OCI_STARTER_CREATION_DATE={timestamp}')
+    contents.append(f'export OCI_STARTER_CREATION_DATE={timestamp}')
+    contents.append(f'export OCI_STARTER_VERSION=1.3')
     contents.append('')
     contents.append('# Env Variables')
     if params.get('compartment_ocid') == None:
-        contents.append('# declare -x TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
+        contents.append('# export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
     for param in params:
         var_comment = get_tf_var_comment(contents, param)
-        contents.append(f'declare -x {get_tf_var(param)}="{params[param]}"')
+        contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append('')
     contents.append('# Get other env variables automatically (-silent flag can be passed)')
     contents.append('. $SCRIPT_DIR/bin/auto_env.sh $1')
@@ -351,7 +354,7 @@ def file_output(file_path, contents):
     output_file.close()
 
 def copy_basis(basis_dir = BASIS_DIR, output_dir = OUTPUT_DIR):
-    shutil.copytree(basis_dir, output_dir + os.sep + basis_dir)
+    shutil.copytree(basis_dir, output_dir)
 
 # the script
 print(title())
@@ -377,13 +380,14 @@ if mode == CLI:
        illegal_params = check_values()
        if len(unknown_params) > 0 or len(illegal_params) > 0 or len(errors) > 0:
           mode = ABORT
+       elif os.path.isdir(OUTPUT_DIR):
+          print("Output dir exists already.")
+          mode = ABORT
        else:
           print_warnings()
-          if not os.path.isdir(OUTPUT_DIR):
-             os.mkdir(OUTPUT_DIR)
+          copy_basis()
           write_env_sh()
           write_readme()
-          copy_basis()
 
 if mode == GIT:
     params = git_params()

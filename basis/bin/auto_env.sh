@@ -1,8 +1,9 @@
 #!/bin/bash
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export BIN_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export ROOT_DIR=${BIN_DIR%/*}
 
 # Shared BASH Functions
-. $SCRIPT_DIR/common.sh
+. $BIN_DIR/common.sh
 
 # Silent mode (default is not silent)
 if [ "$1" == "-silent" ]; then
@@ -13,21 +14,21 @@ fi
 
 if [ "$TF_VAR_db_password" == "__TO_FILL__" ]; then
   echo "Generating password for the database"
-  export TF_VAR_db_password=`python3 $SCRIPT_DIR/gen_password.py`
-  sed -i "s&TF_VAR_db_password=\"__TO_FILL__\"&TF_VAR_db_password=\"$TF_VAR_db_password\"&" $SCRIPT_DIR/../env.sh
+  export TF_VAR_db_password=`python3 $BIN_DIR/gen_password.py`
+  sed -i "s&TF_VAR_db_password=\"__TO_FILL__\"&TF_VAR_db_password=\"$TF_VAR_db_password\"&" $ROOT_DIR/env.sh
   echo "Password stored in env.sh"
   echo "> TF_VAR_db_password=$TF_VAR_db_password"
 fi
 
 # -- env.sh
-if grep -q "__TO_FILL__" $SCRIPT_DIR/../env.sh; then
+if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
   echo "Error: missing environment variables."
   echo
   echo "Edit the file env.sh. Some variables needs to be filled:" 
   echo `cat env.sh | grep __TO_FILL__` 
   exit
 fi
-# . $SCRIPT_DIR/../env.sh
+# . $ROOT_DIR/env.sh
 
 if ! command -v jq &> /dev/null; then
   echo "Command jq could not be found. Please install it"
@@ -35,9 +36,9 @@ if ! command -v jq &> /dev/null; then
   exit 1
 fi
 
-export TMP_DIR=$SCRIPT_DIR/../tmp
-if [ ! -d $TMP_DIR ]; then
-  mkdir $TMP_DIR
+export TARGET_DIR=$ROOT_DIR/target
+if [ ! -d $TARGET_DIR ]; then
+  mkdir $TARGET_DIR
 fi
 
 #-- PRE terraform ----------------------------------------------------------
@@ -80,8 +81,8 @@ else
   fi
 
   # SSH keys
-  export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../id_starter_rsa.pub)
-  export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../id_starter_rsa)
+  export TF_VAR_ssh_public_key=$(cat $TARGET_DIR/ssh_key_starter.pub)
+  export TF_VAR_ssh_private_key=$(cat $TARGET_DIR/ssh_key_starter)
 
 
   if [ -z "$TF_VAR_compartment_ocid" ]; then
@@ -93,16 +94,16 @@ else
     STARTER_OCID=`oci iam compartment list --name oci-starter | jq .data[0].id -r`
     if [ -z "$STARTER_OCID" ]; then
       echo "Creating a new 'oci-starter' compartment"
-      oci iam compartment create --compartment-id $TF_VAR_tenancy_ocid --description oci-starter --name oci-starter --wait-for-state ACTIVE > $TMP_DIR/compartment.log 2>&1
-      STARTER_OCID=`cat $TMP_DIR/compartment.log | grep \"id\" | sed 's/"//g' | sed "s/.*id: //g" | sed "s/,//g"`
+      oci iam compartment create --compartment-id $TF_VAR_tenancy_ocid --description oci-starter --name oci-starter --wait-for-state ACTIVE > $TARGET_DIR/compartment.log 2>&1
+      STARTER_OCID=`cat $TARGET_DIR/compartment.log | grep \"id\" | sed 's/"//g' | sed "s/.*id: //g" | sed "s/,//g"`
       while [ "$NAME" != "oci-starter" ]
       do
-        oci iam compartment get --compartment-id=$STARTER_OCID > $TMP_DIR/waiting.log 2>&1
-        if grep -q "NotAuthorizedOrNotFound" $TMP_DIR/waiting.log; then
+        oci iam compartment get --compartment-id=$STARTER_OCID > $TARGET_DIR/waiting.log 2>&1
+        if grep -q "NotAuthorizedOrNotFound" $TARGET_DIR/waiting.log; then
           echo "Waiting"
           sleep 2
         else
-          NAME=`cat $TMP_DIR/waiting.log | jq -r .data.name`
+          NAME=`cat $TARGET_DIR/waiting.log | jq -r .data.name`
         fi
       done
     else
@@ -136,12 +137,12 @@ else
     
     export DOCKER_PREFIX=${TF_VAR_ocir}/${TF_VAR_namespace}
     auto_echo DOCKER_PREFIX=$DOCKER_PREFIX
-    export KUBECONFIG=$SCRIPT_DIR/../terraform/starter_kubeconfig
+    export KUBECONFIG=$ROOT_DIR/src/terraform/starter_kubeconfig
   fi
 fi
 
 #-- POST terraform ----------------------------------------------------------
-export STATE_FILE=$SCRIPT_DIR/../terraform/terraform.tfstate
+export STATE_FILE=$ROOT_DIR/src/terraform/terraform.tfstate
 if [ -f $STATE_FILE ]; then
   # OBJECT_STORAGE_URL
   export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
@@ -162,21 +163,21 @@ if [ -f $STATE_FILE ]; then
     # Function OCID
     get_attribute_from_tfstate "FN_FUNCTION_OCID" "starter_fn_function" "id"
 
-    auto_echo "file=$TMP_DIR/fn_image.txt" 
-    if [ -f $TMP_DIR/fn_image.txt ]; then
-      export TF_VAR_fn_image=`cat $TMP_DIR/fn_image.txt`
+    auto_echo "file=$TARGET_DIR/fn_image.txt" 
+    if [ -f $TARGET_DIR/fn_image.txt ]; then
+      export TF_VAR_fn_image=`cat $TARGET_DIR/fn_image.txt`
       auto_echo TF_VAR_fn_image=$TF_VAR_fn_image
-      export TF_VAR_fn_db_url=`cat $TMP_DIR/fn_db_url.txt`
+      export TF_VAR_fn_db_url=`cat $TARGET_DIR/fn_db_url.txt`
       auto_echo TF_VAR_fn_db_url=$TF_VAR_fn_db_url
     fi   
   fi
 
   # Container Instance
   if [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
-    if [ -f $TMP_DIR/docker_image_ui.txt ]; then
-      export TF_VAR_docker_image_ui=`cat $TMP_DIR/docker_image_ui.txt`
-      if [ -f $TMP_DIR/docker_image_app.txt ]; then
-        export TF_VAR_docker_image_app=`cat $TMP_DIR/docker_image_app.txt`
+    if [ -f $TARGET_DIR/docker_image_ui.txt ]; then
+      export TF_VAR_docker_image_ui=`cat $TARGET_DIR/docker_image_ui.txt`
+      if [ -f $TARGET_DIR/docker_image_app.txt ]; then
+        export TF_VAR_docker_image_app=`cat $TARGET_DIR/docker_image_app.txt`
       else
         export TF_VAR_docker_image_app="busybox"      
       fi
