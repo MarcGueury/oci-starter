@@ -125,7 +125,6 @@ esac
 
 APP_DB=${APP}_${APP_DB}
 echo APP=$APP
-mkdir src/app
 mkdir src/db
 
 # Function Common 
