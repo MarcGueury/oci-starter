@@ -44,9 +44,9 @@ build_function() {
 
   # First create the Function using terraform
   # Run env.sh to get function image 
-  cd $SCRIPT_DIR/../..
+  cd $ROOT_DIR
   . env.sh 
-  terraform/apply.sh --auto-approve
+  src/terraform/apply.sh --auto-approve
 }
 
 ocir_docker_push () {

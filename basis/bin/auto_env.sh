@@ -1,9 +1,9 @@
 #!/bin/bash
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ROOT_DIR=${SCRIPT_DIR%/*}
+export BIN_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export ROOT_DIR=${BIN_DIR%/*}
 
 # Shared BASH Functions
-. $SCRIPT_DIR/common.sh
+. $BIN_DIR/common.sh
 
 # Silent mode (default is not silent)
 if [ "$1" == "-silent" ]; then
@@ -14,21 +14,21 @@ fi
 
 if [ "$TF_VAR_db_password" == "__TO_FILL__" ]; then
   echo "Generating password for the database"
-  export TF_VAR_db_password=`python3 $SCRIPT_DIR/gen_password.py`
-  sed -i "s&TF_VAR_db_password=\"__TO_FILL__\"&TF_VAR_db_password=\"$TF_VAR_db_password\"&" $SCRIPT_DIR/../env.sh
+  export TF_VAR_db_password=`python3 $BIN_DIR/gen_password.py`
+  sed -i "s&TF_VAR_db_password=\"__TO_FILL__\"&TF_VAR_db_password=\"$TF_VAR_db_password\"&" $ROOT_DIR/env.sh
   echo "Password stored in env.sh"
   echo "> TF_VAR_db_password=$TF_VAR_db_password"
 fi
 
 # -- env.sh
-if grep -q "__TO_FILL__" $SCRIPT_DIR/../env.sh; then
+if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
   echo "Error: missing environment variables."
   echo
   echo "Edit the file env.sh. Some variables needs to be filled:" 
   echo `cat env.sh | grep __TO_FILL__` 
   exit
 fi
-# . $SCRIPT_DIR/../env.sh
+# . $ROOT_DIR/env.sh
 
 if ! command -v jq &> /dev/null; then
   echo "Command jq could not be found. Please install it"
@@ -36,7 +36,7 @@ if ! command -v jq &> /dev/null; then
   exit 1
 fi
 
-export TARGET_DIR=$SCRIPT_DIR/../target
+export TARGET_DIR=$ROOT_DIR/target
 if [ ! -d $TARGET_DIR ]; then
   mkdir $TARGET_DIR
 fi
@@ -81,8 +81,8 @@ else
   fi
 
   # SSH keys
-  export TF_VAR_ssh_public_key=$(cat $SCRIPT_DIR/../target/ssh_key_starter.pub)
-  export TF_VAR_ssh_private_key=$(cat $SCRIPT_DIR/../target/ssh_key_starter)
+  export TF_VAR_ssh_public_key=$(cat $TARGET_DIR/ssh_key_starter.pub)
+  export TF_VAR_ssh_private_key=$(cat $TARGET_DIR/ssh_key_starter)
 
 
   if [ -z "$TF_VAR_compartment_ocid" ]; then
@@ -137,12 +137,12 @@ else
     
     export DOCKER_PREFIX=${TF_VAR_ocir}/${TF_VAR_namespace}
     auto_echo DOCKER_PREFIX=$DOCKER_PREFIX
-    export KUBECONFIG=$SCRIPT_DIR/../src/terraform/starter_kubeconfig
+    export KUBECONFIG=$ROOT_DIR/src/terraform/starter_kubeconfig
   fi
 fi
 
 #-- POST terraform ----------------------------------------------------------
-export STATE_FILE=$SCRIPT_DIR/../src/terraform/terraform.tfstate
+export STATE_FILE=$ROOT_DIR/src/terraform/terraform.tfstate
 if [ -f $STATE_FILE ]; then
   # OBJECT_STORAGE_URL
   export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
