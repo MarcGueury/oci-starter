@@ -88,48 +88,6 @@ cd ./$REPOSITORY_NAME
 cp -r ../basis/* .
 # mv ../env.sh . (py_oci_starter.py writes env.sh to the output directory anyway)
 
-#-- README.md ------------------------------------------------------------------
-
-# cat > README.md <<EOF 
-# ## OCI-Starter
-# ### Usage 
-
-# ### Commands
-# - build.sh      : Build the whole program: Run Terraform, Configure the DB, Build the App, Build the UI
-# - destroy.sh    : Destroy the objects created by Terraform
-# - env.sh        : Contains the settings of your project
-
-# ### Directories
-# - app_src       : Source of the Application (Command: build_app.sh)
-# - ui_src        : Source of the User Interface (Command: build_ui.sh)
-# - db_src        : SQL files of the database
-# - terraform     : Terraforms scripts (Command: plan.sh / apply.sh)
-# EOF
-
-# case $TF_VAR_deploy_strategy in
-# "compute")
-#     echo "- compute       : Contains the Compute scripts" >> README.md
-#   ;;
-# "kubernetes")
-#     echo "- oke           : Contains the Kubernetes scripts (Command: deploy.sh)" >> README.md
-#   ;;
-# esac
-
-# echo >> README.md
-# echo "### Next Steps" >> README.md
-
-# if grep -q "__TO_FILL__" env.sh; then
-#   echo "- Edit the file env.sh. Some variables needs to be filled:" >> README.md
-#   echo >> README.md
-#   cat env.sh | grep __TO_FILL__ >> README.md
-#   echo >> README.md
-# fi
-# echo "- Run:" >> README.md
-# if [ "$MODE" == "CLI" ]; then
-# echo "  cd output" >> README.md
-# fi
-# echo "  ./build.sh" >> README.md
-
 #-- Insfrastruture As Code --------------------------------------------------
 
 # Default state local
