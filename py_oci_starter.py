@@ -354,7 +354,7 @@ def file_output(file_path, contents):
     output_file.close()
 
 def copy_basis(basis_dir = BASIS_DIR, output_dir = OUTPUT_DIR):
-    shutil.copytree(basis_dir, output_dir + os.sep + basis_dir)
+    shutil.copytree(basis_dir, output_dir)
 
 # the script
 print(title())
@@ -380,13 +380,14 @@ if mode == CLI:
        illegal_params = check_values()
        if len(unknown_params) > 0 or len(illegal_params) > 0 or len(errors) > 0:
           mode = ABORT
+       elif os.path.isdir(OUTPUT_DIR):
+          print("Output dir exists already.")
+          mode = ABORT
        else:
           print_warnings()
-          if not os.path.isdir(OUTPUT_DIR):
-             os.mkdir(OUTPUT_DIR)
+          copy_basis()
           write_env_sh()
           write_readme()
-          copy_basis()
 
 if mode == GIT:
     params = git_params()
