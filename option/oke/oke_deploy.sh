@@ -43,7 +43,7 @@ sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" src/app_src/app.yaml > $TARGET_DIR/a
 sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" src/ui_src/ui.yaml > $TARGET_DIR/ui.yaml
 
 # If present, replace the ORDS URL
-sed -i "s&##ORDS_URL##&$ORDS_URL&" src/oke/ingress-app.yaml > $TARGET_DIR/ingress-app.yaml
+sed "s&##ORDS_URL##&$ORDS_URL&" src/oke/ingress-app.yaml > $TARGET_DIR/ingress-app.yaml
 
 # delete the old pod, just to be sure a new image is pulled
 kubectl delete pod ${TF_VAR_prefix}-app ${TF_VAR_prefix}-ui
