@@ -39,8 +39,8 @@ if [ ! -f $KUBECONFIG ]; then
 fi
 
 # Using & as separator
-sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" src/app_src/app.yaml > $TARGET_DIR/app.yaml
-sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" src/ui_src/ui.yaml > $TARGET_DIR/ui.yaml
+sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" src/app/app.yaml > $TARGET_DIR/app.yaml
+sed "s&##DOCKER_PREFIX##&${DOCKER_PREFIX}&" src/ui/ui.yaml > $TARGET_DIR/ui.yaml
 
 # If present, replace the ORDS URL
 sed "s&##ORDS_URL##&$ORDS_URL&" src/oke/ingress-app.yaml > $TARGET_DIR/ingress-app.yaml

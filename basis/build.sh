@@ -19,10 +19,10 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   cp src/compute/* target/compute/.
 fi
 
-src/app_src/build_app.sh 
+src/app/build_app.sh 
 exit_on_error
 
-src/ui_src/build_ui.sh 
+src/ui/build_ui.sh 
 exit_on_error
 
 # Deploy

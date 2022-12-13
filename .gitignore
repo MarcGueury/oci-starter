@@ -12,10 +12,10 @@ helper
 variables.sh
 env.sh
 output
-option/app_src/dotnet/src/obj
-option/app_src/dotnet_mysql/src/obj
-option/app_src/java_helidon/target
-option/app_src/java_helidon_mysql/target
-option/app_src/java_springboot/target
-option/app_src/fn/fn_java/target
+option/src/app/dotnet/src/obj
+option/src/app/dotnet_mysql/src/obj
+option/src/app/java_helidon/target
+option/src/app/java_helidon_mysql/target
+option/src/app/java_springboot/target
+option/src/app/fn/fn_java/target
 .DS_Store
