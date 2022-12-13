@@ -215,7 +215,7 @@ elif [[ $TF_VAR_deploy_strategy == "compute" ]]; then
   cp ../option/compute/* src/compute/.
 elif [[ $TF_VAR_deploy_strategy == "container_instance" ]]; then 
   cp_terraform container_instance.tf 
-  mkdir src/container_instance 
+  # mkdir src/container_instance 
   cp ../option/container_instance/* bin/.
 
   if [ "$TF_VAR_language" == "ords" ]; then

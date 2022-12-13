@@ -290,21 +290,22 @@ def readme_contents():
 - env.sh        : Contains the settings of your project
 
 ### Directories
-- app_src       : Source of the Application (Command: build_app.sh)
-- ui_src        : Source of the User Interface (Command: build_ui.sh)
-- db_src        : SQL files of the database
-- terraform     : Terraforms scripts (Command: plan.sh / apply.sh)'''
+- src           : Sources files
+  - app         : Source of the Application (Command: build_app.sh)
+  - ui          : Source of the User Interface (Command: build_ui.sh)
+  - db          : SQL files of the database
+  - terraform   : Terraforms scripts (Command: plan.sh / apply.sh)'''
     ]
     if params['deploy'] == 'compute':
-        contents.append("- compute       : Contains the Compute scripts")
+        contents.append("  - compute       : Contains the Compute scripts")
     elif params['deploy'] == 'kubernetes':
-        contents.append("- oke           : Contains the Kubernetes scripts (Command: deploy.sh)")
+        contents.append("  - oke           : Contains the Kubernetes scripts (Command: deploy.sh)")
     contents.append('\n### Next Steps:')
     if TO_FILL in params.values():
         contents.append("- Edit the file env.sh. Some variables need to be filled:")
         for param, value in params.items():
             if value == TO_FILL:
-                contents.append(f'declare -x {get_tf_var(param)}="{params[param]}"')
+                contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
     if mode == CLI:
         contents.append("  cd output")
