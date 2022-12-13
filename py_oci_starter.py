@@ -383,7 +383,7 @@ if mode == CLI:
              os.mkdir(OUTPUT_DIR)
           write_env_sh()
           write_readme()
-          # copy_basis()
+          copy_basis()
 
 if mode == GIT:
     params = git_params()
