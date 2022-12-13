@@ -147,7 +147,7 @@ $OCI_STARTER -language ords -deploy compute -db_password $TEST_DB_PASSWORD > $TE
 build_test_destroy
 
 # OKE + Helidon
-start_test 50_JAVA_HELIDON_OKE_ATP
+start_test 50_JAVA_SPRINGBOOT_OKE_ATP
 $OCI_STARTER -language java -deploy kubernetes -auth_token $OCI_TOKEN -db_password $TEST_DB_PASSWORD > $TEST_DIR.log 2>&1  
 build_test_destroy
 

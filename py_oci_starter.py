@@ -167,8 +167,9 @@ def compartment_rules():
         warning('-compartment_ocid is not set. Components will be created in root compartment. Shame on you!')
 
 def license_rules():
-    if params.get('license') is None:
-       params['license'] = os.environ.get('TF_VAR_license')
+    licence_model = os.getenv('TF_VAR_licence_model')
+    if licence_model is not None:
+       params['license'] = licence_model
     params['license'] = longhand('license', {'included': 'LICENSE_INCLUDED','byol': 'BRING_YOUR_OWN_LICENSE'})
 
 def zip_rules():
