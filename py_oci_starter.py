@@ -14,6 +14,7 @@ GIT='GIT'
 CLI='CLI'
 EXISTING='existing'
 NEW='new'
+TO_FILL="__TO_FILL__"
 
 # Output Directory
 output_dir = "output"
@@ -159,7 +160,7 @@ def ui_rules():
 def auth_token_rules():
     if params.get('deploy') != 'compute' and params.get('auth_token') is None:
         warning('-auth_token is not set. Will need to be set in env.sh')
-        params['auth_token'] = '__TO_FILL__'
+        params['auth_token'] = TO_FILL
 
 def compartment_rules():
     if params.get('compartment_ocid') is None:
@@ -278,6 +279,37 @@ def git_params():
     values = prog_arg_list()
     return dict(zip(keys, values))
 
+def readme_contents():
+    contents = ['''## OCI-Starter
+### Usage 
+
+### Commands
+- build.sh      : Build the whole program: Run Terraform, Configure the DB, Build the App, Build the UI
+- destroy.sh    : Destroy the objects created by Terraform
+- env.sh        : Contains the settings of your project
+
+### Directories
+- app_src       : Source of the Application (Command: build_app.sh)
+- ui_src        : Source of the User Interface (Command: build_ui.sh)
+- db_src        : SQL files of the database
+- terraform     : Terraforms scripts (Command: plan.sh / apply.sh)'''
+    ]
+    if params['deploy'] == 'compute':
+        contents.append("- compute       : Contains the Compute scripts")
+    elif params['deploy'] == 'kubernetes':
+        contents.append("- oke           : Contains the Kubernetes scripts (Command: deploy.sh)")
+    contents.append('\n### Next Steps:')
+    if TO_FILL in params.values():
+        contents.append("- Edit the file env.sh. Some variables need to be filled:")
+        for param, value in params.items():
+            if value == TO_FILL:
+                contents.append(f'declare -x {get_tf_var(param)}="{params[param]}"')
+    contents.append("\n- Run:")
+    if mode == CLI:
+        contents.append("  cd output")
+    contents.append("  ./build.sh")
+    return contents
+
 def env_sh_contents():
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
     contents = ['#!/bin/bash']
@@ -309,6 +341,10 @@ def write_env_sh(output_dir):
     output_path = output_dir + os.sep + 'env.sh'
     file_output(output_path, env_sh_contents())
     os.chmod(output_path, 0o755)
+
+def write_readme(output_dir):
+    output_path = output_dir + os.sep + 'README.md'
+    file_output(output_path, readme_contents())
 
 def file_output(file_path, contents):
     output_file = open(file_path, "w")
@@ -344,6 +380,7 @@ if mode == CLI:
           if not os.path.isdir(output_dir):
              os.mkdir(output_dir)
           write_env_sh(output_dir)
+          write_readme(output_dir)
 
 if mode == GIT:
     params = git_params()
