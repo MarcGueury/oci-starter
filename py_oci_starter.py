@@ -297,9 +297,9 @@ def readme_contents():
   - terraform   : Terraforms scripts (Command: plan.sh / apply.sh)'''
     ]
     if params['deploy'] == 'compute':
-        contents.append("  - compute       : Contains the Compute scripts")
+        contents.append("  - compute     : Contains the Compute scripts")
     elif params['deploy'] == 'kubernetes':
-        contents.append("  - oke           : Contains the Kubernetes scripts (Command: deploy.sh)")
+        contents.append("  - oke         : Contains the Kubernetes scripts (Command: deploy.sh)")
     contents.append('\n### Next Steps:')
     if TO_FILL in params.values():
         contents.append("- Edit the file env.sh. Some variables need to be filled:")
