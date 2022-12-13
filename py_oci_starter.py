@@ -5,7 +5,7 @@
 # 
 # Authors: Marc Gueury & Ewan Slater
 # Date: 2022-11-24
-import sys, os
+import sys, os, shutil
 from datetime import datetime
 
 # constants
@@ -15,9 +15,8 @@ CLI='CLI'
 EXISTING='existing'
 NEW='new'
 TO_FILL="__TO_FILL__"
-
-# Output Directory
-output_dir = "output"
+OUTPUT_DIR = "output"
+BASIS_DIR = "basis"
 
 # functions
 def title():
@@ -340,12 +339,12 @@ def get_tf_var_comment(contents, param):
        for comment in comments:
           contents.append(f'# {get_tf_var(param)} : {comment}')
 
-def write_env_sh(output_dir):
+def write_env_sh(output_dir = OUTPUT_DIR):
     output_path = output_dir + os.sep + 'env.sh'
     file_output(output_path, env_sh_contents())
     os.chmod(output_path, 0o755)
 
-def write_readme(output_dir):
+def write_readme(output_dir = OUTPUT_DIR):
     output_path = output_dir + os.sep + 'README.md'
     file_output(output_path, readme_contents())
 
@@ -353,6 +352,9 @@ def file_output(file_path, contents):
     output_file = open(file_path, "w")
     output_file.writelines('%s\n' % line for line in contents)
     output_file.close()
+
+def copy_basis(basis_dir = BASIS_DIR, output_dir = OUTPUT_DIR):
+    shutil.copytree(basis_dir, output_dir + os.sep + basis_dir)
 
 # the script
 print(title())
@@ -380,10 +382,11 @@ if mode == CLI:
           mode = ABORT
        else:
           print_warnings()
-          if not os.path.isdir(output_dir):
-             os.mkdir(output_dir)
-          write_env_sh(output_dir)
-          write_readme(output_dir)
+          if not os.path.isdir(OUTPUT_DIR):
+             os.mkdir(OUTPUT_DIR)
+          write_env_sh()
+          write_readme()
+          copy_basis()
 
 if mode == GIT:
     params = git_params()

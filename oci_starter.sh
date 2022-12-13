@@ -85,7 +85,7 @@ else
 fi
 cd ./$REPOSITORY_NAME
 
-cp -r ../basis/* .
+# cp -r ../basis/* .
 # mv ../env.sh . (py_oci_starter.py writes env.sh to the output directory anyway)
 
 #-- Insfrastruture As Code --------------------------------------------------
