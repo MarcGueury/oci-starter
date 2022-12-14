@@ -5,7 +5,7 @@
 # 
 # Authors: Marc Gueury & Ewan Slater
 # Date: 2022-11-24
-import sys, os, shutil
+import sys, os, shutil, json
 from datetime import datetime
 
 # constants
@@ -396,6 +396,9 @@ if mode == GIT:
 if mode == ABORT:
     print(help())
     exit()
+
+if mode == ZIP:
+    file_output(zip  + os.sep + OUTPUT_DIR + '.param', [json.dumps(params)])
 
 print(f'Mode: {mode}')
 print(f'params: {params}')
