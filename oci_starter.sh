@@ -68,11 +68,7 @@ if [ ! -d output ]; then
   exit
 fi
 
-if [ "$MODE" == "ZIP" ]; then
-  mv ./output/env.sh $REPOSITORY_NAME/.
-fi
-. ./output/env.sh
-
+. ./$REPOSITORY_NAME/env.sh
 
 echo "py_oci_starter.py finished"
 
