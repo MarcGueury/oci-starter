@@ -124,8 +124,11 @@ def db_rules():
             error(f"-{dep} required if db_existing_strategy is existing")
     if params.get('database') != 'autonomous' and params.get('language') == 'ords':
         error(f'OCI starter only supports ORDS on ATP (Autonomous)')
-    if params.get('database') == 'pluggable' and params['db_existing_strategy'] == NEW and params.get('db_ocid') is None:
-        error(f'New Plugglable Database needs the DB_OCID of an existing DB_SYSTEM')
+    if params.get('database') == 'pluggable':
+        if (params.get('db_ocid') is not None):
+            params['db_existing_strategy'] = NEW
+        if (params.get('db_ocid') is None or params.get('pdb_ocid') is None):
+          error(f'Plugglable Database needs an existing DB_OCID or PDB_OCID')
     if params.get('db_user') == None:
         default_users = {'autonomous':'admin', 'database':'system', 'pluggable':'system',  'mysql':'root'}
         params['db_user'] = default_users[params['database']]
