@@ -78,7 +78,7 @@ allowed_values = {
     '-java_version': {'8', '11', '17'},
     '-kubernetes':{'oke','docker'},
     '-ui': {'html','jet','angular','reactjs','none'},
-    '-database': {'atp','database','mysql'},
+    '-database': {'atp','database','pluggable','mysql'},
     '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'},
     '-infra_as_code': {'terraform_local','terraform_object_storage','resource_manager'},
     '-mode': {CLI,GIT,ZIP}
