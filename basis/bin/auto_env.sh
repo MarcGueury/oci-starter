@@ -12,6 +12,11 @@ else
   unset SILENT_MODE
 fi 
 
+# XXXXXX TO REMOVE WHEN PY_OCI_STARTER.PY is done
+if [ -v REPOSITORY_NAME ]; then
+  return
+fi 
+
 if [ "$TF_VAR_db_password" == "__TO_FILL__" ]; then
   echo "Generating password for the database"
   export TF_VAR_db_password=`python3 $BIN_DIR/gen_password.py`

@@ -41,6 +41,7 @@ title oci_starter.sh
 unset "${!TF_VAR@}"
 
 # keeping this section here so that $MODE etc. are accessible after py_oci_starter.py has run
+export REPOSITORY_NAME=output
 if [ "$#" -eq 3 ]; then
   export MODE=GIT
   export GIT_URL=$1
@@ -55,22 +56,13 @@ rm -rf ./output
 if [ "$1" == "-zip" ]; then
    export MODE=ZIP
    export REPOSITORY_NAME="$2"
-   mkdir $REPOSITORY_NAME
 fi
 
 echo "Generating env.sh using py_oci_starter.py:"
 
 python3 py_oci_starter.py "$@"
 
-# running this now so the rest of the script has access to the TF_VARs...
-if [ ! -d output ]; then
-  exit
-fi
-. ./output/env.sh
-
-if [ "$MODE" == "ZIP" ]; then
-  mv ./output/env.sh $REPOSITORY_NAME/.
-fi
+. ./$REPOSITORY_NAME/env.sh
 
 echo "py_oci_starter.py finished"
 
