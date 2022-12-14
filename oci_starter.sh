@@ -83,11 +83,12 @@ cd ./$REPOSITORY_NAME
 #-- Insfrastruture As Code --------------------------------------------------
 
 # Default state local
-cp -r ../option/infra_as_code/terraform_local/* src/terraform/.
 if [ "$TF_VAR_infra_as_code" == "resource_manager" ]; then
   cp -r ../option/infra_as_code/resource_manager/* src/terraform/.
 elif [ "$TF_VAR_infra_as_code" == "terraform_object_storage" ]; then
   cp -r ../option/infra_as_code/terraform_object_storage/* src/terraform/.
+else 
+  cp -r ../option/infra_as_code/terraform_local/* src/terraform/.  
 fi
 
 #-- APP ---------------------------------------------------------------------
