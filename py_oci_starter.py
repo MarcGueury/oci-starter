@@ -314,6 +314,7 @@ def readme_contents():
     return contents
 
 def env_sh_contents():
+    del params['mode']
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
     contents = ['#!/bin/bash']
     contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
