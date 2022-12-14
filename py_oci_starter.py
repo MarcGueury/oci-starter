@@ -173,9 +173,8 @@ def license_rules():
 
 def zip_rules():
     if 'zip' in params:
-       output_dir = params['zip']
+       OUTPUT_DIR = params['zip']
        del params['zip']
-
 
 def apply_rules():
     language_rules()
@@ -290,15 +289,15 @@ def readme_contents():
 
 ### Directories
 - src           : Sources files
-  - app         : Source of the Application (Command: build_app.sh)
+  - app         : Source of the Backend Application (Command: build_app.sh)
   - ui          : Source of the User Interface (Command: build_ui.sh)
   - db          : SQL files of the database
-  - terraform   : Terraforms scripts (Command: plan.sh / apply.sh)'''
+  - terraform   : Terraform scripts (Command: plan.sh / apply.sh)'''
     ]
     if params['deploy'] == 'compute':
-        contents.append("  - compute     : Contains the Compute scripts")
+        contents.append("  - compute     : Contains the deployment files to Compute")
     elif params['deploy'] == 'kubernetes':
-        contents.append("  - oke         : Contains the Kubernetes scripts (Command: deploy.sh)")
+        contents.append("  - oke         : Contains the deployment files to Kubernetes")
     contents.append('\n### Next Steps:')
     if TO_FILL in params.values():
         contents.append("- Edit the file env.sh. Some variables need to be filled:")
