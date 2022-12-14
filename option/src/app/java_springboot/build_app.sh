@@ -22,10 +22,10 @@ exit_on_error
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   # Replace the user and password
   cp start.sh target/.
-  replace_db_user_password_in_file target/start.sh
 
   mkdir -p ../../target/compute/app
   cp -r target/* ../../target/compute/app/.
+  replace_db_user_password_in_file ../../target/compute/app/start.sh  
 else
   docker image rm app:latest
  
