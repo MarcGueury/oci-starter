@@ -63,11 +63,6 @@ echo "Generating env.sh using py_oci_starter.py:"
 
 python3 py_oci_starter.py "$@"
 
-# running this now so the rest of the script has access to the TF_VARs...
-if [ ! -d output ]; then
-  exit
-fi
-
 . ./$REPOSITORY_NAME/env.sh
 
 echo "py_oci_starter.py finished"
