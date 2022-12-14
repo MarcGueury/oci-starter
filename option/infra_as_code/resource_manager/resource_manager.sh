@@ -32,7 +32,7 @@ resource_manager_create_or_update() {
   if [ -f $ZIP_FILE_PATH ]; then
     rm $ZIP_FILE_PATH
   fi  
-  zip -r $ZIP_FILE_PATH * -x "terraform.tfstate" "starter_kubeconfig" "*.sh"
+  zip -r $ZIP_FILE_PATH * -x "*.sh"
 
   # Transforms the variables in a JSON format
   # This is a complex way to get them. But it works for multi line variables like TF_VAR_private_key
@@ -89,7 +89,7 @@ resource_manager_apply() {
   oci resource-manager job get-job-logs-content --job-id $CREATED_APPLY_JOB_ID | tee > $TARGET_DIR/tf_apply.log
 
   rs_echo "Get stack state"
-  oci resource-manager stack get-stack-tf-state --stack-id $STACK_ID --file terraform.tfstate
+  oci resource-manager stack get-stack-tf-state --stack-id $STACK_ID --file $TARGET_DIR/terraform.tfstate
 }
 
 resource_manager_destroy() {

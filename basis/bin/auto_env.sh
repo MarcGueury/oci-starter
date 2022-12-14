@@ -142,12 +142,12 @@ else
     
     export DOCKER_PREFIX=${TF_VAR_ocir}/${TF_VAR_namespace}
     auto_echo DOCKER_PREFIX=$DOCKER_PREFIX
-    export KUBECONFIG=$ROOT_DIR/src/terraform/starter_kubeconfig
+    export KUBECONFIG=$ROOT_DIR/target/kubeconfig_starter
   fi
 fi
 
 #-- POST terraform ----------------------------------------------------------
-export STATE_FILE=$ROOT_DIR/src/terraform/terraform.tfstate
+export STATE_FILE=$TARGET_DIR/terraform.tfstate
 if [ -f $STATE_FILE ]; then
   # OBJECT_STORAGE_URL
   export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com

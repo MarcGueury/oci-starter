@@ -14,7 +14,7 @@ if [ "$1" != "--auto-approve" ]; then
   echo "Error: Please call this script via destroy.sh"
   exit
 fi
-export KUBECONFIG=src/terraform/starter_kubeconfig
+export KUBECONFIG=target/kubeconfig_starter
 
 # The goal is to destroy all LoadBalancers created by OKE in OCI before to delete OKE.
 #
