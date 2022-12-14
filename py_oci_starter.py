@@ -177,6 +177,7 @@ def zip_rules():
     if 'zip' in params:
        OUTPUT_DIR = params['zip']
        del params['zip']
+       file_output( 'zip' + os.sep + OUTPUT_DIR + '.param', [json.dumps(params)])
 
 def apply_rules():
     language_rules()
@@ -393,9 +394,6 @@ if mode == GIT:
 if mode == ABORT:
     print(help())
     exit()
-
-if mode == ZIP:
-    file_output(zip  + os.sep + OUTPUT_DIR + '.param', [json.dumps(params)])
 
 print(f'Mode: {mode}')
 print(f'params: {params}')
