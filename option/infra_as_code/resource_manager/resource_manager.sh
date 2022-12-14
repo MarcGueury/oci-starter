@@ -32,7 +32,7 @@ resource_manager_create_or_update() {
   if [ -f $ZIP_FILE_PATH ]; then
     rm $ZIP_FILE_PATH
   fi  
-  zip -r $ZIP_FILE_PATH * -x "terraform.tfstate" "starter_kubeconfig" "*.sh"
+  zip -r $ZIP_FILE_PATH * -x "terraform.tfstate" "*.sh"
 
   # Transforms the variables in a JSON format
   # This is a complex way to get them. But it works for multi line variables like TF_VAR_private_key
