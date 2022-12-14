@@ -56,7 +56,6 @@ rm -rf ./output
 if [ "$1" == "-zip" ]; then
    export MODE=ZIP
    export REPOSITORY_NAME="$2"
-   mkdir $REPOSITORY_NAME
 fi
 
 echo "Generating env.sh using py_oci_starter.py:"
