@@ -41,7 +41,7 @@ title oci_starter.sh
 unset "${!TF_VAR@}"
 
 # keeping this section here so that $MODE etc. are accessible after py_oci_starter.py has run
-export OCI_STARTER_GENERATION=1
+export REPOSITORY_NAME=output
 if [ "$#" -eq 3 ]; then
   export MODE=GIT
   export GIT_URL=$1

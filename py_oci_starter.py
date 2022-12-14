@@ -15,7 +15,7 @@ CLI='CLI'
 EXISTING='existing'
 NEW='new'
 TO_FILL="__TO_FILL__"
-OUTPUT_DIR = "output"
+OUTPUT_DIR = os.getenv('REPOSITORY_NAME')
 BASIS_DIR = "basis"
 
 # functions
@@ -172,7 +172,6 @@ def license_rules():
     params['license'] = longhand('license', {'included': 'LICENSE_INCLUDED','byol': 'BRING_YOUR_OWN_LICENSE'})
 
 def zip_rules():
-    global OUTPUT_DIR
     if 'zip' in params:
        OUTPUT_DIR = params['zip']
        del params['zip']

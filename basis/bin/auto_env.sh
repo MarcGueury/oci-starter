@@ -13,7 +13,7 @@ else
 fi 
 
 # XXXXXX TO REMOVE WHEN PY_OCI_STARTER.PY is done
-if [ -v OCI_STARTER_GENERATION ]; then
+if [ -v REPOSITORY_NAME ]; then
   return
 fi 
 
