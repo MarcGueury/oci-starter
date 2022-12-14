@@ -147,7 +147,7 @@ else
 fi
 
 #-- POST terraform ----------------------------------------------------------
-export STATE_FILE=$ROOT_DIR/src/terraform/terraform.tfstate
+export STATE_FILE=$TARGET_DIR/terraform.tfstate
 if [ -f $STATE_FILE ]; then
   # OBJECT_STORAGE_URL
   export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
