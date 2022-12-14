@@ -142,7 +142,7 @@ else
     
     export DOCKER_PREFIX=${TF_VAR_ocir}/${TF_VAR_namespace}
     auto_echo DOCKER_PREFIX=$DOCKER_PREFIX
-    export KUBECONFIG=$ROOT_DIR/target/starter_kubeconfig
+    export KUBECONFIG=$ROOT_DIR/target/kubeconfig_starter
   fi
 fi
 
