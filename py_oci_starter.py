@@ -12,6 +12,7 @@ from datetime import datetime
 ABORT='ABORT'
 GIT='GIT'
 CLI='CLI'
+ZIP='ZIP'
 EXISTING='existing'
 NEW='new'
 TO_FILL="__TO_FILL__"
@@ -30,8 +31,8 @@ def get_mode():
     n_args=len(sys.argv)
     if n_args < 4:
         return ABORT
-    elif n_args == 4:
-        return GIT
+    elif 'zip' in params:
+        return ZIP
     else:
         return CLI
 
@@ -398,7 +399,7 @@ if mode == ABORT:
     exit()
 
 if mode == ZIP:
-    file_output(zip  + os.sep + OUTPUT_DIR + '.param', [json.dumps(params)])
+    file_output( 'zip' + os.sep + OUTPUT_DIR + '.param', [json.dumps(params)])
 
 print(f'Mode: {mode}')
 print(f'params: {params}')
