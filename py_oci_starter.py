@@ -10,8 +10,9 @@ from datetime import datetime
 
 # constants
 ABORT='ABORT'
-GIT='GIT'
-CLI='CLI'
+GIT='git'
+CLI='cli'
+ZIP='zip'
 EXISTING='existing'
 NEW='new'
 TO_FILL="__TO_FILL__"
@@ -27,13 +28,7 @@ def script_name():
     return os.path.basename(__file__)
 
 def get_mode():
-    n_args=len(sys.argv)
-    if n_args < 4:
-        return ABORT
-    elif n_args == 4:
-        return GIT
-    else:
-        return CLI
+    return params['mode']
 
 def prog_arg_list():
     arr = sys.argv.copy()
@@ -43,7 +38,12 @@ def prog_arg_list():
 def prog_arg_dict():
     return list_to_dict(prog_arg_list())
 
-mandatory_options = ['-language','-deploy','-db_password']
+MANDATORY_OPTIONS = {
+    CLI: ['-language','-deploy','-db_password']
+}
+
+def mandatory_options(mode):
+    return MANDATORY_OPTIONS[mode]
 
 default_options = {
     '-prefix': 'starter',
@@ -54,7 +54,8 @@ default_options = {
     '-ui': 'html',
     '-database': 'atp',
     '-license': 'included',
-    '-vcn_strategy': NEW    
+    '-vcn_strategy': NEW,
+    '-mode': CLI
 }
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
@@ -67,7 +68,7 @@ hidden_options = ['-zip', '-infra-as-code']
 
 def allowed_options():
     return list(default_options.keys()) + hidden_options \
-        + mandatory_options + no_default_options
+        + mandatory_options(mode) + no_default_options
 
 allowed_values = {
     '-language': {'java','node','python','dotnet','go','ords'},
@@ -79,7 +80,8 @@ allowed_values = {
     '-ui': {'html','jet','angular','reactjs','none'},
     '-database': {'atp','database','mysql'},
     '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'},
-    '-infra_as_code': {'terraform_local','terraform_object_storage','resource_manager'}
+    '-infra_as_code': {'terraform_local','terraform_object_storage','resource_manager'},
+    '-mode': {CLI,GIT,ZIP}
 }
 
 def check_values():
@@ -270,7 +272,7 @@ def missing_parameters(supplied_params, expected_params):
         expected_set.discard(supplied)
     return list(expected_set)
 
-def cli_params():
+def get_params():
     return deprefix_keys( {**default_options, **prog_arg_dict()} )
 
 def git_params():
@@ -360,37 +362,32 @@ print(title())
 
 script_dir=os.getcwd()
 
+params = get_params()
 mode = get_mode()
+unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
+illegal_params = check_values()
+missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(mode))
+if len(unknown_params) > 0 or len(illegal_params) > 0 or len(missing_params) > 0:
+    mode = ABORT
 
-missing_params = []
-unknown_params = []
-illegal_params = {}
 warnings=[]
 errors=[]
 
 if mode == CLI:
-    params=cli_params()
-    missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options)
-    if len(missing_params) > 0:
-       mode = ABORT
-    else:   
-       apply_rules()
-       unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
-       illegal_params = check_values()
-       if len(unknown_params) > 0 or len(illegal_params) > 0 or len(errors) > 0:
-          mode = ABORT
-       elif os.path.isdir(OUTPUT_DIR):
-          print("Output dir exists already.")
-          mode = ABORT
-       else:
+    apply_rules()
+    if len(errors) > 0:
+        mode = ABORT
+    elif os.path.isdir(OUTPUT_DIR):
+        print("Output dir exists already.")
+        mode = ABORT
+    else:
           print_warnings()
           copy_basis()
           write_env_sh()
           write_readme()
 
 if mode == GIT:
-    params = git_params()
-    print("Unclear what to do with GIT mode.  Would prefer it to be flagged explicitly anyway (not just guessed at)")
+    print("GIT mode currently not implemented.")
     exit()
 
 if mode == ABORT:
