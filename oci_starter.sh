@@ -250,7 +250,14 @@ elif [[ $TF_VAR_db_strategy == "database" ]]; then
     cp_terraform dbsystem.tf dbsystem_append.tf
   else
     cp_terraform dbsystem_existing.tf dbsystem_append.tf
-  fi   
+  fi  
+elif [[ $TF_VAR_db_strategy == "pluggable" ]]; then
+  cp_dir_src_db oracle
+  if [[ $TF_VAR_db_existing_strategy == "new" ]]; then
+    cp_terraform dbsystem_existing.tf dbsystem_pluggable.tf
+  else
+    cp_terraform dbsystem_pluggable_existing.tf
+  fi     
 elif [[ $TF_VAR_db_strategy == "mysql" ]]; then  
   cp_dir_src_db mysql
   if [[ $TF_VAR_db_existing_strategy == "new" ]]; then

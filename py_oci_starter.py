@@ -116,7 +116,7 @@ def longhand(key, abbreviations):
 def db_rules():
     params['database'] = longhand('database', {'atp': 'autonomous', 'dbsystem': 'database'})
     params['db_existing_strategy'] = NEW
-    db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'mysql_ocid':'mysql'}
+    db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'pdb_ocid': 'pluggable', 'mysql_ocid':'mysql'}
     for dep in db_deps:
         if params.get(dep) is not None:
             params['db_existing_strategy'] = EXISTING
@@ -124,6 +124,8 @@ def db_rules():
             error(f"-{dep} required if db_existing_strategy is existing")
     if params.get('database') != 'autonomous' and params.get('language') == 'ords':
         error(f'OCI starter only supports ORDS on ATP (Autonomous)')
+    if params.get('database') == 'pluggable' and params['db_existing_strategy'] == NEW and params.get('db_ocid') is None:
+        error(f'New Plugglable Database needs the DB_OCID of an existing DB_SYSTEM')
     if params.get('db_user') == None:
         default_users = {'autonomous':'admin', 'database':'system', 'mysql':'root'}
         params['db_user'] = default_users[params['database']]
@@ -215,7 +217,7 @@ oci-starter.sh
    -auth_token (optional)
    -bastion_ocid' (optional)
    -compartment_ocid (default tenancy_ocid)
-   -database (default atp | dbsystem | mysql)
+   -database (default atp | dbsystem | pluggable | mysql)
    -db_ocid (optional)
    -db_password (mandatory)
    -db_user (default admin)
