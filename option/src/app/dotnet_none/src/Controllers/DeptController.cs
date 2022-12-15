@@ -18,16 +18,16 @@ public class DeptController : ControllerBase
     {
         return new Dept[]
         {
-            new Dept { deptno = 10, dname = "Asia", loc = "Tokyo" },
-            new Dept { deptno = 20, dname = "Africa", loc = "Lubumbashi" },
-            new Dept { deptno = 30, dname = "Europa", loc = "Brussels" },
-            new Dept { deptno = 40, dname = "America", loc = "San Francisco" }
+            new Dept { deptno = "10", dname = "Asia", loc = "Tokyo" },
+            new Dept { deptno = "20", dname = "Africa", loc = "Lubumbashi" },
+            new Dept { deptno = "30", dname = "Europa", loc = "Brussels" },
+            new Dept { deptno = "40", dname = "America", loc = "San Francisco" }
         };
     }
 
     [Route("info")]
     public String Info()
     {
-        return ".NET / None";
+        return ".NET / No database";
     }
 }
