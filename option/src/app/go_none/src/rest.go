@@ -1,8 +1,6 @@
 package main
  
 import (
-    "fmt"
-    "os"
     "net/http"
     "github.com/gin-gonic/gin"
 )
@@ -15,10 +13,10 @@ type Dept struct {
 
 func dept(c *gin.Context) {
     var static_depts = []Dept{
-        Dept{Deptno: "10", Dname: "Asia", Loc: "Tokyo"},
-        Dept{Deptno: "20", Dname: "Africa", Loc: "Lumbumbashi"},
-        Dept{Deptno: "30", Dname: "Europe", Loc: "Brussels"},
-        Dept{Deptno: "40", Dname: "America", Loc: "San-Francisco"},
+        Dept{Deptno: "10", Dname: "ACCOUNTING", Loc: "Seoul"},
+        Dept{Deptno: "20", Dname: "RESEARCH", Loc: "Cape Town"},
+        Dept{Deptno: "30", Dname: "SALES", Loc: "Brussels"},
+        Dept{Deptno: "40", Dname: "OPERATIONS", Loc: "San Francisco"}
     }     
     c.IndentedJSON(http.StatusOK, static_depts)
 }

@@ -18,10 +18,10 @@ public class DeptController : ControllerBase
     {
         return new Dept[]
         {
-            new Dept { deptno = "10", dname = "Asia", loc = "Tokyo" },
-            new Dept { deptno = "20", dname = "Africa", loc = "Lubumbashi" },
-            new Dept { deptno = "30", dname = "Europa", loc = "Brussels" },
-            new Dept { deptno = "40", dname = "America", loc = "San Francisco" }
+            new Dept { deptno = "10", dname = "ACCOUNTING", loc = "Seoul" },
+            new Dept { deptno = "20", dname = "RESEARCH", loc = "Cape Town" },
+            new Dept { deptno = "30", dname = "SALES", loc = "Brussels" },
+            new Dept { deptno = "40", dname = "OPERATIONS", loc = "San Francisco" }
         };
     }
 
