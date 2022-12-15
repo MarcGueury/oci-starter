@@ -5,12 +5,12 @@ from flask import flash, request
 
 @app.route('/dept')
 def dept():
-    return [ 
+    return jsonify( [ 
         { "deptno": "10", "dname": "ACCOUNTING", "loc": "Seoul"},
-        { "deptno": "10", "dname": "RESEARCH", "loc": "Cape Town"},
-        { "deptno": "10", "dname": "SALES", "loc": "Brussels"},
-        { "deptno": "10", "dname": "OPERATIONS", "loc": "San Francisco"}
-    ]   
+        { "deptno": "20", "dname": "RESEARCH", "loc": "Cape Town"},
+        { "deptno": "30", "dname": "SALES", "loc": "Brussels"},
+        { "deptno": "40", "dname": "OPERATIONS", "loc": "San Francisco"}
+    ] )
 
 @app.route('/info')
 def info():
