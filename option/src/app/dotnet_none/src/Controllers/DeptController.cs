@@ -28,6 +28,6 @@ public class DeptController : ControllerBase
     [Route("info")]
     public String Info()
     {
-        return ".NET / No database";
+        return ".NET / No Database";
     }
 }
