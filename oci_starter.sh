@@ -112,8 +112,15 @@ case $TF_VAR_db_strategy in
     APP_DB="oracle"
     ;;
 
+"pluggable")
+    APP_DB="oracle"
+    ;;
+
 "mysql")
     APP_DB="mysql"
+
+"none")
+    APP_DB="none"
 esac
 
 APP_DB=${APP}_${APP_DB}
