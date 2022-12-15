@@ -16,7 +16,7 @@ func dept(c *gin.Context) {
         Dept{Deptno: "10", Dname: "ACCOUNTING", Loc: "Seoul"},
         Dept{Deptno: "20", Dname: "RESEARCH", Loc: "Cape Town"},
         Dept{Deptno: "30", Dname: "SALES", Loc: "Brussels"},
-        Dept{Deptno: "40", Dname: "OPERATIONS", Loc: "San Francisco"}
+        Dept{Deptno: "40", Dname: "OPERATIONS", Loc: "San Francisco"},
     }     
     c.IndentedJSON(http.StatusOK, static_depts)
 }
