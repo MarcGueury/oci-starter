@@ -78,7 +78,7 @@ allowed_values = {
     '-java_version': {'8', '11', '17'},
     '-kubernetes':{'oke','docker'},
     '-ui': {'html','jet','angular','reactjs','none'},
-    '-database': {'atp','database','pluggable','mysql'},
+    '-database': {'atp','database','pluggable','mysql','none'},
     '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'},
     '-infra_as_code': {'terraform_local','terraform_object_storage','resource_manager'},
     '-mode': {CLI,GIT,ZIP}
@@ -220,7 +220,7 @@ oci-starter.sh
    -auth_token (optional)
    -bastion_ocid' (optional)
    -compartment_ocid (default tenancy_ocid)
-   -database (default atp | dbsystem | pluggable | mysql)
+   -database (default atp | dbsystem | pluggable | mysql | none )
    -db_ocid (optional)
    -db_password (mandatory)
    -db_user (default admin)

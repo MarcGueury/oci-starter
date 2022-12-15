@@ -15,11 +15,6 @@ type Dept struct {
     Loc string `json:"loc"`
 }
 
-var static_depts = []Dept{
-    Dept{Deptno: "10", Dname: "Gorilla", Loc: "Zimbabwe"},
-    Dept{Deptno: "20", Dname: "Gorgonzola", Loc: "Italy"},
-} 
-
 func dept(c *gin.Context) {
     db, err := sql.Open("mysql", os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_URL")+")/db1")
     if err != nil {
@@ -53,6 +48,12 @@ func info(c *gin.Context) {
 }
 
 func static(c *gin.Context) {
+    var static_depts = []Dept{
+        Dept{Deptno: "10", Dname: "Asia", Loc: "Tokyo"},
+        Dept{Deptno: "20", Dname: "Africa", Loc: "Lumbumbashi"},
+        Dept{Deptno: "30", Dname: "Europe", Loc: "Brussels"},
+        Dept{Deptno: "40", Dname: "America", Loc: "San-Francisco"},
+    }     
     c.IndentedJSON(http.StatusOK, static_depts)
 }
 
