@@ -103,22 +103,18 @@ else
 fi
 
 case $TF_VAR_db_strategy in
-
 "autonomous")
     APP_DB="oracle"
     ;;
-
 "database")
     APP_DB="oracle"
     ;;
-
 "pluggable")
     APP_DB="oracle"
     ;;
-
 "mysql")
     APP_DB="mysql"
-
+    ;;
 "none")
     APP_DB="none"
 esac
