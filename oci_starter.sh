@@ -238,7 +238,9 @@ else
 fi 
 
 #-- Database ----------------------------------------------------------------
-cp_terraform output.tf 
+if [[ $TF_VAR_db_strategy != "none" ]]; then
+  cp_terraform output.tf 
+fi
 
 if [[ $TF_VAR_db_strategy == "autonomous" ]]; then
   cp_dir_src_db oracle
