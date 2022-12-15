@@ -130,7 +130,7 @@ def db_rules():
         if (params.get('db_ocid') is None and params.get('pdb_ocid') is None):
           error(f'Plugglable Database needs an existing DB_OCID or PDB_OCID')
     if params.get('db_user') == None:
-        default_users = {'autonomous':'admin', 'database':'system', 'pluggable':'system',  'mysql':'root'}
+        default_users = {'autonomous':'admin', 'database':'system', 'pluggable':'system',  'mysql':'root', 'none': ''}
         params['db_user'] = default_users[params['database']]
 
 def language_rules():
