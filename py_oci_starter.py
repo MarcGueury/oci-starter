@@ -59,7 +59,7 @@ default_options = {
 }
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
-    '-atp_ocid', '-db_ocid', '-mysql_ocid', '-db_user', \
+    '-atp_ocid', '-db_ocid', '-pdb_ocid', '-mysql_ocid', '-db_user', \
     '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token', \
     '-subnet_ocid', '-infra_as_code' ]
 
