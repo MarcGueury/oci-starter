@@ -1,3 +1,2 @@
-oracledb
 Flask
 flask-cors
