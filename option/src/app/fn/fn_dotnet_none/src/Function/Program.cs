@@ -1,6 +1,5 @@
 using System;
 using Fnproject.Fn.Fdk;
-using Oracle.ManagedDataAccess.Client;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Function.Tests")]
