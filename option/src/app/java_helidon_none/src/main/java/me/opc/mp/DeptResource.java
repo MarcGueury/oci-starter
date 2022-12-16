@@ -15,20 +15,22 @@ import jakarta.ws.rs.core.MediaType;
 @Path("/")
 public class DeptResource {
 
-    @PersistenceContext(unitName = "pu1")
-    private EntityManager entityManager;
-
     @GET
     @Path("dept")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Dept> getDept() {
-        return entityManager.createNamedQuery("getDept", Dept.class).getResultList();
+        List<Dept> d = new ArrayList<Dept>();
+        d.add(new Dept(10, "ACCOUNTING", "Seoul" ));
+        d.add(new Dept(20, "RESEARCH", "Cape Town" ));
+        d.add(new Dept(30, "SALES", "Brussels"));
+        d.add(new Dept(40, "OPERATIONS", "San Francisco"));
+        return d;        
     }
 
     @GET
     @Path("info")
     @Produces(MediaType.TEXT_PLAIN)
     public String getInfo() {
-        return "Java - Helidon";
+        return "Java - Helidon / No Database";
     }
 }
