@@ -5,7 +5,7 @@ const port = 8080
 const oracledb = require('oracledb');
 
 app.get('/info', (req, res) => {
-    res.send('NodeJS - Express')
+    res.send('NodeJS - Express - Oracle')
 })
 
 app.get('/dept', async (req, res) => {
