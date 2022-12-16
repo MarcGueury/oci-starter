@@ -1,7 +1,7 @@
 package me.opc.mp.database;
 
 import java.util.List;
-
+import java.util.ArrayList;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.ws.rs.GET;
