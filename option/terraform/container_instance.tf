@@ -10,6 +10,23 @@ variable auth_token {
     default=""
 }
 
+resource "oci_identity_dynamic_group" "starter_ci_dyngroup" {
+  # No prefix to share it between all container instances
+  name           = "starter-ci-dyngroup"
+  description    = "Starter - All Container Instances"
+  compartment_id = local.lz_appdev_cmp_ocid
+  matching_rule  = "ALL {resource.type='computecontainerinstance'}"
+}
+
+resource "oci_identity_policy" "starter-ci_policy" {
+  name           = "starter-fn-policy"
+  description    = "Container instance access to OCIR"
+  compartment_id = local.lz_appdev_cmp_ocid
+  statements = [
+    "allow dynamic-group starter-ci-dyngroup to read repos in tenancy"
+  ]
+}
+
 resource oci_container_instances_container_instance starter_container_instance {
   count = var.docker_image_ui == "" ? 0 : 1
   availability_domain = data.oci_identity_availability_domain.ad.name
