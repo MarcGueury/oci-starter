@@ -69,3 +69,11 @@ a {
     font-weight: bold; 
     padding-bottom: 10px
 }
+
+div#table td  {
+    margin-right: 15px;
+}
+
+div#table th {
+    text-align: left;
+}
