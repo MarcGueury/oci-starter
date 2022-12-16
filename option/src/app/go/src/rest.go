@@ -43,7 +43,7 @@ func dept(c *gin.Context) {
 }
 
 func info(c *gin.Context) {
-    var s string =  "GoLang - Oracle"
+    var s string =  "GoLang / Oracle"
     c.Data(http.StatusOK, "text/html", []byte(s))
 }
 

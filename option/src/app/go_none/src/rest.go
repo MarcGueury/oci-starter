@@ -22,7 +22,7 @@ func dept(c *gin.Context) {
 }
 
 func info(c *gin.Context) {
-    var s string =  "GoLang - No Database"
+    var s string =  "GoLang / No Database"
     c.Data(http.StatusOK, "text/html", []byte(s))
 }
 

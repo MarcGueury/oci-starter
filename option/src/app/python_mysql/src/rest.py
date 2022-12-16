@@ -23,7 +23,7 @@ def dept():
 
 @app.route('/info')
 def info():
-        return "Python / Flask / MySQL"          
+        return "Python - Flask / MySQL"          
 
 mysql = MySQL()
 db_url = os.getenv('DB_URL')
