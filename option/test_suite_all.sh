@@ -108,6 +108,10 @@ loop_db() {
   loop_ui
   OPTION_DB=mysql
   loop_ui
+  if [ "$OPTION_DEPLOY" == "kubernetes" ] || [ "$OPTION_DEPLOY" == "function" ] ; then
+    OPTION_DB=none
+    loop_ui
+  fi 
 }
 
 loop_java_vm() {
