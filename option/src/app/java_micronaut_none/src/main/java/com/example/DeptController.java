@@ -23,10 +23,10 @@ class DeptController {
     @Produces(MediaType.APPLICATION_JSON)
     List<Dept> dept() {
         List<Dept> depts = new ArrayList<Dept>();
-        depts.add(new Dept(10, "ACCOUNTING", "Seoul" ));
-        depts.add(new Dept(20, "RESEARCH", "Cape Town" ));
-        depts.add(new Dept(30, "SALES", "Brussels"));
-        depts.add(new Dept(40, "OPERATIONS", "San Francisco"));
+        depts.add(new Dept("10", "ACCOUNTING", "Seoul" ));
+        depts.add(new Dept("20", "RESEARCH", "Cape Town" ));
+        depts.add(new Dept("30", "SALES", "Brussels"));
+        depts.add(new Dept("40", "OPERATIONS", "San Francisco"));
         return depts;        
     }
 
