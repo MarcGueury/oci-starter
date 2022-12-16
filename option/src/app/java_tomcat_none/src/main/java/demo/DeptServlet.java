@@ -1,7 +1,5 @@
 package demo;
 
-import java.sql.*;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,13 +24,15 @@ public class DeptServlet extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      return """
+	    throws ServletException, IOException 
+	{
+		response.getWriter().append("""
  		[ 
 			{ "deptno": "10", "dname": "ACCOUNTING", "loc": "Seoul"},
 			{ "deptno": "20", "dname": "RESEARCH", "loc": "Cape Town"},
 			{ "deptno": "30", "dname": "SALES", "loc": "Brussels"},
 			{ "deptno": "40", "dname": "OPERATIONS", "loc": "San Francisco"}
 		] 
-		""";
+		""");
 	}
 }

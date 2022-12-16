@@ -15,22 +15,23 @@ import static io.micronaut.http.HttpHeaders.LOCATION;
 @ExecuteOn(TaskExecutors.IO)  
 @Controller("/")  
 class DeptController {
-    @Inject
-    DeptRepository deptRepository;
-
     DeptController() { 
     }
 
     @Get(uri = "dept") 
     @Produces(MediaType.APPLICATION_JSON)
-    @TransactionalAdvice
     List<Dept> dept() {
-        return deptRepository.find();
+        List<Dept> depts = new ArrayList<Dept>();
+        depts.add(new Dept(10, "ACCOUNTING", "Seoul" ));
+        depts.add(new Dept(20, "RESEARCH", "Cape Town" ));
+        depts.add(new Dept(30, "SALES", "Brussels"));
+        depts.add(new Dept(40, "OPERATIONS", "San Francisco"));
+        return depts;        
     }
 
     @Get(uri = "info") 
     @Produces(MediaType.TEXT_PLAIN)
     String info() {
-        return "Java - Micronaut";
+        return "Java - Micronaut / No Database";
     }
 }
