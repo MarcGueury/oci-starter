@@ -3,10 +3,8 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	fdk "github.com/fnproject/fdk-go"
-	"os"
 )
 
 type Dept struct {

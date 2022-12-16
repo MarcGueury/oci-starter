@@ -6,10 +6,6 @@ variable docker_image_app {
     default=""
 }
 
-variable auth_token {
-    default=""
-}
-
 resource "oci_identity_dynamic_group" "starter_ci_dyngroup" {
   # No prefix to share it between all container instances
   name           = "starter-ci-dyngroup"
@@ -56,12 +52,6 @@ resource oci_container_instances_container_instance starter_container_instance {
   shape_config {
     memory_in_gbs = "4"
     ocpus         = "1"
-  }
-  image_pull_secrets {
-      username = base64encode(local.ocir_username)
-      password = base64encode(var.auth_token)
-      registry_endpoint = local.ocir_docker_repository
-      secret_type = "BASIC"
   }
   state = "ACTIVE"
   vnics {
