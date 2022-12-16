@@ -86,7 +86,7 @@ auto_echo () {
 }
 
 set_if_not_null () {
-  if [ "$2" != "" ] and [ "$2" != "null" ]; then
+  if [ "$2" != "" ] && [ "$2" != "null" ]; then
     auto_echo "$1=$RESULT"
     export $1="$RESULT"
   fi  
