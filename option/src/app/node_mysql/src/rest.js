@@ -5,7 +5,7 @@ const port = 8080
 const mysql = require('mysql2');
 
 app.get('/info', (req, res) => {
-    res.send('NodeJS - Express - MySQL')
+    res.send('NodeJS - Express / MySQL')
 })
 
 app.get('/dept', (req, res) => {
