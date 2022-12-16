@@ -85,15 +85,20 @@ auto_echo () {
   fi  
 }
 
+set_if_not_null () {
+  if [ "$2" != "" ] and [ "$2" != "null" ]; then
+    auto_echo "$1=$RESULT"
+    export $1="$RESULT"
+  fi  
+}
+
 get_attribute_from_tfstate () {
   RESULT=`jq -r '.resources[] | select(.name=="'$2'") | .instances[0].attributes.'$3'' $STATE_FILE`
-  auto_echo "$1=$RESULT"
-  export $1="$RESULT"
+  set_if_not_null $1 $RESULT
 }
 
 get_output_from_tfstate () {
   RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE | sed "s/ //"`
-  auto_echo "$1=$RESULT"
-  export $1="$RESULT"
+  set_if_not_null $1 $RESULT
 }
 
