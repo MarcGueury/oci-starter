@@ -9,7 +9,7 @@
 </head>
 
 <body onload="loadRest()">
-    <h2>OCI Starter - Simple Java Server Page</h2>
+    <h2>OCI Starter - Simple JSP</h2>
     <p>Date: <%= (new java.util.Date()).toLocaleString()%></p>
     <h3>Rest Result </h3>
     <p>URL: <a href="/app/dept" target="_blank">/app/dept</a></p>
