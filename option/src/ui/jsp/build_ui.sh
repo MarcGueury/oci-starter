@@ -11,7 +11,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../../bin/build_common.sh
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-  cp nginx_ui.locations > ../../target/compute/.
+  cp nginx_ui.locations ../../target/compute/.
 else
   exit 1 
   # TODO

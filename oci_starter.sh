@@ -61,12 +61,11 @@ fi
 echo "Generating env.sh using py_oci_starter.py:"
 
 python3 py_oci_starter.py "$@"
-echo "py_oci_starter.py finished"
 
 if [ -f ./$REPOSITORY_NAME/env.sh ]; then
+  echo "py_oci_starter.py finished"
   . ./$REPOSITORY_NAME/env.sh
 else
-  echo ERROR: Missing env.sh
   exit 1
 fi
 
