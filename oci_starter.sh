@@ -61,10 +61,14 @@ fi
 echo "Generating env.sh using py_oci_starter.py:"
 
 python3 py_oci_starter.py "$@"
-
-. ./$REPOSITORY_NAME/env.sh
-
 echo "py_oci_starter.py finished"
+
+if [ -f ./$REPOSITORY_NAME/env.sh ]; then
+  . ./$REPOSITORY_NAME/env.sh
+else
+  echo ERROR: Missing env.sh
+  exit 1
+fi
 
 echo $TF_VAR_language
 
