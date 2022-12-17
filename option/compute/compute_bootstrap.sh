@@ -92,17 +92,6 @@ if [ -d ui ]; then
      sudo sed -i '/404.html/ a include conf.d/nginx_app.locations;' /etc/nginx/conf.d/default.conf
   fi
 
-  # UI location: JSP / Ruby and PHP
-  if [ -f nginx_ui.locations ]; then
-    sudo cp nginx_ui.locations /etc/nginx/conf.d/.
-    if grep -q nginx_ui /etc/nginx/conf.d/default.conf; then
-      echo "Include is already there"
-    else
-      echo not found
-      sudo sed -i '/404.html/ a include conf.d/nginx_ui.locations;' /etc/nginx/conf.d/default.conf
-    fi
-  fi
-
   # SE Linux (for proxy_pass)
   sudo setsebool -P httpd_can_network_connect 1
 
