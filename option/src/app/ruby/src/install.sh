@@ -11,3 +11,12 @@ sudo yum install -y oracle-instantclient-release-el7
 sudo yum install -y oracle-instantclient-basic
 sudo yum install -y oracle-instantclient-sqlplus
 npm install
+
+sudo yum install rh-ruby27 rh-ruby27-ruby-devel
+scl enable rh-ruby27 bash
+gem install puma
+gem install rails
+
+/*
+cd /tmp
+rails new starter-ruby --api && cd starter-ruby

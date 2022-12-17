@@ -77,7 +77,7 @@ allowed_values = {
     '-java_vm': {'jdk','graalvm','graalvm_native'},
     '-java_version': {'8', '11', '17'},
     '-kubernetes':{'oke','docker'},
-    '-ui': {'html','jet','angular','reactjs','none'},
+    '-ui': {'html','jet','angular','reactjs','jsp','none'},
     '-database': {'atp','database','pluggable','mysql','none'},
     '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'},
     '-infra_as_code': {'terraform_local','terraform_object_storage','resource_manager'},
@@ -162,6 +162,9 @@ def vcn_rules():
 
 def ui_rules():
     params['ui'] = longhand('ui', {'reactjs':'ReactJS','none':'None'})
+    if params.get('ui') != 'jsp':
+        params['language'] = 'java'
+        params['java_framework'] = 'tomcat'
 
 def auth_token_rules():
     if params.get('deploy') != 'compute' and params.get('auth_token') is None:
