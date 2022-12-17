@@ -71,13 +71,13 @@ def allowed_options():
         + mandatory_options(mode) + no_default_options
 
 allowed_values = {
-    '-language': {'java','node','python','dotnet','go','ords'},
+    '-language': {'java','node','python','dotnet','go','php','ords'},
     '-deploy': {'compute','kubernetes','function','container_instance','ci'},
     '-java_framework': {'springboot','helidon','tomcat','micronaut'},
     '-java_vm': {'jdk','graalvm','graalvm_native'},
     '-java_version': {'8', '11', '17'},
     '-kubernetes':{'oke','docker'},
-    '-ui': {'html','jet','angular','reactjs','jsp','none'},
+    '-ui': {'html','jet','angular','reactjs','jsp','php','none'},
     '-database': {'atp','database','pluggable','mysql','none'},
     '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'},
     '-infra_as_code': {'terraform_local','terraform_object_storage','resource_manager'},
