@@ -9,7 +9,7 @@ function loadRest() {
             json2table(jsonValue);
         }
     };
-    xhttp.open("GET", "app/dept", true);
+    xhttp.open("GET", "dept", true);
     xhttp.send();
 
     var xhttp2 = new XMLHttpRequest();
@@ -19,7 +19,7 @@ function loadRest() {
                 this.responseText;
         }
     };
-    xhttp2.open("GET", "app/info", true);
+    xhttp2.open("GET", "info", true);
     xhttp2.send();
 }
 
