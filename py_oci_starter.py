@@ -162,7 +162,7 @@ def vcn_rules():
 
 def ui_rules():
     params['ui'] = longhand('ui', {'reactjs':'ReactJS','none':'None'})
-    if params.get('ui') != 'jsp':
+    if params.get('ui') == 'jsp':
         params['language'] = 'java'
         params['java_framework'] = 'tomcat'
 
