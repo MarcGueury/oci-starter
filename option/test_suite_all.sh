@@ -101,6 +101,10 @@ loop_ui() {
     OPTION_UI=jet
     build_option
   fi 
+  if [ "$OPTION_JAVA_FRAMEWORK" == "tomcat" ]; then
+    OPTION_UI=jsp
+    build_option
+  fi  
 }
 
 loop_db() {
@@ -122,14 +126,16 @@ loop_java_vm() {
 }
 
 loop_java_framework () {
-  OPTION_JAVA_FRAMEWORK=helidon 
-  loop_java_vm
   OPTION_JAVA_FRAMEWORK=springboot 
+  loop_java_vm
+  OPTION_JAVA_FRAMEWORK=helidon 
   loop_java_vm
   OPTION_JAVA_FRAMEWORK=micronaut
   loop_java_vm
   OPTION_JAVA_FRAMEWORK=tomcat
   loop_db
+  # Reset the value to default
+  OPTION_JAVA_FRAMEWORK=springboot
 }
 
 loop_lang () {
