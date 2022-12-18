@@ -1,0 +1,5 @@
+[app]
+; app.cfg.DB_URL = 'mysql:host=127.0.0.1;dbname=db1'
+app.cfg.DB_URL = '##DB_URL##'
+app.cfg.DB_USER = '##DB_USER##'
+app.cfg.DB_PASSWORD = '##DB_USER##'
