@@ -90,21 +90,26 @@ build_option() {
 }
 
 loop_ui() {
-  OPTION_UI=html 
-  build_option
-  # Test all the UIs with ORDS only
-  if [ "$OPTION_LANG" == "ords" ]; then
-    OPTION_UI=reactjs
+  if [ "$OPTION_LANG" == "php" ]; then
+    OPTION_UI=php 
     build_option
-    OPTION_UI=angular
+  else
+    OPTION_UI=html 
     build_option
-    OPTION_UI=jet
-    build_option
-  fi 
-  if [ "$OPTION_JAVA_FRAMEWORK" == "tomcat" ]; then
-    OPTION_UI=jsp
-    build_option
-  fi  
+    # Test all the UIs with ORDS only
+    if [ "$OPTION_LANG" == "ords" ]; then
+      OPTION_UI=reactjs
+      build_option
+      OPTION_UI=angular
+      build_option
+      OPTION_UI=jet
+      build_option
+    fi 
+    if [ "$OPTION_JAVA_FRAMEWORK" == "tomcat" ]; then
+      OPTION_UI=jsp
+      build_option
+    fi  
+  fi
 }
 
 loop_db() {
@@ -161,6 +166,10 @@ loop_lang () {
   else
     loop_java_framework
   fi
+  if [ "$OPTION_DEPLOY" != "function" ]; then
+    OPTION_LANG=php
+    loop_db
+  fi  
   OPTION_LANG=go
   loop_db  
   OPTION_LANG=node 
