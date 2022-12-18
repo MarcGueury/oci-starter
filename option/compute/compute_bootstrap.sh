@@ -96,7 +96,7 @@ if [ -d ui ]; then
 
   # PHP or RUBY
   if [ -f app/nginx_app.conf ]; then
-   sudo cp nginx_app.conf /etc/nginx/conf.d/.
+   sudo cp app/nginx_app.conf /etc/nginx/conf.d/.
   fi
 
   # SE Linux (for proxy_pass)
