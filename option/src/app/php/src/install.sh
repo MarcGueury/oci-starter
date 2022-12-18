@@ -11,5 +11,5 @@ sudo yum install -y oracle-instantclient-basic
 sudo yum install -y oracle-instantclient-sqlplus
 npm install
 
-sudo cp nginx_app.locations /etc/nginx/conf.d/.
-sudo systemctl restart nginx
+sudo mkdir -p /usr/share/nginx/app
+sudo cp -r app/* /usr/share/nginx/app/.

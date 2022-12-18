@@ -94,6 +94,11 @@ if [ -d ui ]; then
      sudo sed -i '/404.html/ a include conf.d/nginx_app.locations;' /etc/nginx/conf.d/default.conf
   fi
 
+  # PHP or RUBY
+  if [ -f app/nginx_app.conf ]; then
+   sudo cp nginx_app.conf /etc/nginx/conf.d/.
+  fi
+
   # SE Linux (for proxy_pass)
   sudo setsebool -P httpd_can_network_connect 1
 
