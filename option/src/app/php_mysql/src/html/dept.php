@@ -6,7 +6,6 @@ $db_user = get_cfg_var( "app.cfg.DB_USER" );
 $db_password = get_cfg_var( "app.cfg.DB_PASSWORD" );
 $a = explode(":", $db_url);
 $host = $a[0];
-echo( $host );
 
 $conn = mysqli_connect($host, $db_user, $db_password, "db1");
 
