@@ -9,7 +9,7 @@ sudo yum install -y oracle-instantclient-sqlplus
 
 # Install the tables
 cat > tnsnames.ora <<EOT
-db  = $DB_URL
+DB  = $DB_URL
 EOT
 
 export TNS_ADMIN=$SCRIPT_DIR

@@ -14,10 +14,13 @@ sudo yum install -y oracle-instantclient-release-el7
 sudo yum install -y oracle-instantclient-basic
 sudo yum install -y oracle-instantclient-sqlplus
 
-if grep -q '##DB_URL##' php.ini.append; then
+if [ -f /etc/tnsnames.ora ]; then
   echo "DB_URL is already in php.ini.append"
 else
-  sed -i "s!##DB_URL##!$DB_URL!" php.ini.append 
+  cat > tnsnames.ora <<EOT
+  DB  = $DB_URL
+EOT
+  sudo cp tnsnames.ora /etc/tnsnames.ora
   sudo cat php.ini.append >> /etc/php.ini
 fi
 
