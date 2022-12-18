@@ -97,9 +97,15 @@ start_test 02_JAVA_HELIDON_COMPUTE_ATP_EX_SUBNET
 $OCI_STARTER -language java -java_framework helidon -deploy compute -db_password $TEST_DB_PASSWORD -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
-# Wrong parameter
-start_test 03_WRONG
-$OCI_STARTER -toto hello > $TEST_DIR.log 2>&1  
+# DB System
+start_test 03_JAVA_SPRINGBOOT_COMPUTE_PLUGGABLE_NEW
+$OCI_STARTER -language java -database pluggable -deploy compute -db_password $TEST_DB_PASSWORD -db_password $TEST_DB_PASSWORD -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+build_test_destroy
+ 
+# DB System
+start_test 03B_JAVA_SPRINGBOOT_COMPUTE_PLUGGABLE_EXISTING
+$OCI_STARTER -language java -database pluggable -deploy compute -db_password $TEST_DB_PASSWORD -db_password $TEST_DB_PASSWORD -pdb_ocid $EX_PDB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+build_test_destroy
 
 # GraalVM
 start_test 04_JAVA_SPRINGBOOT_COMPUTE_ATP_GRAALVM

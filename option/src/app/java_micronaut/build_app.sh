@@ -16,6 +16,7 @@ if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
 else 
   mvn package 
 fi
+exit_on_error  
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   cp start.sh target/.
@@ -30,5 +31,6 @@ else
     docker build -f Dockerfile.native -t app:latest .
   else
     docker build -t app:latest . 
-  fi  
+  fi
+  exit_on_error    
 fi  

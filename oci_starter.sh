@@ -62,9 +62,12 @@ echo "Generating env.sh using py_oci_starter.py:"
 
 python3 py_oci_starter.py "$@"
 
-. ./$REPOSITORY_NAME/env.sh
-
-echo "py_oci_starter.py finished"
+if [ -f ./$REPOSITORY_NAME/env.sh ]; then
+  echo "py_oci_starter.py finished"
+  . ./$REPOSITORY_NAME/env.sh
+else
+  exit 1
+fi
 
 echo $TF_VAR_language
 
@@ -103,17 +106,20 @@ else
 fi
 
 case $TF_VAR_db_strategy in
-
 "autonomous")
     APP_DB="oracle"
     ;;
-
 "database")
     APP_DB="oracle"
     ;;
-
+"pluggable")
+    APP_DB="oracle"
+    ;;
 "mysql")
     APP_DB="mysql"
+    ;;
+"none")
+    APP_DB="none"
 esac
 
 APP_DB=${APP}_${APP_DB}
@@ -235,7 +241,9 @@ else
 fi 
 
 #-- Database ----------------------------------------------------------------
-cp_terraform output.tf 
+if [[ $TF_VAR_db_strategy != "none" ]]; then
+  cp_terraform output.tf 
+fi
 
 if [[ $TF_VAR_db_strategy == "autonomous" ]]; then
   cp_dir_src_db oracle
@@ -250,7 +258,14 @@ elif [[ $TF_VAR_db_strategy == "database" ]]; then
     cp_terraform dbsystem.tf dbsystem_append.tf
   else
     cp_terraform dbsystem_existing.tf dbsystem_append.tf
-  fi   
+  fi  
+elif [[ $TF_VAR_db_strategy == "pluggable" ]]; then
+  cp_dir_src_db oracle
+  if [[ $TF_VAR_db_existing_strategy == "new" ]]; then
+    cp_terraform dbsystem_existing.tf dbsystem_pluggable.tf
+  else
+    cp_terraform dbsystem_pluggable_existing.tf
+  fi     
 elif [[ $TF_VAR_db_strategy == "mysql" ]]; then  
   cp_dir_src_db mysql
   if [[ $TF_VAR_db_existing_strategy == "new" ]]; then

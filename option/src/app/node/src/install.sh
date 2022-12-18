@@ -10,3 +10,5 @@ sudo yum install -y oracle-instantclient-release-el7
 sudo yum install -y oracle-instantclient-basic
 sudo yum install -y oracle-instantclient-sqlplus
 npm install
+
+cat php.ini.append >> /etc/php.ini

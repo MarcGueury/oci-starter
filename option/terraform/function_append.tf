@@ -18,6 +18,13 @@ resource "oci_functions_function" "starter_fn_function" {
   trace_config {
     is_enabled = true
   }
+/*
+  # To start faster
+  provisioned_concurrency_config {
+    strategy = "CONSTANT"
+    count = 40
+  }
+*/    
 }
 
 output "fn_url" {

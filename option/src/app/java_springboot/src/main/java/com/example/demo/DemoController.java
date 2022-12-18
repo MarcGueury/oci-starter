@@ -41,21 +41,6 @@ public class DemoController {
 
   @RequestMapping(value = "/info", method = RequestMethod.GET, produces ={ "text/plain" })  
   public String info() {
-    return "Java / SpringBoot"; 
+    return "Java - SpringBoot"; 
   }  
-
-  @RequestMapping(value = "/static", method = RequestMethod.GET, produces = { "application/json" })  
-  public List<Dept> listDept() {
-    List<Dept> depts = new ArrayList<Dept>();
-    depts.add(new Dept(1, "Marc", "aa" ));
-    depts.add(new Dept(2, "Mika", "bb" ));
-    depts.add(new Dept(3, "Ivan", "cc"));
-    depts.add(new Dept(4, "Marta", "cc"));
-    depts.add(new Dept(5, "John", "cc"));   
-    depts.add(new Dept(6, "Badr", "cc"));
-    depts.add(new Dept(7, "Fernando", "cc"));
-    depts.add(new Dept(8, "Christophe", "cc"));    
-    return depts;
-  }
-
 }

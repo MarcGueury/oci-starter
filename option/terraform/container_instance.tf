@@ -6,8 +6,21 @@ variable docker_image_app {
     default=""
 }
 
-variable auth_token {
-    default=""
+resource "oci_identity_dynamic_group" "starter_ci_dyngroup" {
+  # No prefix to share it between all container instances
+  name           = "starter-ci-dyngroup"
+  description    = "Starter - All Container Instances"
+  compartment_id = var.tenancy_ocid
+  matching_rule  = "ALL {resource.type='computecontainerinstance'}"
+}
+
+resource "oci_identity_policy" "starter-ci_policy" {
+  name           = "starter-fn-policy"
+  description    = "Container instance access to OCIR"
+  compartment_id = var.tenancy_ocid
+  statements = [
+    "allow dynamic-group starter-ci-dyngroup to read repos in tenancy"
+  ]
 }
 
 resource oci_container_instances_container_instance starter_container_instance {
@@ -39,12 +52,6 @@ resource oci_container_instances_container_instance starter_container_instance {
   shape_config {
     memory_in_gbs = "4"
     ocpus         = "1"
-  }
-  image_pull_secrets {
-      username = base64encode(local.ocir_username)
-      password = base64encode(var.auth_token)
-      registry_endpoint = local.ocir_docker_repository
-      secret_type = "BASIC"
   }
   state = "ACTIVE"
   vnics {

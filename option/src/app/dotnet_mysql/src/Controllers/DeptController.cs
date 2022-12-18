@@ -22,7 +22,6 @@ public class DeptController : ControllerBase
     public IEnumerable<Dept> Get()
     {
         string conStringUser = @"server=" + db + ";userid=" + user + ";password=" + pwd + ";database=db1";
-        Console.WriteLine(conStringUser);
         List<Dept> a = new List<Dept>();
         try
         {

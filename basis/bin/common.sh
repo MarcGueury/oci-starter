@@ -30,7 +30,7 @@ build_function() {
   fn update context oracle.compartment-id ${TF_VAR_compartment_ocid}
   fn update context api-url https://functions.${TF_VAR_region}.oraclecloud.com
   fn update context registry ${TF_VAR_ocir}/${TF_VAR_namespace}
-  fn build -v | tee > $TARGET_DIR/fn_build.log
+  fn build -v | tee $TARGET_DIR/fn_build.log
   if grep --quiet "built successfully" $TARGET_DIR/fn_build.log; then
      fn bump
      # Store the image name and DB_URL in files
@@ -85,15 +85,20 @@ auto_echo () {
   fi  
 }
 
+set_if_not_null () {
+  if [ "$2" != "" ] && [ "$2" != "null" ]; then
+    auto_echo "$1=$RESULT"
+    export $1="$RESULT"
+  fi  
+}
+
 get_attribute_from_tfstate () {
   RESULT=`jq -r '.resources[] | select(.name=="'$2'") | .instances[0].attributes.'$3'' $STATE_FILE`
-  auto_echo "$1=$RESULT"
-  export $1="$RESULT"
+  set_if_not_null $1 $RESULT
 }
 
 get_output_from_tfstate () {
   RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE | sed "s/ //"`
-  auto_echo "$1=$RESULT"
-  export $1="$RESULT"
+  set_if_not_null $1 $RESULT
 }
 

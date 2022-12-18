@@ -4,7 +4,7 @@
 # Script that is runned once during the setup of a 
 # - compute
 # - with Java
-if [[ -z "$TF_VAR_language" ]] || [[ -z "$JDBC_URL" ]]; then
+if [[ -z "$TF_VAR_language" ]]; then
   echo "Missing env variables"
   exit
 fi
@@ -48,8 +48,10 @@ fi
 # -- app/start.sh -----------------------------------------------------------
 if [ -f app/start.sh ]; then
   # Hardcode the connection to the DB in the start.sh
-  sed -i "s!##JDBC_URL##!$JDBC_URL!" app/start.sh 
-  sed -i "s!##DB_URL##!$DB_URL!" app/start.sh 
+  if [ "$DB_URL" != "" ]; then
+    sed -i "s!##JDBC_URL##!$JDBC_URL!" app/start.sh 
+    sed -i "s!##DB_URL##!$DB_URL!" app/start.sh 
+  fi  
   sed -i "s!##TF_VAR_java_vm##!$TF_VAR_java_vm!" app/start.sh   
   chmod +x app/start.sh
 
@@ -91,7 +93,7 @@ if [ -d ui ]; then
      echo not found
      sudo sed -i '/404.html/ a include conf.d/nginx_app.locations;' /etc/nginx/conf.d/default.conf
   fi
-
+  
   # SE Linux (for proxy_pass)
   sudo setsebool -P httpd_can_network_connect 1
 

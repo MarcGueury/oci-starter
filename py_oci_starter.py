@@ -59,7 +59,7 @@ default_options = {
 }
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
-    '-atp_ocid', '-db_ocid', '-mysql_ocid', '-db_user', \
+    '-atp_ocid', '-db_ocid', '-pdb_ocid', '-mysql_ocid', '-db_user', \
     '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token', \
     '-subnet_ocid', '-infra_as_code' ]
 
@@ -71,14 +71,14 @@ def allowed_options():
         + mandatory_options(mode) + no_default_options
 
 allowed_values = {
-    '-language': {'java','node','python','dotnet','go','ords'},
+    '-language': {'java','node','python','dotnet','go','php','ords'},
     '-deploy': {'compute','kubernetes','function','container_instance','ci'},
     '-java_framework': {'springboot','helidon','tomcat','micronaut'},
     '-java_vm': {'jdk','graalvm','graalvm_native'},
     '-java_version': {'8', '11', '17'},
     '-kubernetes':{'oke','docker'},
-    '-ui': {'html','jet','angular','reactjs','none'},
-    '-database': {'atp','database','mysql'},
+    '-ui': {'html','jet','angular','reactjs','jsp','php','none'},
+    '-database': {'atp','database','pluggable','mysql','none'},
     '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'},
     '-infra_as_code': {'terraform_local','terraform_object_storage','resource_manager'},
     '-mode': {CLI,GIT,ZIP}
@@ -116,7 +116,7 @@ def longhand(key, abbreviations):
 def db_rules():
     params['database'] = longhand('database', {'atp': 'autonomous', 'dbsystem': 'database'})
     params['db_existing_strategy'] = NEW
-    db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'mysql_ocid':'mysql'}
+    db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'pdb_ocid': 'pluggable', 'mysql_ocid':'mysql'}
     for dep in db_deps:
         if params.get(dep) is not None:
             params['db_existing_strategy'] = EXISTING
@@ -124,8 +124,13 @@ def db_rules():
             error(f"-{dep} required if db_existing_strategy is existing")
     if params.get('database') != 'autonomous' and params.get('language') == 'ords':
         error(f'OCI starter only supports ORDS on ATP (Autonomous)')
+    if params.get('database') == 'pluggable':
+        if (params.get('db_ocid') is not None):
+            params['db_existing_strategy'] = NEW
+        if (params.get('db_ocid') is None and params.get('pdb_ocid') is None):
+          error(f'Plugglable Database needs an existing DB_OCID or PDB_OCID')
     if params.get('db_user') == None:
-        default_users = {'autonomous':'admin', 'database':'system', 'mysql':'root'}
+        default_users = {'autonomous':'admin', 'database':'system', 'pluggable':'system',  'mysql':'root', 'none': ''}
         params['db_user'] = default_users[params['database']]
 
 def language_rules():
@@ -157,6 +162,13 @@ def vcn_rules():
 
 def ui_rules():
     params['ui'] = longhand('ui', {'reactjs':'ReactJS','none':'None'})
+    if params.get('ui') == 'jsp':
+        params['language'] = 'java'
+        params['java_framework'] = 'tomcat'
+    elif params.get('ui') == 'php':
+        params['language'] = 'php'
+    elif params.get('ui') == 'ruby':
+        params['language'] = 'ruby'
 
 def auth_token_rules():
     if params.get('deploy') != 'compute' and params.get('auth_token') is None:
@@ -215,7 +227,7 @@ oci-starter.sh
    -auth_token (optional)
    -bastion_ocid' (optional)
    -compartment_ocid (default tenancy_ocid)
-   -database (default atp | dbsystem | mysql)
+   -database (default atp | dbsystem | pluggable | mysql | none )
    -db_ocid (optional)
    -db_password (mandatory)
    -db_user (default admin)
@@ -319,7 +331,7 @@ def env_sh_contents():
     contents = ['#!/bin/bash']
     contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
     contents.append(f'export OCI_STARTER_CREATION_DATE={timestamp}')
-    contents.append(f'export OCI_STARTER_VERSION=1.3')
+    contents.append(f'export OCI_STARTER_VERSION=1.4')
     contents.append('')
     contents.append('# Env Variables')
     if params.get('compartment_ocid') == None:

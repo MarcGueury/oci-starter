@@ -29,7 +29,7 @@ def dept():
 
 @app.route('/info')
 def info():
-        return "Python / Flask / Oracle"          
+        return "Python - Flask / Oracle"          
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)

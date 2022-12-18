@@ -21,6 +21,12 @@ public class Dept {
     public Dept() {
     }
 
+    public Dept( int deptno, String dname, String loc) {
+        this.deptno = deptno;
+        this.dname = dname;
+        this.loc = loc;
+    }
+
     public int getDeptno() {
         return deptno;
     }
