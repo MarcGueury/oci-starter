@@ -4,10 +4,8 @@ cd $SCRIPT_DIR
 
 # Install last version of PHP
 sudo yum install -y oracle-release-el7
-sudo yum install -y oracle-php-release-el7
-sudo yum install -y php php-json
-sudo yum install -y php-oci8-19c
-sudo yum install -y php-mysql
+sudo yum install -y oracle-php-release-el7 php php-json php-oci8-19c php-mysql
+
 
 # sudo yum install -y php php-mysql php-json php-fpm
 # ORACLE Instant Client
