@@ -165,6 +165,10 @@ def ui_rules():
     if params.get('ui') == 'jsp':
         params['language'] = 'java'
         params['java_framework'] = 'tomcat'
+    elif params.get('ui') == 'php':
+        params['language'] = 'php'
+    elif params.get('ui') == 'ruby':
+        params['language'] = 'ruby'
 
 def auth_token_rules():
     if params.get('deploy') != 'compute' and params.get('auth_token') is None:
