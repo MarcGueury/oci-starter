@@ -6,12 +6,11 @@ RUN  yum -y install oracle-release-el7 oracle-php-release-el7 && \
      yum -y install oracle-instantclient-basic oracle-instantclient-sqlplus && \
      yum install -y php php-json php-oci8-19c php-mysql && \
      rm -rf /var/cache/yum && \
-     sed -i "s/Listen 80$/Listen 8080/" /etc/httpd/conf/httpd.conf &&
-     echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf &&
+     sed -i "s/Listen 80$/Listen 8080/" /etc/httpd/conf/httpd.conf 
 
 WORKDIR /app
 COPY src/html/* /var/www/html/
 COPY src/php.ini.append.docker /app
 RUN cat /app/php.ini.append.docker >> /etc/php.ini
 COPY src/app.conf /etc/httpd/conf.d/
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["httpd", "-D", "FOREGROUND"]
