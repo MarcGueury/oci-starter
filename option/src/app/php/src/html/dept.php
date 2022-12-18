@@ -1,19 +1,13 @@
 
 <?php
 
-// Very simple loader
-function loadConfig( $vars = array() ) {
-    foreach( $vars as $v ) {
-        define( $v, get_cfg_var( "app.cfg.$v" ) );
-    }
-}
-
-// Then call :
-$cfg = array( 'DB_URL', 'DB_USER', 'DB_PASSWORD' );
-loadConfig( $cfg );
+// Load from php.ini
+$db_url = get_cfg_var( "app.cfg.DB_URL" );
+$db_user = get_cfg_var( "app.cfg.DB_USER" );
+$db_password = get_cfg_var( "app.cfg.DB_PASSWORD" );
 
 // $conn = oci_connect('hr', 'welcome', 'localhost/XE');
-$conn = oci_connect( $DB_USER, $DB_PASSWORD, $DB_URL);
+$conn = oci_connect( $db_user, $db_password, $db_url);
 if (!$conn) {
     $e = oci_error();
     trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -37,9 +31,7 @@ if (!$r) {
 $data = array();
 
 while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
-    foreach ($row as $item) {
-        $data[] = $row;
-    }
+    $data[] = $row;
 }
 // Encode the array as JSON and output it
 echo json_encode($data);
