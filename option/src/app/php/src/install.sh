@@ -15,10 +15,10 @@ sudo yum install -y oracle-instantclient-basic
 sudo yum install -y oracle-instantclient-sqlplus
 
 if grep -q '##DB_URL##' php.ini.append; then
-  echo "DB_URL is already in php.ini.append"
-else
   sed -i "s!##DB_URL##!$DB_URL!" php.ini.append 
   sudo sh -c "cat php.ini.append >> /etc/php.ini"
+else
+  echo "DB_URL is already in php.ini.append"
 fi
 
 # PHP use apache 
