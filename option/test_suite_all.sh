@@ -126,8 +126,10 @@ loop_db() {
 loop_java_vm() {
   OPTION_JAVA_VM=jdk 
   loop_db
-  OPTION_JAVA_VM=graalvm
-  loop_db
+  if [ "$OPTION_JAVA_FRAMEWORK" == "springboot" ] ; then
+    OPTION_JAVA_VM=graalvm
+    loop_db
+  fi  
 }
 
 loop_java_framework () {
