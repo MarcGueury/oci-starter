@@ -47,6 +47,11 @@ if [ ! -z "$UI_URL" ]; then
   echo - User Interface : $UI_URL/
   echo - Rest DB API    : $UI_URL/app/dept
   echo - Rest Info API  : $UI_URL/app/info
+  if [ $TF_VAR_language=="php" ]; then
+    echo - PHP Page       : $UI_URL/app/index.php
+  elif [ $TF_VAR_language=="java" ] && [ $TF_VAR_java_framework=="tomcat" ] ; then
+    echo - JSP Page       : $UI_URL/app/index.jsp
+  fi
 fi
 
 
