@@ -326,8 +326,17 @@ def readme_contents():
     contents.append("  ./build.sh")
     return contents
 
+def env_param_list():
+    env_params = list(params.keys())
+    exclude = ['mode','infra_as_code']
+    for x in exclude:
+        if x in env_params:
+            env_params.remove(x)
+    return env_params
+
 def env_sh_contents():
-    del params['mode']
+    env_params = env_param_list()
+    print(env_params)
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
     contents = ['#!/bin/bash']
     contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
@@ -337,15 +346,15 @@ def env_sh_contents():
     contents.append('# Env Variables')
     if params.get('compartment_ocid') == None:
         contents.append('# export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
-    for param in params:
-        var_comment = get_tf_var_comment(contents, param)
+    for param in env_params:
+        tf_var_comment(contents, param)
         contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append('')
     contents.append('# Get other env variables automatically (-silent flag can be passed)')
     contents.append('. $SCRIPT_DIR/bin/auto_env.sh $1')
     return contents
 
-def get_tf_var_comment(contents, param):
+def tf_var_comment(contents, param):
     comments = {
         'auth_token': ['See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm'],
         'db_password': ['Requires at least 12 characters, 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345','If not filled, it will be generated randomly during the first build.'],
