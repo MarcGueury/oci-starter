@@ -329,6 +329,9 @@ def readme_contents():
 def env_param_list():
     env_params = list(params.keys())
     exclude = ['mode','infra_as_code']
+    if params['language'] != 'java':
+        exclude.extend(['java_vm', 'java_framework', 'java_version'])
+    print(exclude)
     for x in exclude:
         if x in env_params:
             env_params.remove(x)
