@@ -55,16 +55,17 @@ default_options = {
     '-database': 'atp',
     '-license': 'included',
     '-vcn_strategy': NEW,
-    '-mode': CLI
+    '-mode': CLI,
+    '-infra_as_code': 'terraform_local',
 }
 
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
     '-atp_ocid', '-db_ocid', '-pdb_ocid', '-mysql_ocid', '-db_user', \
     '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token', \
-    '-subnet_ocid', '-infra_as_code' ]
+    '-subnet_ocid']
 
 # hidden_options - allowed but not advertised
-hidden_options = ['-zip', '-infra-as-code']
+hidden_options = ['-zip']
 
 def allowed_options():
     return list(default_options.keys()) + hidden_options \
