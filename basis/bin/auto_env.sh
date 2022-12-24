@@ -3,7 +3,7 @@ export BIN_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pw
 export ROOT_DIR=${BIN_DIR%/*}
 
 # Shared BASH Functions
-. $BIN_DIR/common.sh
+. $BIN_DIR/shared_bash_function.sh
 
 # Silent mode (default is not silent)
 if [ "$1" == "-silent" ]; then

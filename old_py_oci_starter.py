@@ -7,7 +7,6 @@
 # Date: 2022-11-24
 import sys, os, shutil, json
 from datetime import datetime
-from distutils.dir_util import copy_tree
 
 # constants
 ABORT='ABORT'
@@ -190,10 +189,10 @@ def license_rules():
 def zip_rules():
     if 'zip' in params:
        OUTPUT_DIR = params['zip']
+       del params['zip']
        file_output( 'zip' + os.sep + OUTPUT_DIR + '.param', [json.dumps(params)])
 
 def apply_rules():
-    zip_rules()
     language_rules()
     kubernetes_rules()
     ui_rules()
@@ -202,6 +201,7 @@ def apply_rules():
     auth_token_rules()
     compartment_rules()
     license_rules()
+    zip_rules()
 
 def error(msg):
     errors.append(f'Error: {msg}')
@@ -328,7 +328,7 @@ def readme_contents():
 
 def env_param_list():
     env_params = list(params.keys())
-    exclude = ['mode','infra_as_code','zip']
+    exclude = ['mode','infra_as_code']
     if params['language'] != 'java':
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
     print(exclude)
@@ -382,41 +382,7 @@ def file_output(file_path, contents):
     output_file.close()
 
 def copy_basis(basis_dir = BASIS_DIR, output_dir = OUTPUT_DIR):
-    copy_tree(basis_dir, output_dir)
-
-def inplace_replace(old_string, new_string, filename):
-    # Safely read the input filename using 'with'
-    with open(filename) as f:
-        s = f.read()
-        if old_string not in s:
-            print('"{old_string}" not found in {filename}.'.format(**locals()))
-            return
-
-    # Safely write the changed content, if found in the file
-    with open(filename, 'w') as f:
-        print('Changing "{old_string}" to "{new_string}" in {filename}'.format(**locals()))
-        s = s.replace(old_string, new_string)
-        f.write(s)
-
-def cp_terraform(file1, file2):
-    print("cp_terraform " + file1)
-    shutil.copy( file1, "src/terraform/.")
-
-    # Append a second file
-    if file2 is not None:
-      print("append " + file2)
-      # opening first file in append mode and second file in read mode
-      f1 = open(file1, 'a+')
-      f2 = open(file2, 'r')
-      # appending the contents of the second file to the first file
-      f.write('\n\n')
-      f1.write(f2.read())
-      f1.close()
-      f2.close()
-
-def cp_dir_src_db(db_type):
-    print("cp_dir_src_db "+db_type)
-    copy_tree("../option/src/db/"+db_type, "src/db")
+    shutil.copytree(basis_dir, output_dir)
 
 # the script
 print(title())
@@ -449,8 +415,6 @@ if mode == CLI:
 
 if mode == GIT:
     print("GIT mode currently not implemented.")
-    # git clone $GIT_URL
-    # cp ../mode/git/* $REPOSITORY_NAME/.
     exit()
 
 if mode == ABORT:
@@ -461,210 +425,3 @@ print(f'Mode: {mode}')
 print(f'params: {params}')
 print("That's all Folks!")
 print(title())
-
-## COPY FILES ##############################################################
-
-os.chdir(OUTPUT_DIR)
-
-#-- Infrastructure As Code -------------------------------------------------
-
-# Default state local
-if params.get('infra_as_code') == "resource_manager":
-    copy_tree("../option/infra_as_code/resource_manager", "src/terraform") 
-elif params.get('infra_as_code') == "terraform_object_storage":
-    copy_tree("../option/infra_as_code/terraform_object_storage", "src/terraform") 
-else: 
-    copy_tree("../option/infra_as_code/terraform_local", "src/terraform") 
-
-#-- APP ---------------------------------------------------------------------
-
-if params.get('deploy') == "function":
-  app="fn/fn_"+params['language']
-else:
-  app=params['language']
-  if params['language'] == "java":
-    app="java_" + params['java_framework']
-
-if params['database'] == "autonomous" or params['database'] == "database" or params['database'] == "pluggable":
-    app_db="oracle"
-elif params['database'] == "mysql":
-    app_db="mysql"
-elif params['database'] == "none":
-    app_db="none"
-
-app_dir=app+"_"+app_db
-print("app_dir"+app_dir)
-
-# Function Common 
-if params.get('deploy') == "function":
-    copy_tree("../option/src/app/fn/fn_common", "src/app") 
-
-# Generic version for Oracle DB
-if os.path.exists("../option/src/app/"+app):
-    copy_tree("../option/src/app"+app, "src/app") 
-
-# Overwrite the generic version (ex for mysql)
-if os.path.exists("../option/src/app/"+app_dir):
-    copy_tree("../option/src/app"+app_dir, "src/app") 
-
-if params['language'] == "java":
-   # FROM ghcr.io/graalvm/jdk:java17
-   # FROM openjdk:17 
-   # FROM openjdk:17-jdk-slim
-   if params['java_vm'] == "graalvm":
-     inplace_replace('##DOCKER_IMAGE##', 'ghcr.io/graalvm/jdk:java17', "src/app/Dockerfile")
-   else:
-     inplace_replace('##DOCKER_IMAGE##', 'openjdk:17-jdk-slim', "src/app/Dockerfile")
-
-
-#-- User Interface ----------------------------------------------------------
-if params.get('ui') == "None":
-  print("No UI")
-else:
-  ui_lower=params.get('ui').toLower()
-  copy_tree("../option/src/ui/"+ui_lower, "src/ui") 
-
-os.mkdir("src/db")
-
-
-#-- Network -----------------------------------------------------------------
-if params.get("vcn_strategy") == "new":
-  cp_terraform("network.tf")
-else:
-  cp_terraform("network_existing.tf")
-
-
-#-- Deployment --------------------------------------------------------------
-if params.get('deploy') == "kubernetes":
-    if params.get('kubernetes_strategy') == "OKE":
-        if params.get('oke_strategy') == "new":
-            cp_terraform("oke.tf", "oke_append.tf")
-        else:
-            cp_terraform("oke_existing.tf", "oke_append.tf")
-    os.mkdir("src/oke")
-    copy_tree("../option/oke", "src/oke") 
-    shutil.move("src/oke/deploy_oke.sh", "bin")
-    shutil.move("src/oke/destroy_oke.sh", "bin")
-
-    if os.path.exists("src/app/ingress-app.yaml"):
-        shutil.move("src/app/ingress-app.yaml", "src/oke")
-
-    inplace_replace('##PREFIX##', params["prefix"], "src/app/app.yaml")
-    inplace_replace('##PREFIX##', params["prefix"], "src/ui/ui.yaml")
-    inplace_replace('##PREFIX##', params["prefix"], "src/oke/ingress-app.yaml")
-    inplace_replace('##PREFIX##', params["prefix"], "src/oke/ingress-ui.yaml")
-
-elif params.get('deploy') == "function":
-    if params.get('fnapp_ocid') is not None:
-        cp_terraform("function_existing.tf", "function_append.tf")
-    else:
-        cp_terraform("function.tf", "function_append.tf")
-    if params['language']=="ords":
-        apigw_append="apigw_fn_ords_append.tf"
-    else:
-        apigw_append="apigw_fn_append.tf"
-    if params.get('apigw_ocid') is not None:
-        cp_terraform("apigw_existing.tf", apigw_append)
-    else:
-        cp_terraform("apigw.tf", apigw_append)
-
-elif params.get('deploy') == "compute":
-    cp_terraform("compute.tf")
-    os.mkdir("src/compute")
-    copy_tree("../option/compute", "src/compute")
-
-elif params.get('deploy') == "container_instance":
-    cp_terraform("container_instance.tf")
-    # mkdir src/container_instance 
-    copy_tree("../option/container_instance", "bin")
-
-    if params['language']=="ords":
-        app_url="${local.ords_url}/starter/module/$${request.path[pathname]}"
-    elif params['language']=="ords" and params['java_framework']=="tomcat":
-        app_url="http://${local.ci_private_ip}:8080/starter-1.0/$${request.path[pathname]}"
-    else: 
-        app_url="http://${local.ci_private_ip}:8080/$${request.path[pathname]}"
-
-    if params.get('apigw_ocid') is not None:
-        cp_terraform("apigw_existing.tf", "apigw_ci_append.tf")
-        inplace_replace('##APP_URL##', app_url, "src/terraform/apigw_existing.tf")
-    else:
-        cp_terraform("apigw.tf", "apigw_ci_append.tf")
-        inplace_replace('##APP_URL##', app_url, "src/terraform/apigw.tf")
-
-#-- Bastion -----------------------------------------------------------------
-
-if params.get('bastion_ocid') is not None:
-    cp_terraform("bastion_existing.tf")
-else:
-    cp_terraform("bastion.tf")
-
-
-#-- Database ----------------------------------------------------------------
-if params.get('database')!="none":
-    cp_terraform("output.tf")
-
-if params.get('database') == "autonomous":
-    copy_tree("../option/container_instance", "bin")
-    cp_dir_src_db("oracle")
-    if params.get('db_existing_strategy') == "new":
-        cp_terraform("atp.tf", "atp_append.tf")
-    else:
-        cp_terraform("atp_existing.tf", "atp_append.tf")
-
-elif params.get('database') == "database":
-    cp_dir_src_db("oracle")
-    if params.get('db_existing_strategy') == "new":
-        cp_terraform("dbsystem.tf", "dbsystem_append.tf")
-    else:
-        cp_terraform("dbsystem_existing.tf", "dbsystem_append.tf")
-
-elif params.get('database') == "pluggable":
-    cp_dir_src_db("oracle")
-    if params.get('db_existing_strategy') == "new":
-        cp_terraform("dbsystem_existing.tf", "dbsystem_pluggable.tf")
-    else:
-        cp_terraform("dbsystem_pluggable_existing.tf")
-
-elif params.get('database') == "mysql":
-    cp_dir_src_db("mysql")
-    if params.get('db_existing_strategy') == "new":
-        cp_terraform("mysql.tf", "mysql_append.tf")
-    else:
-        cp_terraform("mysql_existing.tf", "mysql_append.tf")
-
-
-if os.path.exists("src/app/oracle.sql"):
-    shutil.move("src/app/oracle.sql", "src/db")
-
-title("Done")
-print("Directory "+OUTPUT_DIR+" created.")
-
-if 
-
-
-if mode == GIT:
-    print("GIT mode currently not implemented.")
-    # git config --local user.email "test@example.com"
-    # git config --local user.name "${OCI_USERNAME}"
-    # git add .
-    # git commit -m "added latest files"
-    # git push origin main
-
-elif mode == ZIP:
-  # The goal is to have a file that when uncompressed create a directory prefix.
-  os.chdir("..")
-  os.mkdir("zip/"+OUTPUT_DIR)
-  shutil.move(OUTPUT_DIR, "zip/"+OUTPUT_DIR+"/"+params['prefix'])
-  os.chdir("zip/"+OUTPUT_DIR)
-  shutil.make_archive(OUTPUT_DIR+".zip", format='zip', root_dir='.', base_dir=params['prefix'])
-
-else: 
-  print()
-  with open("README.md", 'r') as fin:
-    print(fin.read())
-
-  
-
-
-

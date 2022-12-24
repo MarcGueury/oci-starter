@@ -18,7 +18,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   # Replace the user and password in the start file
   replace_db_user_password_in_file ../../target/compute/app/php.ini.append
 else
-  docker image rm app:latest
-  docker build -t app:latest .
+  docker image rm ${TF_VAR_prefix}-app:latest
+  docker build -t ${TF_VAR_prefix}-app:latest .
   exit_on_error
 fi  

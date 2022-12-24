@@ -6,5 +6,5 @@ cd $SCRIPT_DIR
 if [ -z "$TF_VAR_deploy_strategy" ]; then
   . $BIN_DIR/../env.sh
 else 
-  . $BIN_DIR/common.sh
+  . $BIN_DIR/shared_bash_function.sh
 fi 

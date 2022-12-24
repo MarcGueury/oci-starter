@@ -18,8 +18,8 @@ build_ui() {
     oci os object bulk-upload -ns $TF_VAR_namespace -bn ${TF_VAR_prefix}-public-bucket --src-dir ui --overwrite --content-type auto
   else
     # Kubernetes and Container Instances
-    docker image rm ui:latest
-    docker build -t ui:latest .
+    docker image rm ${TF_VAR_prefix}-ui:latest
+    docker build -t ${TF_VAR_prefix}-ui:latest .
   fi 
 }
 
@@ -55,11 +55,11 @@ ocir_docker_push () {
   echo DOCKER_PREFIX=$DOCKER_PREFIX
 
   # Push image in registry
-  docker tag app $DOCKER_PREFIX/app:latest
-  docker push $DOCKER_PREFIX/app:latest
+  docker tag ${TF_VAR_prefix}-app ${DOCKER_PREFIX}/${TF_VAR_prefix}-app:latest
+  docker push ${DOCKER_PREFIX}/${TF_VAR_prefix}-app:latest
 
-  docker tag ui $DOCKER_PREFIX/ui:latest
-  docker push $DOCKER_PREFIX/ui:latest
+  docker tag ${TF_VAR_prefix}-ui ${DOCKER_PREFIX}/${TF_VAR_prefix}-ui:latest
+  docker push ${DOCKER_PREFIX}/${TF_VAR_prefix}-ui:latest
 }
 
 replace_db_user_password_in_file() {
