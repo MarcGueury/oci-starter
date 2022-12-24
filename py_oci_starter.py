@@ -99,7 +99,6 @@ def get_tf_var(param):
     special_case = {
         'database': 'TF_VAR_db_strategy',
         'deploy': 'TF_VAR_deploy_strategy',
-        'kubernetes': 'TF_VAR_kubernetes_strategy',
         'license': 'TF_VAR_license_model',
         'ui': 'TF_VAR_ui_strategy'
     }.get(param)
@@ -146,11 +145,6 @@ def language_rules():
 
 def kubernetes_rules():
     params['deploy'] = longhand('deploy',{'oke':'kubernetes', 'ci':'container_instance'})
-    if params.get('deploy') == 'kubernetes':
-        if params.get('kubernetes') == 'docker':
-            params['kubernetes'] = 'Docker image only'
-        else:
-            params['kubernetes'] = 'OKE'
 
 def vcn_rules():
     if 'vcn_ocid' in params:
@@ -488,7 +482,7 @@ elif params['database'] == "none":
     app_db="none"
 
 app_dir=app+"_"+app_db
-print("app_dir"+app_dir)
+print("app_dir="+app_dir)
 
 # Function Common 
 if params.get('deploy') == "function":
@@ -513,12 +507,12 @@ if params['language'] == "java":
 
 
 #-- User Interface ----------------------------------------------------------
-if params.get('ui') == "None":
+if params.get('ui') == "none":
   print("No UI")
 else:
   ui_lower=params.get('ui').lower()
+  print("ui_lower=" + ui_lower)
   copy_tree("../option/src/ui/"+ui_lower, "src/ui") 
-
 os.mkdir("src/db")
 
 
@@ -531,11 +525,10 @@ else:
 
 #-- Deployment --------------------------------------------------------------
 if params.get('deploy') == "kubernetes":
-    if params.get('kubernetes') == "OKE":
-        if params.get('oke_ocid') is None:
-            cp_terraform("oke.tf", "oke_append.tf")
-        else:
-            cp_terraform("oke_existing.tf", "oke_append.tf")
+    if params.get('oke_ocid') is None:
+        cp_terraform("oke.tf", "oke_append.tf")
+    else:
+        cp_terraform("oke_existing.tf", "oke_append.tf")
     os.mkdir("src/oke")
     copy_tree("../option/oke", "src/oke") 
     shutil.move("src/oke/oke_deploy.sh", "bin")
@@ -575,7 +568,7 @@ elif params.get('deploy') == "container_instance":
 
     if params['language']=="ords":
         app_url="${local.ords_url}/starter/module/$${request.path[pathname]}"
-    elif params['language']=="ords" and params['java_framework']=="tomcat":
+    elif params['language']=="java" and params['java_framework']=="tomcat":
         app_url="http://${local.ci_private_ip}:8080/starter-1.0/$${request.path[pathname]}"
     else: 
         app_url="http://${local.ci_private_ip}:8080/$${request.path[pathname]}"
