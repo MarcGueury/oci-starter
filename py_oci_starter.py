@@ -17,12 +17,12 @@ ZIP='zip'
 EXISTING='existing'
 NEW='new'
 TO_FILL="__TO_FILL__"
-OUTPUT_DIR = os.getenv('REPOSITORY_NAME')
+OUTPUT_DIR = "output"
 BASIS_DIR = "basis"
 
 # functions
-def title():
-    s = "-- " + script_name() + " "
+def title(t):
+    s = "-- " + t + " "
     return s.ljust(78,'-')
 
 def script_name():
@@ -398,18 +398,18 @@ def inplace_replace(old_string, new_string, filename):
         s = s.replace(old_string, new_string)
         f.write(s)
 
-def cp_terraform(file1, file2):
+def cp_terraform(file1, file2=None):
     print("cp_terraform " + file1)
-    shutil.copy( file1, "src/terraform/.")
+    shutil.copy2( "../option/terraform/"+file1, "src/terraform")
 
     # Append a second file
     if file2 is not None:
       print("append " + file2)
       # opening first file in append mode and second file in read mode
-      f1 = open(file1, 'a+')
-      f2 = open(file2, 'r')
+      f1 = open("src/terraform/"+file1, 'a+')
+      f2 = open("../option/terraform/"+file2, 'r')
       # appending the contents of the second file to the first file
-      f.write('\n\n')
+      f1.write('\n\n')
       f1.write(f2.read())
       f1.close()
       f2.close()
@@ -419,7 +419,7 @@ def cp_dir_src_db(db_type):
     copy_tree("../option/src/db/"+db_type, "src/db")
 
 # the script
-print(title())
+print(title(script_name()))
 
 script_dir=os.getcwd()
 
@@ -460,7 +460,6 @@ if mode == ABORT:
 print(f'Mode: {mode}')
 print(f'params: {params}')
 print("That's all Folks!")
-print(title())
 
 ## COPY FILES ##############################################################
 
@@ -501,11 +500,11 @@ if params.get('deploy') == "function":
 
 # Generic version for Oracle DB
 if os.path.exists("../option/src/app/"+app):
-    copy_tree("../option/src/app"+app, "src/app") 
+    copy_tree("../option/src/app/"+app, "src/app") 
 
 # Overwrite the generic version (ex for mysql)
 if os.path.exists("../option/src/app/"+app_dir):
-    copy_tree("../option/src/app"+app_dir, "src/app") 
+    copy_tree("../option/src/app/"+app_dir, "src/app") 
 
 if params['language'] == "java":
    # FROM ghcr.io/graalvm/jdk:java17
@@ -521,7 +520,7 @@ if params['language'] == "java":
 if params.get('ui') == "None":
   print("No UI")
 else:
-  ui_lower=params.get('ui').toLower()
+  ui_lower=params.get('ui').lower()
   copy_tree("../option/src/ui/"+ui_lower, "src/ui") 
 
 os.mkdir("src/db")
@@ -637,12 +636,11 @@ elif params.get('database') == "mysql":
 if os.path.exists("src/app/oracle.sql"):
     shutil.move("src/app/oracle.sql", "src/db")
 
+#-- Done -------------------------------------------------------------------
 title("Done")
 print("Directory "+OUTPUT_DIR+" created.")
 
-if 
-
-
+#-- Post Creation -----------------------------------------------------------
 if mode == GIT:
     print("GIT mode currently not implemented.")
     # git config --local user.email "test@example.com"
