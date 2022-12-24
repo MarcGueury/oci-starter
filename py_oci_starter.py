@@ -542,8 +542,8 @@ if params.get('deploy') == "kubernetes":
             cp_terraform("oke_existing.tf", "oke_append.tf")
     os.mkdir("src/oke")
     copy_tree("../option/oke", "src/oke") 
-    shutil.move("src/oke/deploy_oke.sh", "bin")
-    shutil.move("src/oke/destroy_oke.sh", "bin")
+    shutil.move("src/oke/oke_deploy.sh", "bin")
+    shutil.move("src/oke/oke_destroy.sh", "bin")
 
     if os.path.exists("src/app/ingress-app.yaml"):
         shutil.move("src/app/ingress-app.yaml", "src/oke")
