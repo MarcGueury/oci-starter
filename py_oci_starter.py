@@ -531,7 +531,7 @@ else:
 
 #-- Deployment --------------------------------------------------------------
 if params.get('deploy') == "kubernetes":
-    if params.get('kubernetes_strategy') == "OKE":
+    if params.get('kubernetes') == "OKE":
         if params.get('oke_ocid') is None:
             cp_terraform("oke.tf", "oke_append.tf")
         else:
