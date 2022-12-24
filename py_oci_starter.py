@@ -146,15 +146,11 @@ def language_rules():
 
 def kubernetes_rules():
     params['deploy'] = longhand('deploy',{'oke':'kubernetes', 'ci':'container_instance'})
-    if params.get('oke_ocid') is not None:
-       params['oke_strategy'] = EXISTING
     if params.get('deploy') == 'kubernetes':
         if params.get('kubernetes') == 'docker':
             params['kubernetes'] = 'Docker image only'
         else:
             params['kubernetes'] = 'OKE'
-            if params.get('oke_strategy') == None:
-               params['oke_strategy'] = NEW
 
 def vcn_rules():
     if 'vcn_ocid' in params:
@@ -536,7 +532,7 @@ else:
 #-- Deployment --------------------------------------------------------------
 if params.get('deploy') == "kubernetes":
     if params.get('kubernetes_strategy') == "OKE":
-        if params.get('oke_strategy') == "new":
+        if params.get('oke_ocid') is None:
             cp_terraform("oke.tf", "oke_append.tf")
         else:
             cp_terraform("oke_existing.tf", "oke_append.tf")
