@@ -77,6 +77,8 @@ build_option() {
        -oke_ocid $EX_OKE_OCID \
        -atp_ocid $EX_ATP_OCID \
        -mysql_ocid $EX_MYSQL_OCID \
+       -db_ocid $EX_DB_OCID \
+       -db_compartment_ocid $EX_DB_COMPARTMENT_OCID \
        -auth_token $OCI_TOKEN \
        -apigw_ocid $EX_APIGW_OCID \
        -bastion_ocid $EX_BASTION_OCID \
@@ -113,7 +115,7 @@ loop_ui() {
 }
 
 loop_db() {
-  OPTION_DB=atp 
+  OPTION_DB=database 
   loop_ui
   OPTION_DB=mysql
   loop_ui
