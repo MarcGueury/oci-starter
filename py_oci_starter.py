@@ -496,13 +496,14 @@ if os.path.exists("../option/src/app/"+app_dir):
     copy_tree("../option/src/app/"+app_dir, "src/app") 
 
 if params['language'] == "java":
-   # FROM ghcr.io/graalvm/jdk:java17
-   # FROM openjdk:17 
-   # FROM openjdk:17-jdk-slim
-   if params['java_vm'] == "graalvm":
-     inplace_replace('##DOCKER_IMAGE##', 'ghcr.io/graalvm/jdk:java17', "src/app/Dockerfile")
-   else:
-     inplace_replace('##DOCKER_IMAGE##', 'openjdk:17-jdk-slim', "src/app/Dockerfile")
+    # FROM ghcr.io/graalvm/jdk:java17
+    # FROM openjdk:17 
+    # FROM openjdk:17-jdk-slim
+    if os.path.exists("src/app/Dockerfile"):
+        if params['java_vm'] == "graalvm":
+            inplace_replace('##DOCKER_IMAGE##', 'ghcr.io/graalvm/jdk:java17', "src/app/Dockerfile")
+        else:
+            inplace_replace('##DOCKER_IMAGE##', 'openjdk:17-jdk-slim', "src/app/Dockerfile")
 
 
 #-- User Interface ----------------------------------------------------------
@@ -512,8 +513,8 @@ else:
   ui_lower=params.get('ui').lower()
   print("ui_lower=" + ui_lower)
   copy_tree("../option/src/ui/"+ui_lower, "src/ui") 
-os.mkdir("src/db")
 
+os.mkdir("src/db")
 
 #-- Network -----------------------------------------------------------------
 if params.get("vcn_strategy") == "new":
