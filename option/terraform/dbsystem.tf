@@ -51,3 +51,7 @@ data "oci_database_db_homes" "starter_db_homes" {
   compartment_id = local.lz_database_cmp_ocid
   db_system_id   = oci_database_db_system.starter_dbsystem.id
 }
+
+locals {
+  db_compartment_ocid = local.lz_database_cmp_ocid
+}
