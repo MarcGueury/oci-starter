@@ -342,7 +342,7 @@ def readme_contents():
 
 ### After Build
 - common.sh      : File created during the build.sh and imported in each application
-- app1           : Directory with an OCI Starter program using "common.sh" 
+- app1           : Directory with an application using "common.sh" 
 - app2           : ...
 ...
     '''
@@ -550,7 +550,9 @@ else:
 
 # -- APP ---------------------------------------------------------------------
 
-if params['language'] != "none":
+if params['language'] == "none":
+    shutil.rmtree("src/app")
+else:
     if params.get('deploy') == "function":
         app = "fn/fn_"+params['language']
     else:
@@ -595,6 +597,7 @@ if params['language'] != "none":
 # -- User Interface ----------------------------------------------------------
 if params.get('ui') == "none":
     print("No UI")
+    shutil.rmtree("src/ui")
 else:
     ui_lower = params.get('ui').lower()
     print("ui_lower=" + ui_lower)
@@ -680,40 +683,56 @@ if params.get('database') != "none":
     cp_terraform("output.tf")
     os.mkdir("src/db")
 
-if params.get('database') == "autonomous" or "autonomous" in a_common:
-    copy_tree("../option/container_instance", "bin")
-    cp_dir_src_db("oracle")
-    if 'atp_ocid' in params:
-        cp_terraform("atp_existing.tf", "atp_append.tf")
-    else:
-        cp_terraform("atp.tf", "atp_append.tf")
+    if params.get('database') == "autonomous":
+        cp_dir_src_db("oracle")
+        if 'atp_ocid' in params:
+            cp_terraform("atp_existing.tf", "atp_append.tf")
+        else:
+            cp_terraform("atp.tf", "atp_append.tf")
 
-if params.get('database') == "database" or "database" in a_common:
-    cp_dir_src_db("oracle")
-    if 'db_ocid' in params:
-        cp_terraform("dbsystem_existing.tf", "dbsystem_append.tf")
-    else:
-        cp_terraform("dbsystem.tf", "dbsystem_append.tf")
+    if params.get('database') == "database":
+        cp_dir_src_db("oracle")
+        if 'db_ocid' in params:
+            cp_terraform("dbsystem_existing.tf", "dbsystem_append.tf")
+        else:
+            cp_terraform("dbsystem.tf", "dbsystem_append.tf")
 
-if params.get('database') == "pluggable":
-    cp_dir_src_db("oracle")
-    if 'pdb_ocid' in params:
-        cp_terraform("dbsystem_pluggable_existing.tf")
-    else:
-        cp_terraform("dbsystem_existing.tf", "dbsystem_pluggable.tf")
+    if params.get('database') == "pluggable":
+        cp_dir_src_db("oracle")
+        if 'pdb_ocid' in params:
+            cp_terraform("dbsystem_pluggable_existing.tf")
+        else:
+            cp_terraform("dbsystem_existing.tf", "dbsystem_pluggable.tf")
 
-if params.get('database') == "mysql" or "mysql" in a_common:
-    cp_dir_src_db("mysql")
-    if 'mysql_ocid' in params:
-        cp_terraform("mysql_existing.tf", "mysql_append.tf")
-    else:
-        cp_terraform("mysql.tf", "mysql_append.tf")
-
+    if params.get('database') == "mysql":
+        cp_dir_src_db("mysql")
+        if 'mysql_ocid' in params:
+            cp_terraform("mysql_existing.tf", "mysql_append.tf")
+        else:
+            cp_terraform("mysql.tf", "mysql_append.tf")
 
 if os.path.exists("src/app/oracle.sql"):
     shutil.move("src/app/oracle.sql", "src/db")
 
 # -- Common ------------------------------------------------------------------
+
+if "autonomous" in a_common:
+    if 'atp_ocid' in params:
+        cp_terraform("atp_existing.tf")
+    else:
+        cp_terraform("atp.tf")
+
+if "database" in a_common:
+    if 'db_ocid' in params:
+        cp_terraform("dbsystem_existing.tf")
+    else:
+        cp_terraform("dbsystem.tf")
+
+if "mysql" in a_common:
+    if 'mysql_ocid' in params:
+        cp_terraform("mysql_existing.tf")
+    else:
+        cp_terraform("mysql.tf")
 
 if 'oke' in a_common:
     if 'oke_ocid' in params:
@@ -735,8 +754,6 @@ if 'apigw' in a_common:
         cp_terraform("apigw.tf")
 
 if 'common' in params:
-    shutil.rmtree("src/app")
-    shutil.rmtree("src/ui")
     shutil.rmtree("src/db")
     # gather all files
     allfiles = os.listdir('.')

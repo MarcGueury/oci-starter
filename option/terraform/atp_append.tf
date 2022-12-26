@@ -1,22 +1,5 @@
-/*
-// WALLET
-resource "oci_database_autonomous_database_wallet" "autonomous_data_warehouse_wallet" {
-  autonomous_database_id = data.oci_database_autonomous_database.starter_atp.id
-  password               = "welcome1"
-  base64_encode_content  = "true"
-}
 
-resource "local_file" "autonomous_data_warehouse_wallet_file" {
-  content_base64 = oci_database_autonomous_database_wallet.autonomous_data_warehouse_wallet.content
-  filename       = "atp_wallet.zip"
-}
-
-// -- OUTPUT ----------------------------------------------------------------
-
-output "autonomous_database_wallet" {
-  value = "atp_wallet.zip"
-}
-*/
+// -- LOCALS ----------------------------------------------------------------
 
 locals {
   # Create List of 'name' values from source objet list
