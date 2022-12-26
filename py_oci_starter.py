@@ -384,7 +384,7 @@ def readme_contents():
                 contents.append(
                     f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
-    if mode == CLI or mode == COMMON :
+    if mode == CLI :
         contents.append("  cd output")
     contents.append("  ./build.sh")
     return contents
@@ -505,7 +505,7 @@ mode = get_mode()
 unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
 illegal_params = check_values()
 if 'common' in params:
-  missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(CLI_COMMON))
+  missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(COMMON))
 else:  
   missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(mode))
 
