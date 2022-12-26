@@ -1,8 +1,3 @@
-# BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
-variable license_model{
-  default="BRING_YOUR_OWN_LICENSE"
-}
-
 resource "oci_database_autonomous_database" "starter_atp" {
   #Required
   admin_password           = var.db_password
