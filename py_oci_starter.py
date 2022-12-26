@@ -16,6 +16,7 @@ from distutils.dir_util import copy_tree
 ABORT = 'ABORT'
 GIT = 'git'
 CLI = 'cli'
+COMMON='common'
 ZIP = 'zip'
 EXISTING = 'existing'
 NEW = 'new'
@@ -51,7 +52,8 @@ def prog_arg_dict():
 
 
 MANDATORY_OPTIONS = {
-    CLI: ['-language', '-deploy', '-db_password']
+    CLI: ['-language', '-deploy', '-db_password'],
+    COMMON: ['-common', '-db_password']
 }
 
 
@@ -96,7 +98,7 @@ allowed_values = {
     '-database': {'atp', 'database', 'pluggable', 'mysql', 'none'},
     '-license': {'included', 'LICENSE_INCLUDED', 'byol', 'BRING_YOUR_OWN_LICENSE'},
     '-infra_as_code': {'terraform_local', 'terraform_object_storage', 'resource_manager'},
-    '-mode': {CLI, GIT, ZIP}
+    '-mode': {CLI, COMMON, GIT, ZIP}
 }
 
 
@@ -169,7 +171,7 @@ def vcn_rules():
 
 
 def ui_rules():
-    params['ui'] = longhand('ui', {'reactjs': 'ReactJS', 'none': 'None'})
+    params['ui'] = longhand('ui', {'reactjs': 'ReactJS'})
     if params.get('ui') == 'jsp':
         params['language'] = 'java'
         params['java_framework'] = 'tomcat'
@@ -208,13 +210,15 @@ def zip_rules():
 
 def common_rules():
     if 'common' in params:
-        a_common = params['common'].split()
+        global a_common 
+        a_common=params['common'].split(',')
         params['language'] = 'common'
         params['ui'] = 'none'
         params['database'] = 'none'
 
 def apply_rules():
     zip_rules()
+    common_rules()
     language_rules()
     kubernetes_rules()
     ui_rules()
@@ -380,7 +384,7 @@ def readme_contents():
                 contents.append(
                     f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
-    if mode == CLI:
+    if mode == CLI or mode == COMMON :
         contents.append("  cd output")
     contents.append("  ./build.sh")
     return contents
@@ -500,8 +504,11 @@ params = get_params()
 mode = get_mode()
 unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
 illegal_params = check_values()
-missing_params = missing_parameters(
-    prog_arg_dict().keys(), mandatory_options(mode))
+if 'common' in params:
+  missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(CLI_COMMON))
+else:  
+  missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(mode))
+
 if len(unknown_params) > 0 or len(illegal_params) > 0 or len(missing_params) > 0:
     mode = ABORT
 
@@ -683,9 +690,6 @@ else:
 
 # -- Database ----------------------------------------------------------------
 
-print( "XXXX database="+params.get('database'))
-
-
 if params.get('database') != "none":
     cp_terraform("output.tf")
     os.mkdir("src/db")
@@ -723,7 +727,7 @@ if os.path.exists("src/app/oracle.sql"):
 
 # -- Common ------------------------------------------------------------------
 
-print( "XXXX a_common="+" ".join(a_common))
+print( "XXXX a_common="+ ' '.join(a_common))
 
 if "autonomous" in a_common:
     if 'atp_ocid' in params:
@@ -763,8 +767,6 @@ if 'apigw' in a_common:
         cp_terraform("apigw.tf")
 
 if 'common' in params:
-    shutil.rmtree("src/db")
-    shutil.rmtree("src/ui")
     # gather all files
     allfiles = os.listdir('.')
     # Create a common directory
