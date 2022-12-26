@@ -209,8 +209,9 @@ def zip_rules():
 def common_rules():
     if 'common' in params:
         a_common = params['common'].split()
-        params['language'] = 'none'
+        params['language'] = 'common'
         params['ui'] = 'none'
+        params['database'] = 'none'
 
 def apply_rules():
     zip_rules()
