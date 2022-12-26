@@ -115,7 +115,7 @@ loop_ui() {
 }
 
 loop_db() {
-  OPTION_DB=database 
+  OPTION_DB=atp 
   loop_ui
   OPTION_DB=mysql
   loop_ui
