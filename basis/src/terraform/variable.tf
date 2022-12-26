@@ -11,8 +11,8 @@ variable prefix { default = "starter" }
 variable language { default = "java" }
 variable java_version { default = "17" }
 
-variable db_user {}
-variable db_password{}
+variable db_user { default="" }
+variable db_password{ default="" }
 
 # Compute Instance size
 variable "instance_ocpus" { default = 1 }
