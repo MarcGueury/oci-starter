@@ -771,5 +771,8 @@ elif mode == ZIP:
 
 else:
     print()
-    with open("README.md", 'r') as fin:
+    readme="README.md"
+    if 'common' in params:
+        readme="common/README.md" 
+    with open(readme, 'r') as fin:
         print(fin.read())
