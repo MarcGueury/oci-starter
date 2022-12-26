@@ -683,6 +683,9 @@ else:
 
 # -- Database ----------------------------------------------------------------
 
+print( "XXXX database="+params.get('database'))
+
+
 if params.get('database') != "none":
     cp_terraform("output.tf")
     os.mkdir("src/db")
@@ -719,6 +722,8 @@ if os.path.exists("src/app/oracle.sql"):
     shutil.move("src/app/oracle.sql", "src/db")
 
 # -- Common ------------------------------------------------------------------
+
+print( "XXXX a_common="+" ".join(a_common))
 
 if "autonomous" in a_common:
     if 'atp_ocid' in params:
