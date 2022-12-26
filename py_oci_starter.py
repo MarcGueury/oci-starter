@@ -209,7 +209,8 @@ def zip_rules():
 def common_rules():
     if 'common' in params:
         a_common = params['common'].split()
-
+        params['language'] = 'none'
+        params['ui'] = 'none'
 
 def apply_rules():
     zip_rules()
@@ -549,9 +550,7 @@ else:
 
 # -- APP ---------------------------------------------------------------------
 
-if params['language'] == "none":
-    shutil.rmtree("src/app")
-else:
+if params['language'] != "none":
     if params.get('deploy') == "function":
         app = "fn/fn_"+params['language']
     else:
@@ -736,6 +735,9 @@ if 'apigw' in a_common:
         cp_terraform("apigw.tf")
 
 if 'common' in params:
+    shutil.rmtree("src/app")
+    shutil.rmtree("src/ui")
+    shutil.rmtree("src/db")
     # gather all files
     allfiles = os.listdir('.')
     # Create a common directory
