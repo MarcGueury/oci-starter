@@ -595,6 +595,9 @@ else:
                 inplace_replace('##DOCKER_IMAGE##',
                                 'openjdk:17-jdk-slim', "src/app/Dockerfile")
 
+    if params['language'] == "common":
+        os.remove("src/app/app.yaml")
+
 # -- User Interface ----------------------------------------------------------
 if params.get('ui') == "none":
     print("No UI")
@@ -756,6 +759,7 @@ if 'apigw' in a_common:
 
 if 'common' in params:
     shutil.rmtree("src/db")
+    shutil.rmtree("src/ui")
     # gather all files
     allfiles = os.listdir('.')
     # Create a common directory
