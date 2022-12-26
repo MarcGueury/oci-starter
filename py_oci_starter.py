@@ -603,17 +603,17 @@ else:
 
 # -- Network -----------------------------------------------------------------
 if 'vcn_ocid' in params:
-    cp_terraform("network.tf")
-else:
     cp_terraform("network_existing.tf")
+else:
+    cp_terraform("network.tf")
 
 # -- Deployment --------------------------------------------------------------
 if params['language'] != "none":
     if params.get('deploy') == "kubernetes":
         if 'oke_ocid' in params:
-            cp_terraform("oke.tf", "oke_append.tf")
-        else:
             cp_terraform("oke_existing.tf", "oke_append.tf")
+        else:
+            cp_terraform("oke.tf", "oke_append.tf")
         os.mkdir("src/oke")
         copy_tree("../option/oke", "src/oke")
         shutil.move("src/oke/oke_deploy.sh", "bin")
@@ -684,31 +684,31 @@ if params.get('database') != "none":
 if params.get('database') == "autonomous" or "autonomous" in a_common:
     copy_tree("../option/container_instance", "bin")
     cp_dir_src_db("oracle")
-    if 'atp_ocid' not in params:
-        cp_terraform("atp.tf", "atp_append.tf")
-    else:
+    if 'atp_ocid' in params:
         cp_terraform("atp_existing.tf", "atp_append.tf")
+    else:
+        cp_terraform("atp.tf", "atp_append.tf")
 
 if params.get('database') == "database" or "database" in a_common:
     cp_dir_src_db("oracle")
-    if 'db_ocid' not in params:
-        cp_terraform("dbsystem.tf", "dbsystem_append.tf")
-    else:
+    if 'db_ocid' in params:
         cp_terraform("dbsystem_existing.tf", "dbsystem_append.tf")
+    else:
+        cp_terraform("dbsystem.tf", "dbsystem_append.tf")
 
 if params.get('database') == "pluggable":
     cp_dir_src_db("oracle")
-    if 'pdb_ocid' not in params:
-        cp_terraform("dbsystem_existing.tf", "dbsystem_pluggable.tf")
-    else:
+    if 'pdb_ocid' in params:
         cp_terraform("dbsystem_pluggable_existing.tf")
+    else:
+        cp_terraform("dbsystem_existing.tf", "dbsystem_pluggable.tf")
 
 if params.get('database') == "mysql" or "mysql" in a_common:
     cp_dir_src_db("mysql")
-    if 'mysql_ocid' not in params:
-        cp_terraform("mysql.tf", "mysql_append.tf")
-    else:
+    if 'mysql_ocid' in params:
         cp_terraform("mysql_existing.tf", "mysql_append.tf")
+    else:
+        cp_terraform("mysql.tf", "mysql_append.tf")
 
 
 if os.path.exists("src/app/oracle.sql"):
@@ -716,11 +716,12 @@ if os.path.exists("src/app/oracle.sql"):
 
 # -- Common ------------------------------------------------------------------
 
-if 'oke_ocid' in params:
-    cp_terraform("oke.tf", "oke_append.tf")
-    shutil.copy2("../option/oke/oke_destroy.sh", "bin")
-else:
-    cp_terraform("oke_existing.tf", "oke_append.tf")
+if 'oke' in a_common:
+    if 'oke_ocid' in params:
+        cp_terraform("oke_existing.tf", "oke_append.tf")
+    else:
+        cp_terraform("oke.tf", "oke_append.tf")
+        shutil.copy2("../option/oke/oke_destroy.sh", "bin")
 
 if 'fnapp' in a_common:
     if 'fnapp_ocid' in params:
