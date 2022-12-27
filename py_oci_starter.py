@@ -803,7 +803,6 @@ if 'common' in params:
     create_common_dir()
    
     if 'deploy' in params:
-        global output_dir
         output_dir = output_dir + os.sep + params['prefix']
         print( 'output_dir =' +  output_dir)
         # The application will use the Common Resources created by common above.
