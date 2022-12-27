@@ -400,7 +400,6 @@ def env_param_list():
             env_params.remove(x)
     return env_params
 
-
 def env_sh_contents():
     env_params = env_param_list()
     print(env_params)
@@ -415,9 +414,23 @@ def env_sh_contents():
     if params.get('compartment_ocid') == None:
         contents.append(
             '# export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
+    
+    common_contents = []
     for param in env_params:
-        tf_var_comment(contents, param)
-        contents.append(f'export {get_tf_var(param)}="{params[param]}"')
+        if param.endWith("_ocid") or param in ["db_password", "auth_token"]:
+            tf_var_comment(contents, param)
+            contents.append(f'export {get_tf_var(param)}="{params[param]}"')
+        else:
+            tf_var_comment(common_contents, param)
+            common_contents.append(f'export {get_tf_var(param)}="{params[param]}"')
+    contents.append('')
+    contents.append("if [ -f ../common.sh ]; then")      
+    contents.append("  . ../common.sh")      
+    contents.append("else")      
+    for x in common_contents:
+        contents.append("  " + x)
+    contents.append("fi")      
+
     contents.append('')
     contents.append(
         '# Get other env variables automatically (-silent flag can be passed)')
@@ -726,8 +739,6 @@ if os.path.exists("src/app/oracle.sql"):
     shutil.move("src/app/oracle.sql", "src/db")
 
 # -- Common ------------------------------------------------------------------
-
-print( "XXXX a_common="+ ' '.join(a_common))
 
 if "autonomous" in a_common:
     if 'atp_ocid' in params:

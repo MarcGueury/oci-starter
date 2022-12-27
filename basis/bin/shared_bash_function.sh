@@ -97,6 +97,12 @@ get_attribute_from_tfstate () {
   set_if_not_null $1 $RESULT
 }
 
+get_id_from_tfstate () {
+  RESULT=`jq -r '.resources[] | select(.name=="'$2'") | select(.mode=="managed") | .instances[0].attributes.id' $STATE_FILE`
+  set_if_not_null $1 $RESULT
+}
+
+
 get_output_from_tfstate () {
   RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE | sed "s/ //"`
   set_if_not_null $1 $RESULT
