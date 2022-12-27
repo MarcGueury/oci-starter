@@ -409,7 +409,8 @@ def env_param_list():
     if params['language'] != 'java':
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
     if 'common' in params:
-        exclude.extend(['ui', 'database', 'language','deploy','db_user'])
+        env_params['prefix'] = params['common_name']
+        exclude.extend(['ui', 'database', 'language','deploy','db_user','common_name'])
     print(exclude)
     for x in exclude:
         if x in env_params:
