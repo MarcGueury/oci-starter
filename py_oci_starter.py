@@ -386,8 +386,12 @@ def readme_contents():
                 contents.append(
                     f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
-    if mode == CLI :
-        contents.append("  cd output")
+    if 'common' in params:
+        contents.append("  # Build Common Resources")
+        contents.append(f"  cd {params['prefix']}/common")
+        contents.append("  ./build.sh")       
+        contents.append("  # Build Application")
+    contents.append(f"  cd {params['prefix']}/{params['prefix']}")
     contents.append("  ./build.sh")
     return contents
 
