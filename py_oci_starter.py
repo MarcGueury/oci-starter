@@ -21,8 +21,10 @@ ZIP = 'zip'
 EXISTING = 'existing'
 NEW = 'new'
 TO_FILL = "__TO_FILL__"
-OUTPUT_DIR = "output"
 BASIS_DIR = "basis"
+
+#  globals
+output_dir = "output"
 a_common = []
 
 #  functions
@@ -203,10 +205,9 @@ def license_rules():
 
 def zip_rules():
     if 'zip' in params:
-        OUTPUT_DIR = params['zip']
-        file_output('zip' + os.sep + OUTPUT_DIR +
-                    '.param', [json.dumps(params)])
-
+        global output_dir 
+        output_dir = "zip" + os.sep + params['zip'] + os.sep + params['prefix']
+        file_output('zip' + os.sep + params['zip'] + '.param', [json.dumps(params)])
 
 def common_rules():
     if 'common' in params:
@@ -215,6 +216,7 @@ def common_rules():
         params['language'] = 'common'
         params['ui'] = 'none'
         params['database'] = 'none'
+
 
 def apply_rules():
     zip_rules()
@@ -450,13 +452,13 @@ def tf_var_comment(contents, param):
             contents.append(f'# {get_tf_var(param)} : {comment}')
 
 
-def write_env_sh(output_dir=OUTPUT_DIR):
+def write_env_sh():
     output_path = output_dir + os.sep + 'env.sh'
     file_output(output_path, env_sh_contents())
     os.chmod(output_path, 0o755)
 
 
-def write_readme(output_dir=OUTPUT_DIR):
+def write_readme():
     output_path = output_dir + os.sep + 'README.md'
     file_output(output_path, readme_contents())
 
@@ -467,21 +469,21 @@ def file_output(file_path, contents):
     output_file.close()
 
 ## COPY FILES ###############################################################
-def copy_basis(basis_dir=BASIS_DIR, output_dir=OUTPUT_DIR):
+def copy_basis(basis_dir=BASIS_DIR):
     print( "basis_dir="+basis_dir )
     print( "output_dir="+output_dir )
     copy_tree(basis_dir, output_dir)
 
 def output_replace(old_string, new_string, filename):
     # Safely read the input filename using 'with'
-    with open(OUTPUT_DIR + os.sep + filename) as f:
+    with open(output_dir + os.sep + filename) as f:
         s = f.read()
         if old_string not in s:
             print('"{old_string}" not found in {filename}.'.format(**locals()))
             return
 
     # Safely write the changed content, if found in the file
-    with open(OUTPUT_DIR + os.sep + filename, 'w') as f:
+    with open(output_dir + os.sep + filename, 'w') as f:
         print(
             'Changing "{old_string}" to "{new_string}" in {filename}'.format(**locals()))
         s = s.replace(old_string, new_string)
@@ -489,13 +491,13 @@ def output_replace(old_string, new_string, filename):
 
 def cp_terraform(file1, file2=None):
     print("cp_terraform " + file1)
-    shutil.copy2("option/terraform/"+file1, OUTPUT_DIR + "/src/terraform")
+    shutil.copy2("option/terraform/"+file1, output_dir + "/src/terraform")
 
     # Append a second file
     if file2 is not None:
         print("append " + file2)
         # opening first file in append mode and second file in read mode
-        f1 = open(OUTPUT_DIR + "/src/terraform/"+file1, 'a+')
+        f1 = open(output_dir + "/src/terraform/"+file1, 'a+')
         f2 = open("option/terraform/"+file2, 'r')
         # appending the contents of the second file to the first file
         f1.write('\n\n')
@@ -504,16 +506,16 @@ def cp_terraform(file1, file2=None):
         f2.close()
 
 def output_copy_tree(src, target):
-    copy_tree(src, OUTPUT_DIR + os.sep + target)
+    copy_tree(src, output_dir + os.sep + target)
 
 def output_move(src, target):
-    shutil.move(OUTPUT_DIR + os.sep + src, OUTPUT_DIR + os.sep + target)
+    shutil.move(output_dir + os.sep + src, output_dir + os.sep + target)
 
 def output_mkdir(src):
-    os.mkdir(OUTPUT_DIR+ os.sep + src)
+    os.mkdir(output_dir+ os.sep + src)
 
 def output_rm_tree(src):
-    shutil.rmtree(OUTPUT_DIR + os.sep + src)
+    shutil.rmtree(output_dir + os.sep + src)
  
 def cp_dir_src_db(db_type):
     print("cp_dir_src_db "+db_type)
@@ -572,14 +574,14 @@ def create_dir_shared():
             # FROM ghcr.io/graalvm/jdk:java17
             # FROM openjdk:17
             # FROM openjdk:17-jdk-slim
-            if os.path.exists(OUTPUT_DIR + "/src/app/Dockerfile"):
+            if os.path.exists(output_dir + "/src/app/Dockerfile"):
                 if params['java_vm'] == "graalvm":
                     output_replace('##DOCKER_IMAGE##', 'ghcr.io/graalvm/jdk:java17', "src/app/Dockerfile")
                 else:
                     output_replace('##DOCKER_IMAGE##', 'openjdk:17-jdk-slim', "src/app/Dockerfile")
 
         if params['language'] == "common":
-            os.remove(OUTPUT_DIR + "/src/app/app.yaml")
+            os.remove(output_dir + "/src/app/app.yaml")
 
     # -- User Interface -----------------------------------------------------
     if params.get('ui') == "none":
@@ -619,7 +621,7 @@ def create_output_dir():
             output_move("src/oke/oke_deploy.sh", "bin")
             output_move("src/oke/oke_destroy.sh", "bin")
 
-            if os.path.exists(OUTPUT_DIR+"/src/app/ingress-app.yaml"):
+            if os.path.exists(output_dir+"/src/app/ingress-app.yaml"):
                 output_move("src/app/ingress-app.yaml", "src/oke")
 
             output_replace('##PREFIX##', params["prefix"], "src/app/app.yaml")
@@ -698,7 +700,7 @@ def create_output_dir():
             else:
                 cp_terraform("mysql.tf", "mysql_append.tf")
 
-    if os.path.exists(OUTPUT_DIR + "/src/app/oracle.sql"):
+    if os.path.exists(output_dir + "/src/app/oracle.sql"):
         output_move("src/app/oracle.sql", "src/db")
 
 #----------------------------------------------------------------------------
@@ -729,7 +731,7 @@ def create_common_dir():
             cp_terraform("oke_existing.tf", "oke_append.tf")
         else:
             cp_terraform("oke.tf", "oke_append.tf")
-            shutil.copy2("option/oke/oke_destroy.sh", OUTPUT_DIR +"/bin")
+            shutil.copy2("option/oke/oke_destroy.sh", output_dir +"/bin")
 
     if 'fnapp' in a_common:
         if 'fnapp_ocid' in params:
@@ -743,13 +745,13 @@ def create_common_dir():
         else:
             cp_terraform("apigw.tf")
 
-    allfiles = os.listdir(OUTPUT_DIR)
+    allfiles = os.listdir(output_dir)
     allfiles.remove('README.md')
     # Create a common directory
     output_mkdir('common')
     # iterate on all files to move them to 'common'
     for f in allfiles:
-        os.rename(OUTPUT_DIR + os.sep + f, OUTPUT_DIR + os.sep + 'common' + os.sep + f)
+        os.rename(output_dir + os.sep + f, output_dir + os.sep + 'common' + os.sep + f)
 
 #----------------------------------------------------------------------------
 
@@ -777,7 +779,7 @@ if mode == CLI:
     apply_rules()
     if len(errors) > 0:
         mode = ABORT
-    elif os.path.isdir(OUTPUT_DIR):
+    elif os.path.isdir(output_dir):
         print("Output dir exists already.")
         mode = ABORT
     else:
@@ -801,8 +803,9 @@ if 'common' in params:
     create_common_dir()
    
     if 'deploy' in params:
-        OUTPUT_DIR = OUTPUT_DIR + os.sep + params['prefix']
-        print( 'OUTPUT_DIR =' +  OUTPUT_DIR)
+        global output_dir
+        output_dir = output_dir + os.sep + params['prefix']
+        print( 'output_dir =' +  output_dir)
         # The application will use the Common Resources created by common above.
         del params['common']
         params['vcn_ocid'] = '__TO_FILL__'
@@ -814,12 +817,12 @@ if 'common' in params:
             params[ocid] = '__TO_FILL__'
 
 if 'deploy' in params:
-    print( 'OUTPUT_DIR =' +  OUTPUT_DIR)
+    print( 'output_dir =' +  output_dir)
     create_output_dir()
 
 # -- Done --------------------------------------------------------------------
 title("Done")
-print("Directory "+OUTPUT_DIR+" created.")
+print("Directory "+output_dir+" created.")
 
 # -- Post Creation -----------------------------------------------------------
 
@@ -833,12 +836,8 @@ if mode == GIT:
 
 elif mode == ZIP:
     # The goal is to have a file that when uncompressed create a directory prefix.
-    os.chdir("..")
-    os.mkdir("zip/"+OUTPUT_DIR)
-    shutil.move(OUTPUT_DIR, "zip/"+OUTPUT_DIR+"/"+params['prefix'])
-    os.chdir("zip/"+OUTPUT_DIR)
-    shutil.make_archive(OUTPUT_DIR+".zip", format='zip',
-                        root_dir='.', base_dir=params['prefix'])
+    shutil.make_archive(output_dir+".zip", format='zip',
+                        root_dir="zip/"+params['zip'], base_dir="zip/"+params['zip']+"/"+params['prefix'])
 
 else:
     print()
