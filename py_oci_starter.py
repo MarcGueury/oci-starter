@@ -394,6 +394,8 @@ def env_param_list():
     exclude = ['mode', 'infra_as_code', 'zip', 'common']
     if params['language'] != 'java':
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
+    if 'common' in params:
+        exclude.extend(['ui', 'database', 'language','deploy','db_user'])
     print(exclude)
     for x in exclude:
         if x in env_params:
@@ -466,6 +468,8 @@ def file_output(file_path, contents):
 
 ## COPY FILES ###############################################################
 def copy_basis(basis_dir=BASIS_DIR, output_dir=OUTPUT_DIR):
+    print( "basis_dir="+basis_dir )
+    print( "output_dir="+output_dir )
     copy_tree(basis_dir, output_dir)
 
 def output_replace(old_string, new_string, filename):
@@ -795,10 +799,12 @@ print(f'params: {params}')
 # -- Copy Files -------------------------------------------------------------
 if 'common' in params:
     create_common_dir()
-    OUTPUT_DIR = OUTPUT_DIR + os.sep + params['prefix']
    
     if 'deploy' in params:
+        OUTPUT_DIR = OUTPUT_DIR + os.sep + params['prefix']
+        print( 'OUTPUT_DIR =' +  OUTPUT_DIR)
         # The application will use the Common Resources created by common above.
+        del params['common']
         params['vcn_ocid'] = '__TO_FILL__'
         params['subnet_ocid'] = '__TO_FILL__'
         params['bastion_ocid'] = '__TO_FILL__'
@@ -808,6 +814,7 @@ if 'common' in params:
             params[ocid] = '__TO_FILL__'
 
 if 'deploy' in params:
+    print( 'OUTPUT_DIR =' +  OUTPUT_DIR)
     create_output_dir()
 
 # -- Done --------------------------------------------------------------------
