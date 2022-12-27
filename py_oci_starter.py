@@ -159,8 +159,8 @@ def language_rules():
 
 
 def kubernetes_rules():
-    params['deploy'] = longhand(
-        'deploy', {'oke': 'kubernetes', 'ci': 'container_instance'})
+    if 'deploy' in params:
+      params['deploy'] = longhand('deploy', {'oke': 'kubernetes', 'ci': 'container_instance'})
 
 
 def vcn_rules():
