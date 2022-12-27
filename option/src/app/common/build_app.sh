@@ -63,7 +63,7 @@ cat >> ../../../common.sh <<EOT
 # export TF_VAR_compartment_id=__TO_FILL__
 
 # Common Resources Name (Typically: dev, test, qa, prod)
-export TF_VAR_common_name=$TF_VAR_common_name
+export TF_VAR_common_prefix=$TF_VAR_prefix
 
 # Landing Zone
 # export TF_VAR_lz_appdev_cmp_ocid=$TF_VAR_compartment_id
