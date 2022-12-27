@@ -518,6 +518,10 @@ def cp_dir_src_db(db_type):
 #----------------------------------------------------------------------------
 # Create Directory (shared for common and output)
 def create_dir_shared():
+    copy_basis()
+    write_env_sh()
+    write_readme()
+
     # -- Infrastructure As Code ---------------------------------------------
     # Default state local
     if params.get('infra_as_code') == "resource_manager":
@@ -774,9 +778,6 @@ if mode == CLI:
         mode = ABORT
     else:
         print_warnings()
-        copy_basis()
-        write_env_sh()
-        write_readme()
 
 if mode == GIT:
     print("GIT mode currently not implemented.")
@@ -794,9 +795,10 @@ print(f'params: {params}')
 # -- Copy Files -------------------------------------------------------------
 if 'common' in params:
     create_common_dir()
-    OUTPUT_DIR = OUTPUT_DIR + os.sep + param['prefix']
+    OUTPUT_DIR = OUTPUT_DIR + os.sep + params['prefix']
    
     if 'deploy' in params:
+        # The application will use the Common Resources created by common above.
         params['vcn_ocid'] = '__TO_FILL__'
         params['subnet_ocid'] = '__TO_FILL__'
         params['bastion_ocid'] = '__TO_FILL__'
