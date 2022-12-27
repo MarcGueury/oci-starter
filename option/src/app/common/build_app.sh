@@ -62,8 +62,8 @@ cat >> ../../../common.sh <<EOT
 # Commment to create an new oci-starter compartment automatically
 # export TF_VAR_compartment_id=__TO_FILL__
 
-# Environment Name (Typically: dev, test, qa, prod)
-export TF_VAR_env=$TF_VAR_prefix
+# Common Resources Name (Typically: dev, test, qa, prod)
+export TF_VAR_common_name=$TF_VAR_common_name
 
 # Landing Zone
 # export TF_VAR_lz_appdev_cmp_ocid=$TF_VAR_compartment_id

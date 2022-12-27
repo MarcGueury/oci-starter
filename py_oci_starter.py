@@ -12,7 +12,8 @@ import json
 from datetime import datetime
 from distutils.dir_util import copy_tree
 
-#  constants
+## constants ################################################################
+
 ABORT = 'ABORT'
 GIT = 'git'
 CLI = 'cli'
@@ -23,12 +24,13 @@ NEW = 'new'
 TO_FILL = "__TO_FILL__"
 BASIS_DIR = "basis"
 
-#  globals
+## globals ##################################################################
+
 output_dir = "output"
+zip_dir = ""
 a_common = []
 
-#  functions
-
+## functions ################################################################
 
 def title(t):
     s = "-- " + t + " "
@@ -55,9 +57,8 @@ def prog_arg_dict():
 
 MANDATORY_OPTIONS = {
     CLI: ['-language', '-deploy', '-db_password'],
-    COMMON: ['-common', '-db_password']
+    COMMON: ['-common', '-common_name','-db_password']
 }
-
 
 def mandatory_options(mode):
     return MANDATORY_OPTIONS[mode]
@@ -81,7 +82,7 @@ no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid',
                       '-subnet_ocid']
 
 # hidden_options - allowed but not advertised
-hidden_options = ['-zip', '-common']
+hidden_options = ['-zip', '-common','-common_name']
 
 
 def allowed_options():
@@ -205,9 +206,14 @@ def license_rules():
 
 def zip_rules():
     if 'zip' in params:
-        global output_dir 
-        output_dir = "zip" + os.sep + params['zip'] + os.sep + params['prefix']
+        global output_dir, zip_dir
+        if 'common' in params:
+             zip_dir = "zip" + os.sep + params['zip'] + os.sep + params['common_name']
+        else:
+             zip_dir = "zip" + os.sep + params['zip'] + os.sep + params['prefix']
+        output_dir = zip_dir
         file_output('zip' + os.sep + params['zip'] + '.param', [json.dumps(params)])
+
 
 def common_rules():
     if 'common' in params:
@@ -388,10 +394,12 @@ def readme_contents():
     contents.append("\n- Run:")
     if 'common' in params:
         contents.append("  # Build Common Resources")
-        contents.append(f"  cd {params['prefix']}/common")
+        contents.append(f"  cd {params['common_name']}/common")
         contents.append("  ./build.sh")       
         contents.append("  # Build Application")
-    contents.append(f"  cd {params['prefix']}/{params['prefix']}")
+        contents.append(f"  cd ../{params['prefix']}")
+    else:
+        contents.append(f"  cd {params['prefix']}")
     contents.append("  ./build.sh")
     return contents
 
@@ -840,7 +848,7 @@ if mode == GIT:
 elif mode == ZIP:
     # The goal is to have a file that when uncompressed create a directory prefix.
     shutil.make_archive(output_dir+".zip", format='zip',
-                        root_dir="zip/"+params['zip'], base_dir="zip/"+params['zip']+"/"+params['prefix'])
+                        root_dir="zip/"+params['zip'], base_dir=zip_dir)
 
 else:
     print()
