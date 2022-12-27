@@ -799,12 +799,13 @@ print(f'Mode: {mode}')
 print(f'params: {params}')
 
 # -- Copy Files -------------------------------------------------------------
+output_dir_orig = output_dir
+
 if 'common' in params:
     create_common_dir()
    
     if 'deploy' in params:
         output_dir = output_dir + os.sep + params['prefix']
-        print( 'output_dir =' +  output_dir)
         # The application will use the Common Resources created by common above.
         del params['common']
         params['vcn_ocid'] = '__TO_FILL__'
@@ -816,7 +817,6 @@ if 'common' in params:
             params[ocid] = '__TO_FILL__'
 
 if 'deploy' in params:
-    print( 'output_dir =' +  output_dir)
     create_output_dir()
 
 # -- Done --------------------------------------------------------------------
@@ -840,8 +840,6 @@ elif mode == ZIP:
 
 else:
     print()
-    readme="README.md"
-    if 'common' in params:
-        readme="common/README.md" 
+    readme= output_dir_orig + os.sep + "README.md"
     with open(readme, 'r') as fin:
         print(fin.read())
