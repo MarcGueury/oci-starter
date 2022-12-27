@@ -57,7 +57,7 @@ def prog_arg_dict():
 
 MANDATORY_OPTIONS = {
     CLI: ['-language', '-deploy', '-db_password'],
-    COMMON: ['-common', '-common_name','-db_password']
+    COMMON: ['-common', '-common_prefix','-db_password']
 }
 
 def mandatory_options(mode):
@@ -82,7 +82,7 @@ no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid',
                       '-subnet_ocid']
 
 # hidden_options - allowed but not advertised
-hidden_options = ['-zip', '-common','-common_name']
+hidden_options = ['-zip', '-common','-common_prefix']
 
 
 def allowed_options():
@@ -208,7 +208,7 @@ def zip_rules():
     if 'zip' in params:
         global output_dir, zip_dir
         if 'common' in params:
-             zip_dir = "zip" + os.sep + params['zip'] + os.sep + params['common_name']
+             zip_dir = "zip" + os.sep + params['zip'] + os.sep + params['common_prefix']
         else:
              zip_dir = "zip" + os.sep + params['zip'] + os.sep + params['prefix']
         output_dir = zip_dir
@@ -394,7 +394,7 @@ def readme_contents():
     contents.append("\n- Run:")
     if 'common' in params:
         contents.append("  # Build Common Resources")
-        contents.append(f"  cd {params['common_name']}/common")
+        contents.append(f"  cd {params['common_prefix']}/common")
         contents.append("  ./build.sh")       
         contents.append("  # Build Application")
         contents.append(f"  cd ../{params['prefix']}")
@@ -409,8 +409,8 @@ def env_param_list():
     if params['language'] != 'java':
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
     if 'common' in params:
-        env_params['prefix'] = params['common_name']
-        exclude.extend(['ui', 'database', 'language','deploy','db_user','common_name'])
+        env_params['prefix'] = params['common_prefix']
+        exclude.extend(['ui', 'database', 'language','deploy','db_user','common_prefix'])
     print(exclude)
     for x in exclude:
         if x in env_params:
