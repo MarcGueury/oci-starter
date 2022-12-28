@@ -3,7 +3,10 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
 # Build all
-. bin/sshkey_generate.sh
+# Generate sshkeys if not part of a Common Resources project 
+if [ ! -f ../commmon.sh ]; then
+  . bin/sshkey_generate.sh
+fi
 . env.sh
 # Run Terraform
 src/terraform/apply.sh --auto-approve
@@ -11,7 +14,9 @@ exit_on_error
 
 . env.sh
 # Build the DB (via Bastion), the APP and the UI
-bin/deploy_bastion.sh
+if [ -d src/db ]; then
+  bin/deploy_bastion.sh
+fi  
 
 # Init target/compute
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
@@ -19,7 +24,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
     cp src/compute/* target/compute/.
 fi
 
-if [ -f src/ui/build_app.sh ]; then
+if [ -f src/app/build_app.sh ]; then
     src/app/build_app.sh 
     exit_on_error
 fi
