@@ -870,7 +870,7 @@ elif "zip" in params:
     # The goal is to have a file that when uncompressed create a directory prefix.
     shutil.make_archive(params['zip'], format='zip',
                         root_dir="zip/"+params['zip'], base_dir=zip_dir)
-    os.move( "zip" + os.sep + params['zip'] + os.sep + params['zip'] + ".zip", "zip" )                    
+    os.rename( "zip" + os.sep + params['zip'] + os.sep + params['zip'] + ".zip", "zip" )                    
     print("Zip file created:" + output_dir+".zip")
 else:
     print()
