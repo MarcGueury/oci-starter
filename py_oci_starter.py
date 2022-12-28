@@ -515,8 +515,6 @@ def output_replace(old_string, new_string, filename):
 
     # Safely write the changed content, if found in the file
     with open(output_dir + os.sep + filename, 'w') as f:
-        print(
-            'Changing "{old_string}" to "{new_string}" in {filename}'.format(**locals()))
         s = s.replace(old_string, new_string)
         f.write(s)
 
@@ -634,7 +632,6 @@ def create_output_dir():
         output_rm_tree("src/ui")
     else:
         ui_lower = params.get('ui').lower()
-        print("ui_lower=" + ui_lower)
         output_copy_tree("option/src/ui/"+ui_lower, "src/ui")
 
     # -- Deployment ---------------------------------------------------------
