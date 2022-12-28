@@ -208,10 +208,10 @@ def zip_rules():
     if 'zip' in params:
         global output_dir, zip_dir
         if 'common' in params:
-             zip_dir = "zip" + os.sep + params['zip'] + os.sep + params['common_prefix']
+             zip_dir = params['common_prefix']
         else:
-             zip_dir = "zip" + os.sep + params['zip'] + os.sep + params['prefix']
-        output_dir = zip_dir
+             zip_dir = params['prefix']
+        output_dir = "zip" + os.sep + params['zip'] + os.sep + zip_dir
         file_output('zip' + os.sep + params['zip'] + '.param', [json.dumps(params)])
 
 
@@ -866,13 +866,11 @@ if mode == GIT:
     # git commit -m "added latest files"
     # git push origin main
 
-elif zip_dir != "":
+elif "zip" in params:
     # The goal is to have a file that when uncompressed create a directory prefix.
-    print( "zip="+output_dir+".zip")
-    print( "rootdir=zip/"+params['zip'])
-    print( "base_dir="+zip_dir['zip'])
-    shutil.make_archive(output_dir+".zip", format='zip',
+    shutil.make_archive(params['zip'], format='zip',
                         root_dir="zip/"+params['zip'], base_dir=zip_dir)
+    os.move( "zip" + os.sep + params['zip'] + os.sep + params['zip'] + ".zip", "zip" )                    
     print("Zip file created:" + output_dir+".zip")
 else:
     print()
