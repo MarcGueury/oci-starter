@@ -56,10 +56,17 @@ COMMON=,${TF_VAR_common},
 
 cat > ../../../common.sh <<'EOT' 
 COMMON_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+# Commment to create an new oci-starter compartment automatically
 EOT
 
+if [ -z "$TF_VAR_fnapp_ocid" ]; then
+  append "export TF_VAR_compartment_id=__TO_FILL__"
+else
+  append "export TF_VAR_compartment_id=$TF_VAR_compartment_id"
+fi
+
 cat >> ../../../common.sh <<EOT 
-# Commment to create an new oci-starter compartment automatically
 # export TF_VAR_compartment_id=__TO_FILL__
 
 # Common Resources Name (Typically: dev, test, qa, prod)
@@ -90,9 +97,9 @@ conditional_append fnapp TF_VAR_fnapp_ocid
 cat >> ../../../common.sh <<EOT 
 
 # Database Password
-export TF_VAR_db_password=$TF_VAR_db_password
+export TF_VAR_db_password="$TF_VAR_db_password"
 # Auth Token
-export TF_VAR_auth_token=$TF_VAR_auth_token
+export TF_VAR_auth_token="$TF_VAR_auth_token"
 
 EOT
 
