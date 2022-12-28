@@ -448,14 +448,18 @@ def env_sh_contents():
     contents.append("else")      
     if params.get('compartment_ocid') == None:
         contents.append('  # export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')       
+
+    for x in common_contents:
+        contents.append("  " + x)
+
     if 'common' in params:
+        contents.append('')
+        contents.append('  # Landing Zone')
         contents.append('  # export TF_VAR_lz_appdev_cmp_ocid=$TF_VAR_compartment_id')
         contents.append('  # export TF_VAR_lz_database_cmp_ocid=$TF_VAR_compartment_id')
         contents.append('  # export TF_VAR_lz_network_cmp_ocid=$TF_VAR_compartment_id')
         contents.append('  # export TF_VAR_lz_security_cmp_ocid=$TF_VAR_compartment_id')
 
-    for x in common_contents:
-        contents.append("  " + x)
     contents.append("fi")      
 
     contents.append('')
