@@ -431,7 +431,7 @@ def env_sh_contents():
         prefix = params["common_prefix"]
     else:
         prefix = params["prefix"]
-    common_contents.append(f'export TF_VAR_prefix="{prefix}"')
+    contents.append(f'export TF_VAR_prefix="{prefix}"')
     contents.append('')
 
     common_contents = []
