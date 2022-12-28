@@ -219,9 +219,6 @@ def common_rules():
     if 'common' in params:
         global a_common 
         a_common=params['common'].split(',')
-        params['language'] = 'common'
-        params['ui'] = 'none'
-        params['database'] = 'none'
 
 
 def apply_rules():
@@ -565,6 +562,23 @@ def create_dir_shared():
     else:
         output_copy_tree("option/infra_as_code/terraform_local", "src/terraform")
 
+    # -- Network ------------------------------------------------------------
+    if 'vcn_ocid' in params:
+        cp_terraform("network_existing.tf")
+    else:
+        cp_terraform("network.tf")
+
+    # -- Bastion ------------------------------------------------------------
+    if 'bastion_ocid' in params:
+        cp_terraform("bastion_existing.tf")
+    else:
+        cp_terraform("bastion.tf")
+
+#----------------------------------------------------------------------------
+# Create Output Directory
+def create_output_dir():
+    create_dir_shared()
+
     # -- APP ----------------------------------------------------------------
     if params['language'] == "none":
         output_rm_tree("src/app")
@@ -608,9 +622,6 @@ def create_dir_shared():
                 else:
                     output_replace('##DOCKER_IMAGE##', 'openjdk:17-jdk-slim', "src/app/Dockerfile")
 
-        if params['language'] == "common":
-            os.remove(output_dir + "/src/app/app.yaml")
-
     # -- User Interface -----------------------------------------------------
     if params.get('ui') == "none":
         print("No UI")
@@ -619,23 +630,6 @@ def create_dir_shared():
         ui_lower = params.get('ui').lower()
         print("ui_lower=" + ui_lower)
         output_copy_tree("option/src/ui/"+ui_lower, "src/ui")
-
-    # -- Network ------------------------------------------------------------
-    if 'vcn_ocid' in params:
-        cp_terraform("network_existing.tf")
-    else:
-        cp_terraform("network.tf")
-
-    # -- Bastion ------------------------------------------------------------
-    if 'bastion_ocid' in params:
-        cp_terraform("bastion_existing.tf")
-    else:
-        cp_terraform("bastion.tf")
-
-#----------------------------------------------------------------------------
-# Create Output Directory
-def create_output_dir():
-    create_dir_shared()
 
     # -- Deployment ---------------------------------------------------------
     if params['language'] != "none":
@@ -735,6 +729,14 @@ def create_output_dir():
 # Create Common Directory
 def create_common_dir():
     create_dir_shared()
+
+    # -- APP ----------------------------------------------------------------
+    output_copy_tree("option/src/app/common", "src/app")
+    os.remove(output_dir + "/src/app/app.yaml")
+
+    # -- User Interface -----------------------------------------------------
+    output_rm_tree("src/ui")
+
     # -- Common -------------------------------------------------------------
     if "autonomous" in a_common:
         if 'atp_ocid' in params:
