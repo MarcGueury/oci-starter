@@ -405,7 +405,7 @@ def readme_contents():
 
 def env_param_list():
     env_params = list(params.keys())
-    exclude = ['mode', 'infra_as_code', 'zip', 'common']
+    exclude = ['mode', 'infra_as_code', 'zip', 'common', 'prefix']
     if params['language'] != 'java':
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
     if 'common' in params:
@@ -428,7 +428,13 @@ def env_sh_contents():
     contents.append(f'export OCI_STARTER_VERSION=1.4')
     contents.append('')
     contents.append('# Env Variables')
-    
+    if 'common' in params:
+        prefix = params["common_prefix"]
+    else:
+        prefix = params["prefix"]
+    common_contents.append(f'export TF_VAR_prefix="{prefix}"')
+    contents.append('')
+
     common_contents = []
     for param in env_params:
         if param.endswith("_ocid") or param in ["db_password", "auth_token", "license"]:
