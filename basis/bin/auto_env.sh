@@ -26,7 +26,7 @@ if [ "$TF_VAR_db_password" == "__TO_FILL__" ]; then
 fi
 
 # -- env.sh
-if [ -v TF_VAR_common ] || [ ! -v TF_VAR_common_name ]; then 
+if [ -v TF_VAR_common ] || [ ! -v TF_VAR_common_prefix ]; then 
   if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
     echo "Error: missing environment variables."
     echo
