@@ -88,9 +88,11 @@ else
   fi
 
   # SSH keys
-  export TF_VAR_ssh_public_key=$(cat $TARGET_DIR/ssh_key_starter.pub)
-  export TF_VAR_ssh_private_key=$(cat $TARGET_DIR/ssh_key_starter)
-
+  if [ ! -f $ROOT_DIR/../common.sh ]; then 
+    export TF_VAR_ssh_public_key=$(cat $TARGET_DIR/ssh_key_starter.pub)
+    export TF_VAR_ssh_private_key=$(cat $TARGET_DIR/ssh_key_starter)
+    export TF_VAR_ssh_private_path=$ROOT_DIR/target/ssh_key_starter
+  fi
 
   if [ -z "$TF_VAR_compartment_ocid" ]; then
     echo "WARNING: compartment_ocid is not defined."

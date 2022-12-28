@@ -443,11 +443,11 @@ def env_sh_contents():
             contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append('')
     if 'common' in params:
-        contents.append("if [ -f ../../common.sh ]; then")      
-        contents.append("  . ../../common.sh")      
+        contents.append("if [ -f $SCRIPT_DIR/../../common.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../../common.sh")      
     else:
-        contents.append("if [ -f ../common.sh ]; then")      
-        contents.append("  . ../common.sh")      
+        contents.append("if [ -f $SCRIPT_DIR/../common.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../common.sh")      
     contents.append("else")      
     if params.get('compartment_ocid') == None:
         contents.append('  # export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')       

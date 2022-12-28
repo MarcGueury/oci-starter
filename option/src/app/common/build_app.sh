@@ -105,7 +105,9 @@ cat >> ../../../common.sh <<'EOT'
 # SSH Keys
 export TF_VAR_ssh_public_key=$(cat $COMMON_DIR/common/target/ssh_key_starter.pub)
 export TF_VAR_ssh_private_key=$(cat $COMMON_DIR/common/target/ssh_key_starter)
+export TF_VAR_ssh_private_path=$COMMON_DIR/common/target/ssh_key_starter
 EOT
 
 echo
 echo "File common.sh created."
+echo
