@@ -403,10 +403,10 @@ def readme_contents():
 def env_param_list():
     env_params = list(params.keys())
     exclude = ['mode', 'infra_as_code', 'zip', 'common', 'prefix']
-    if params['language'] != 'java':
+    if params['language'] != 'java' or 'common' in params:
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
     if 'common' in params:
-        exclude.extend(['ui', 'database', 'language','deploy','db_user','common_prefix'])
+        exclude.extend(['ui', 'database', 'language', 'deploy', 'db_user', 'common_prefix'])
     print(exclude)
     for x in exclude:
         if x in env_params:
