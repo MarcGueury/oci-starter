@@ -868,8 +868,9 @@ if mode == GIT:
 
 elif "zip" in params:
     # The goal is to have a file that when uncompressed create a directory prefix.
-    shutil.make_archive(params['zip'], format='zip',
-                        root_dir="zip/"+params['zip'], base_dir=zip_dir)
+    print("zip_dir="+zip_dir)
+    print("params['zip']="+params['zip'])
+    shutil.make_archive(params['zip'], format='zip',root_dir="zip/"+params['zip'], base_dir=zip_dir)
     os.rename( "zip" + os.sep + params['zip'] + os.sep + params['zip'] + ".zip", "zip" )                    
     print("Zip file created:" + output_dir+".zip")
 else:
