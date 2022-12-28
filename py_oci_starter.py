@@ -866,11 +866,11 @@ if mode == GIT:
     # git commit -m "added latest files"
     # git push origin main
 
-elif mode == ZIP:
+elif zip_dir != "":
     # The goal is to have a file that when uncompressed create a directory prefix.
     shutil.make_archive(output_dir+".zip", format='zip',
                         root_dir="zip/"+params['zip'], base_dir=zip_dir)
-
+    print("Zip file created:" + output_dir+".zip")
 else:
     print()
     readme= output_dir_orig + os.sep + "README.md"
