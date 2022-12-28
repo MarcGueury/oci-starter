@@ -26,7 +26,7 @@ if [ "$TF_VAR_db_password" == "__TO_FILL__" ]; then
 fi
 
 # -- env.sh
-if [ -v TF_VAR_common ] || [ ! -f $ROOT_DIR/../common.sh ]; then 
+if [ -v TF_VAR_common ] || [ ! -v TF_VAR_common_name ]; then 
   if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
     echo "Error: missing environment variables."
     echo
@@ -88,10 +88,10 @@ else
   fi
 
   # SSH keys
-  if [ -v TF_VAR_common ] || [ ! -f $ROOT_DIR/../common.sh ]; then 
+  if [ -f $TARGET_DIR/ssh_key_starter ]; then 
     export TF_VAR_ssh_public_key=$(cat $TARGET_DIR/ssh_key_starter.pub)
     export TF_VAR_ssh_private_key=$(cat $TARGET_DIR/ssh_key_starter)
-    export TF_VAR_ssh_private_path=$ROOT_DIR/target/ssh_key_starter
+    export TF_VAR_ssh_private_path=$TARGET_DIR/ssh_key_starter
   fi
 
   if [ -z "$TF_VAR_compartment_ocid" ]; then
