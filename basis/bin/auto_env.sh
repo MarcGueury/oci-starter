@@ -26,13 +26,15 @@ if [ "$TF_VAR_db_password" == "__TO_FILL__" ]; then
 fi
 
 # -- env.sh
-if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
-  echo "Error: missing environment variables."
-  echo
-  echo "Edit the file env.sh. Some variables needs to be filled:" 
-  echo `cat env.sh | grep __TO_FILL__` 
-  exit
-fi
+if [ ! -f $ROOT_DIR/../common.sh ]; then 
+  if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
+    echo "Error: missing environment variables."
+    echo
+    echo "Edit the file env.sh. Some variables needs to be filled:" 
+    echo `cat env.sh | grep __TO_FILL__` 
+    exit
+  fi
+fi  
 # . $ROOT_DIR/env.sh
 
 if ! command -v jq &> /dev/null; then

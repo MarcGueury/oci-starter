@@ -402,11 +402,13 @@ def readme_contents():
 
 def env_param_list():
     env_params = list(params.keys())
-    exclude = ['mode', 'infra_as_code', 'zip', 'common', 'prefix']
+    exclude = ['mode', 'infra_as_code', 'zip', 'prefix']
     if params['language'] != 'java' or 'common' in params:
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
     if 'common' in params:
         exclude.extend(['ui', 'database', 'language', 'deploy', 'db_user', 'common_prefix'])
+    else:
+        exclude.append('common')
     print(exclude)
     for x in exclude:
         if x in env_params:
@@ -440,8 +442,12 @@ def env_sh_contents():
             tf_var_comment(contents, param)
             contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append('')
-    contents.append("if [ -f ../common.sh ]; then")      
-    contents.append("  . ../common.sh")      
+    if 'common' in params:
+        contents.append("if [ -f ../../common.sh ]; then")      
+        contents.append("  . ../../common.sh")      
+    else:
+        contents.append("if [ -f ../common.sh ]; then")      
+        contents.append("  . ../common.sh")      
     contents.append("else")      
     if params.get('compartment_ocid') == None:
         contents.append('  # export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')       
