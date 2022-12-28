@@ -52,31 +52,28 @@ fi
 
 COMMON=,${TF_VAR_common},
 
-
-
 cat > ../../../common.sh <<'EOT' 
 COMMON_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Commment to create an new oci-starter compartment automatically
 EOT
 
-if [ -z "$TF_VAR_fnapp_ocid" ]; then
-  append "export TF_VAR_compartment_id=__TO_FILL__"
+if [ -z "$TF_VAR_compartment_ocid" ]; then
+  append "export TF_VAR_compartment_ocid=__TO_FILL__"
 else
-  append "export TF_VAR_compartment_id=$TF_VAR_compartment_id"
+  append "export TF_VAR_compartment_ocid=$TF_VAR_compartment_ocid"
 fi
 
 cat >> ../../../common.sh <<EOT 
-# export TF_VAR_compartment_id=__TO_FILL__
 
 # Common Resources Name (Typically: dev, test, qa, prod)
 export TF_VAR_common_prefix=$TF_VAR_prefix
 
 # Landing Zone
-# export TF_VAR_lz_appdev_cmp_ocid=$TF_VAR_compartment_id
-# export TF_VAR_lz_database_cmp_ocid=$TF_VAR_compartment_id
-# export TF_VAR_lz_network_cmp_ocid=$TF_VAR_compartment_id
-# export TF_VAR_lz_security_cmp_ocid=$TF_VAR_compartment_id
+# export TF_VAR_lz_appdev_cmp_ocid=$TF_VAR_compartment_ocid
+# export TF_VAR_lz_database_cmp_ocid=$TF_VAR_compartment_ocid
+# export TF_VAR_lz_network_cmp_ocid=$TF_VAR_compartment_ocid
+# export TF_VAR_lz_security_cmp_ocid=$TF_VAR_compartment_ocid
 
 # Network
 export TF_VAR_vcn_ocid=$TF_VAR_vcn_ocid
@@ -109,3 +106,6 @@ cat >> ../../../common.sh <<'EOT'
 export TF_VAR_ssh_public_key=$(cat $COMMON_DIR/common/target/ssh_key_starter.pub)
 export TF_VAR_ssh_private_key=$(cat $COMMON_DIR/common/target/ssh_key_starter)
 EOT
+
+echo
+echo "File common.sh created."
