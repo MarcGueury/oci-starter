@@ -258,6 +258,8 @@ def help():
 Usage: {script_name()} [OPTIONS]
 
 oci-starter.sh
+   -common (optional) atp | database | mysql | fnapp | apigw | oke 
+   -common_prefix (optional)
    -apigw_ocid (optional)
    -atp_ocid (optional)
    -auth_token (optional)
