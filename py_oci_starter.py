@@ -499,6 +499,7 @@ def file_output(file_path, contents):
     output_file = open(file_path, "w")
     output_file.writelines('%s\n' % line for line in contents)
     output_file.close()
+    
 
 ## COPY FILES ###############################################################
 def copy_basis(basis_dir=BASIS_DIR):
