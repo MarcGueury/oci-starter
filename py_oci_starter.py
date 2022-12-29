@@ -207,7 +207,7 @@ def license_rules():
 def zip_rules():
     if 'zip' in params:
         global output_dir, zip_dir
-        if 'common' in params:
+        if 'common_prefix' in params:
              zip_dir = params['common_prefix']
         else:
              zip_dir = params['prefix']
@@ -216,7 +216,7 @@ def zip_rules():
 
 
 def common_rules():
-    if 'common' in params:
+    if 'common_prefix' in params:
         global a_common 
         a_common=params['common'].split(',')
 
@@ -336,7 +336,7 @@ def git_params():
 
 
 def readme_contents():
-    if 'common' in params:
+    if 'common_prefix' in params:
         contents = ['''## OCI-Starter - Common Resources
 ### Usage 
 
@@ -389,7 +389,7 @@ def readme_contents():
                 contents.append(
                     f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
-    if 'common' in params:
+    if 'common_prefix' in params:
         contents.append("  # Build Common Resources")
         contents.append(f"  cd {params['common_prefix']}/common")
         contents.append("  ./build.sh")       
@@ -403,9 +403,9 @@ def readme_contents():
 def env_param_list():
     env_params = list(params.keys())
     exclude = ['mode', 'infra_as_code', 'zip', 'prefix']
-    if params['language'] != 'java' or 'common' in params:
+    if params['language'] != 'java' or 'common_prefix' in params:
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
-    if 'common' in params:
+    if 'common_prefix' in params:
         exclude.extend(['ui', 'database', 'language', 'deploy', 'db_user', 'common_prefix'])
     else:
         exclude.append('common')
@@ -426,7 +426,7 @@ def env_sh_contents():
     contents.append(f'export OCI_STARTER_VERSION=1.4')
     contents.append('')
     contents.append('# Env Variables')
-    if 'common' in params:
+    if 'common_prefix' in params:
         prefix = params["common_prefix"]
     else:
         prefix = params["prefix"]
@@ -442,7 +442,7 @@ def env_sh_contents():
             tf_var_comment(contents, param)
             contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append('')
-    if 'common' in params:
+    if 'common_prefix' in params:
         contents.append("if [ -f $SCRIPT_DIR/../../common.sh ]; then")      
         contents.append("  . $SCRIPT_DIR/../../common.sh")      
     else:
@@ -455,13 +455,12 @@ def env_sh_contents():
     for x in common_contents:
         contents.append("  " + x)
 
-    if 'common' in params:
-        contents.append('')
-        contents.append('  # Landing Zone')
-        contents.append('  # export TF_VAR_lz_appdev_cmp_ocid=$TF_VAR_compartment_ocid')
-        contents.append('  # export TF_VAR_lz_database_cmp_ocid=$TF_VAR_compartment_ocid')
-        contents.append('  # export TF_VAR_lz_network_cmp_ocid=$TF_VAR_compartment_ocid')
-        contents.append('  # export TF_VAR_lz_security_cmp_ocid=$TF_VAR_compartment_ocid')
+    contents.append('')
+    contents.append('  # Landing Zone')
+    contents.append('  # export TF_VAR_lz_appdev_cmp_ocid=$TF_VAR_compartment_ocid')
+    contents.append('  # export TF_VAR_lz_database_cmp_ocid=$TF_VAR_compartment_ocid')
+    contents.append('  # export TF_VAR_lz_network_cmp_ocid=$TF_VAR_compartment_ocid')
+    contents.append('  # export TF_VAR_lz_security_cmp_ocid=$TF_VAR_compartment_ocid')
 
     contents.append("fi")      
 
@@ -501,7 +500,6 @@ def file_output(file_path, contents):
 
 ## COPY FILES ###############################################################
 def copy_basis(basis_dir=BASIS_DIR):
-    print( "basis_dir="+basis_dir )
     print( "output_dir="+output_dir )
     copy_tree(basis_dir, output_dir)
 
@@ -741,7 +739,7 @@ def create_common_dir():
     output_rm_tree("src/ui")
 
     # -- Common -------------------------------------------------------------
-    if "autonomous" in a_common:
+    if "atp" in a_common:
         if 'atp_ocid' in params:
             cp_terraform("atp_existing.tf")
         else:
@@ -797,7 +795,7 @@ params = get_params()
 mode = get_mode()
 unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
 illegal_params = check_values()
-if 'common' in params:
+if 'common_prefix' in params:
   missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(COMMON))
 else:  
   missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(mode))
@@ -834,20 +832,20 @@ print(f'params: {params}')
 # -- Copy Files -------------------------------------------------------------
 output_dir_orig = output_dir
 
-if 'common' in params:
+if 'common_prefix' in params:
     create_common_dir()
    
-    if 'deploy' in params:
-        output_dir = output_dir + os.sep + params['prefix']
-        # The application will use the Common Resources created by common above.
-        del params['common']
-        params['vcn_ocid'] = '__TO_FILL__'
-        params['subnet_ocid'] = '__TO_FILL__'
-        params['bastion_ocid'] = '__TO_FILL__'
-        to_ocid = { "autonomous": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid"}
-        for x in a_common:
-            ocid = to_ocid[x]
-            params[ocid] = '__TO_FILL__'
+if 'common' in params:
+    output_dir = output_dir + os.sep + params['prefix']
+    # The application will use the Common Resources created by common above.
+    del params['common']
+    params['vcn_ocid'] = TO_FILL
+    params['subnet_ocid'] = TO_FILL
+    params['bastion_ocid'] = TO_FILL
+    to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid"}
+    for x in a_common:
+        ocid = to_ocid[x]
+        params[ocid] = TO_FILL
 
 if 'deploy' in params:
     create_output_dir()
@@ -868,11 +866,8 @@ if mode == GIT:
 
 elif "zip" in params:
     # The goal is to have a file that when uncompressed create a directory prefix.
-    print("zip_dir="+zip_dir)
-    print("params['zip']="+params['zip'])
-    shutil.make_archive(params['zip'], format='zip',root_dir="zip/"+params['zip'], base_dir=zip_dir)
-    os.rename( "zip" + os.sep + params['zip'] + os.sep + params['zip'] + ".zip", "zip" )                    
-    print("Zip file created:" + output_dir+".zip")
+    shutil.make_archive("zip"+os.sep+params['zip'], format='zip',root_dir="zip"+os.sep+params['zip'], base_dir=zip_dir)
+    print("Zip file created: zip"+os.sep+params['zip']+".zip")
 else:
     print()
     readme= output_dir_orig + os.sep + "README.md"
