@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-export TEST_HOME=$SCRIPT_DIR/test_all
+export TEST_HOME=$SCRIPT_DIR/test_common_all
 . $HOME/bin/env_oci_starter_testsuite.sh
 
 # No color for terraforms logs
