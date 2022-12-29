@@ -202,10 +202,10 @@ git clone https://github.com/mgueury/oci-starter
 
 cd $TEST_HOME/oci-starter
 ./oci_starter.sh -common_prefix test-all -common atp,mysql,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD
-mv output common
-cd $TEST_HOME/common/common
-./build.sh
+mv output/common ../common
 cd $TEST_HOME/common
+./build.sh
+cd $TEST_HOME
 . ./common.sh
 
 date
