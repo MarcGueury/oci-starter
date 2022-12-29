@@ -405,7 +405,7 @@ def readme_contents():
 def env_param_list():
     env_params = list(params.keys())
     exclude = ['mode', 'infra_as_code', 'zip', 'prefix']
-    if params['language'] != 'java' or 'common_prefix' in params:
+    if params.get('language') != 'java' or 'common_prefix' in params:
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
     if 'common_prefix' in params:
         exclude.extend(['ui', 'database', 'language', 'deploy', 'db_user', 'common_prefix'])
@@ -499,7 +499,7 @@ def file_output(file_path, contents):
     output_file = open(file_path, "w")
     output_file.writelines('%s\n' % line for line in contents)
     output_file.close()
-    
+
 
 ## COPY FILES ###############################################################
 def copy_basis(basis_dir=BASIS_DIR):
