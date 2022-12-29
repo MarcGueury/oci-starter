@@ -201,7 +201,7 @@ cd $TEST_HOME
 git clone https://github.com/mgueury/oci-starter
 
 cd $TEST_HOME/oci-starter
-./oci_starter.sh -common_prefix test-all -common atp,mysql,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD
+./oci_starter.sh -common_prefix test-all -common atp,mysql,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
 mv output/common ../common
 cd $TEST_HOME/common
 ./build.sh
