@@ -36,7 +36,8 @@ resource "oci_identity_policy" "starter_fn_policy" {
   description    = "APIGW access Function"
   compartment_id = local.lz_appdev_cmp_ocid
   statements = [
-    "ALLOW any-user to use functions-family in compartment id ${local.lz_appdev_cmp_ocid} where ALL {request.principal.type= 'ApiGateway', request.resource.compartment.id = '${local.lz_appdev_cmp_ocid}'}"
+    # "ALLOW any-user to use functions-family in compartment id ${local.lz_appdev_cmp_ocid} where ALL {request.principal.type= 'ApiGateway', request.resource.compartment.id = '${local.lz_appdev_cmp_ocid}'}"
+    "ALLOW any-user to use functions-family in compartment id ${local.lz_appdev_cmp_ocid} where ALL {request.principal.type= 'ApiGateway'}"
   ]
 }
 

@@ -11,8 +11,8 @@ variable prefix { default = "starter" }
 variable language { default = "java" }
 variable java_version { default = "17" }
 
-variable db_user {}
-variable db_password{}
+variable db_user { default="" }
+variable db_password{ default="" }
 
 # Compute Instance size
 variable "instance_ocpus" { default = 1 }
@@ -32,4 +32,9 @@ locals {
   lz_database_cmp_ocid = var.lz_database_cmp_ocid == "" ? var.compartment_ocid : var.lz_database_cmp_ocid
   lz_network_cmp_ocid = var.lz_network_cmp_ocid == "" ? var.compartment_ocid : var.lz_network_cmp_ocid
   lz_security_cmp_ocid = var.lz_security_cmp_ocid == "" ? var.compartment_ocid : var.lz_security_cmp_ocid
+}
+
+# BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
+variable license_model {
+  default="BRING_YOUR_OWN_LICENSE"
 }

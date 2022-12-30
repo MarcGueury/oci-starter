@@ -99,7 +99,7 @@ build_test_destroy
 
 # DB System
 start_test 03_JAVA_SPRINGBOOT_COMPUTE_PLUGGABLE_NEW
-$OCI_STARTER -language java -database pluggable -deploy compute -db_password $TEST_DB_PASSWORD -db_password $TEST_DB_PASSWORD -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -database pluggable -deploy compute -db_password $TEST_DB_PASSWORD -db_password $TEST_DB_PASSWORD -db_compartment_ocid $EX_DB_COMPARTMENT_OCID -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
  
 # DB System
@@ -139,7 +139,7 @@ build_test_destroy
 
 # Java Compute + Existing DB + Existing Subnet
 start_test 09_JAVA_SPRINGBOOT_COMPUTE_EX_DB_SUBNET
-$OCI_STARTER -language java -deploy compute -database database -db_password $TEST_DB_PASSWORD -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -deploy compute -database database -db_password $TEST_DB_PASSWORD -db_compartment_ocid $EX_DB_COMPARTMENT_OCID -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute + Existing MYSQL + Existing Subnet

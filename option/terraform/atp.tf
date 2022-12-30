@@ -1,8 +1,3 @@
-# BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
-variable license_model{
-  default="BRING_YOUR_OWN_LICENSE"
-}
-
 resource "oci_database_autonomous_database" "starter_atp" {
   #Required
   admin_password           = var.db_password
@@ -18,7 +13,7 @@ resource "oci_database_autonomous_database" "starter_atp" {
   license_model                                  = var.license_model
   is_preview_version_with_service_terms_accepted = "false"
   # XXXXX  
-  #  whitelisted_ips                               = [ data.oci_core_vcn.starter_vcn.id ]
+  #  whitelisted_ips                             = [ data.oci_core_vcn.starter_vcn.id ]
   # whitelisted_ips                              = [ "0.0.0.0/0" ]
   subnet_id                                      = data.oci_core_subnet.starter_subnet.id
   is_mtls_connection_required                    = false

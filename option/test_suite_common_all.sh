@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-export TEST_HOME=$SCRIPT_DIR/test_all
+export TEST_HOME=$SCRIPT_DIR/test_common_all
 . $HOME/bin/env_oci_starter_testsuite.sh
 
 # No color for terraforms logs
@@ -72,18 +72,23 @@ build_option() {
        -database $OPTION_DB \
        -db_password $TEST_DB_PASSWORD \
        -compartment_ocid $EX_COMPARTMENT_OCID \
-       -vcn_ocid $EX_VNC_OCID \
-       -subnet_ocid $EX_SUBNET_OCID \
-       -oke_ocid $EX_OKE_OCID \
-       -atp_ocid $EX_ATP_OCID \
-       -mysql_ocid $EX_MYSQL_OCID \
-       -db_ocid $EX_DB_OCID \
-       -db_compartment_ocid $EX_DB_COMPARTMENT_OCID \
+       -vcn_ocid $TF_VAR_vcn_ocid \
+       -subnet_ocid $TF_VAR_subnet_ocid \
+       -oke_ocid $TF_VAR_oke_ocid \
+       -atp_ocid $TF_VAR_atp_ocid \
+       -mysql_ocid $TF_VAR_mysql_ocid \
        -auth_token $OCI_TOKEN \
-       -apigw_ocid $EX_APIGW_OCID \
-       -bastion_ocid $EX_BASTION_OCID \
-       -fnapp_ocid $EX_FNAPP_OCID > ${TEST_DIR}.log 2>&1 
+       -apigw_ocid $TF_VAR_apigw_ocid \
+       -bastion_ocid $TF_VAR_bastion_ocid \
+       -fnapp_ocid $TF_VAR_fnapp_ocid > ${TEST_DIR}.log 2>&1 
+
+#       -db_ocid $TF_VAR_db_ocid \
+#       -db_compartment_ocid $EX_COMPARTMENT_OCID \
+
+
   if [ -d output ]; then 
+    mkdir output/target
+    cp $TEST_HOME/common/target/ssh* output/target/.
     mv output $TEST_DIR               
     build_test_destroy
   else
@@ -149,17 +154,6 @@ loop_java_framework () {
 
 loop_lang () {
   mkdir $TEST_HOME/$OPTION_DEPLOY
-  if [ "$OPTION_DEPLOY" == "kubernetes" ]; then
-    export EX_MYSQL_OCID=$EX_OKE_MYSQL_OCID
-    export EX_VNC_OCID=$EX_OKE_VNC_OCID
-    export EX_SUBNET_OCID=$EX_OKE_SUBNET_OCID
-    export EX_ATP_OCID=$EX_OKE_ATP_OCID
-  else
-    export EX_MYSQL_OCID=$EX_SHARED_MYSQL_OCID
-    export EX_VNC_OCID=$EX_SHARED_VNC_OCID
-    export EX_SUBNET_OCID=$EX_SHARED_SUBNET_OCID
-    export EX_ATP_OCID=$EX_OKE_ATP_OCID
-  fi
 
   OPTION_LANG=java 
   OPTION_JAVA_VM=jdk 
@@ -211,7 +205,17 @@ mkdir $TEST_HOME
 cd $TEST_HOME
 git clone https://github.com/mgueury/oci-starter
 
+cd $TEST_HOME/oci-starter
+./oci_starter.sh -common_prefix tsall -common atp,mysql,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
+mv output/common ../common
+cd $TEST_HOME/common
+./build.sh
+cd $TEST_HOME
+. ./common.sh
 
 date
 loop_deploy
 date
+
+cd $TEST_HOME/common/common
+./destroy.sh --auto-approve

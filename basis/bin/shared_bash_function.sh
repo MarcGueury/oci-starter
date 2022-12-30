@@ -18,8 +18,8 @@ build_ui() {
     oci os object bulk-upload -ns $TF_VAR_namespace -bn ${TF_VAR_prefix}-public-bucket --src-dir ui --overwrite --content-type auto
   else
     # Kubernetes and Container Instances
-    docker image rm ui:latest
-    docker build -t ui:latest .
+    docker image rm ${TF_VAR_prefix}-ui:latest
+    docker build -t ${TF_VAR_prefix}-ui:latest .
   fi 
 }
 
@@ -55,11 +55,11 @@ ocir_docker_push () {
   echo DOCKER_PREFIX=$DOCKER_PREFIX
 
   # Push image in registry
-  docker tag app $DOCKER_PREFIX/app:latest
-  docker push $DOCKER_PREFIX/app:latest
+  docker tag ${TF_VAR_prefix}-app ${DOCKER_PREFIX}/${TF_VAR_prefix}-app:latest
+  docker push ${DOCKER_PREFIX}/${TF_VAR_prefix}-app:latest
 
-  docker tag ui $DOCKER_PREFIX/ui:latest
-  docker push $DOCKER_PREFIX/ui:latest
+  docker tag ${TF_VAR_prefix}-ui ${DOCKER_PREFIX}/${TF_VAR_prefix}-ui:latest
+  docker push ${DOCKER_PREFIX}/${TF_VAR_prefix}-ui:latest
 }
 
 replace_db_user_password_in_file() {
@@ -96,6 +96,12 @@ get_attribute_from_tfstate () {
   RESULT=`jq -r '.resources[] | select(.name=="'$2'") | .instances[0].attributes.'$3'' $STATE_FILE`
   set_if_not_null $1 $RESULT
 }
+
+get_id_from_tfstate () {
+  RESULT=`jq -r '.resources[] | select(.name=="'$2'") | select(.mode=="managed") | .instances[0].attributes.id' $STATE_FILE`
+  set_if_not_null $1 $RESULT
+}
+
 
 get_output_from_tfstate () {
   RESULT=`jq -r '.outputs."'$2'".value' $STATE_FILE | sed "s/ //"`

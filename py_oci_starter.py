@@ -1,89 +1,109 @@
 #!/usr/bin/env python3
 # OCI Starter
-# 
+#
 # Script to create an OCI deployment scaffold with application source code
-# 
+#
 # Authors: Marc Gueury & Ewan Slater
 # Date: 2022-11-24
-import sys, os, shutil, json
+import sys
+import os
+import shutil
+import json
 from datetime import datetime
+from distutils.dir_util import copy_tree
 
-# constants
-ABORT='ABORT'
-GIT='git'
-CLI='cli'
-ZIP='zip'
-EXISTING='existing'
-NEW='new'
-TO_FILL="__TO_FILL__"
-OUTPUT_DIR = os.getenv('REPOSITORY_NAME')
+## constants ################################################################
+
+ABORT = 'ABORT'
+GIT = 'git'
+CLI = 'cli'
+COMMON='common'
+ZIP = 'zip'
+EXISTING = 'existing'
+NEW = 'new'
+TO_FILL = "__TO_FILL__"
 BASIS_DIR = "basis"
 
-# functions
-def title():
-    s = "-- " + script_name() + " "
-    return s.ljust(78,'-')
+## globals ##################################################################
+
+output_dir = "output"
+zip_dir = ""
+a_common = []
+
+## functions ################################################################
+
+def title(t):
+    s = "-- " + t + " "
+    return s.ljust(78, '-')
+
 
 def script_name():
     return os.path.basename(__file__)
 
+
 def get_mode():
     return params['mode']
+
 
 def prog_arg_list():
     arr = sys.argv.copy()
     arr.pop(0)
     return arr
 
+
 def prog_arg_dict():
     return list_to_dict(prog_arg_list())
 
+
 MANDATORY_OPTIONS = {
-    CLI: ['-language','-deploy','-db_password']
+    CLI: ['-language', '-deploy', '-db_password'],
+    COMMON: ['-common', '-common_prefix','-db_password']
 }
 
 def mandatory_options(mode):
     return MANDATORY_OPTIONS[mode]
+
 
 default_options = {
     '-prefix': 'starter',
     '-java_framework': 'springboot',
     '-java_vm': 'jdk',
     '-java_version': '17',
-    '-kubernetes': 'oke',
     '-ui': 'html',
     '-database': 'atp',
     '-license': 'included',
-    '-vcn_strategy': NEW,
     '-mode': CLI,
     '-infra_as_code': 'terraform_local',
 }
 
-no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid', \
-    '-atp_ocid', '-db_ocid', '-pdb_ocid', '-mysql_ocid', '-db_user', \
-    '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token', \
-    '-subnet_ocid']
+no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid',
+                      '-atp_ocid', '-db_ocid', '-db_compartment_ocid', '-pdb_ocid', '-mysql_ocid',
+                      '-db_user', '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token',
+                      '-subnet_ocid']
 
 # hidden_options - allowed but not advertised
-hidden_options = ['-zip']
+hidden_options = ['-zip', '-common','-common_prefix']
+
 
 def allowed_options():
     return list(default_options.keys()) + hidden_options \
         + mandatory_options(mode) + no_default_options
 
+
 allowed_values = {
-    '-language': {'java','node','python','dotnet','go','php','ords'},
-    '-deploy': {'compute','kubernetes','function','container_instance','ci'},
-    '-java_framework': {'springboot','helidon','tomcat','micronaut'},
-    '-java_vm': {'jdk','graalvm','graalvm_native'},
+    '-language': {'java', 'node', 'python', 'dotnet', 'go', 'php', 'ords', 'none'},
+    '-deploy': {'compute', 'kubernetes', 'function', 'container_instance', 'ci'},
+    '-java_framework': {'springboot', 'helidon', 'tomcat', 'micronaut'},
+    '-java_vm': {'jdk', 'graalvm', 'graalvm_native'},
     '-java_version': {'8', '11', '17'},
-    '-kubernetes':{'oke','docker'},
-    '-ui': {'html','jet','angular','reactjs','jsp','php','none'},
-    '-database': {'atp','database','pluggable','mysql','none'},
-    '-license': {'included','LICENSE_INCLUDED','byol','BRING_YOUR_OWN_LICENSE'},
-    '-infra_as_code': {'terraform_local','terraform_object_storage','resource_manager'},
-    '-mode': {CLI,GIT,ZIP}
+    '-kubernetes': {'oke', 'docker'},
+    '-ui': {'html', 'jet', 'angular', 'reactjs', 'jsp', 'php', 'none'},
+    '-database': {'atp', 'database', 'pluggable', 'mysql', 'none'},
+    '-license': {'included', 'LICENSE_INCLUDED', 'byol', 'BRING_YOUR_OWN_LICENSE'},
+    '-infra_as_code': {'terraform_local', 'terraform_object_storage', 'resource_manager'},
+    '-mode': {CLI, GIT, ZIP}
 }
+
 
 def check_values():
     illegals = {}
@@ -94,11 +114,11 @@ def check_values():
                 illegals[arg] = arg_val
     return illegals
 
+
 def get_tf_var(param):
     special_case = {
         'database': 'TF_VAR_db_strategy',
         'deploy': 'TF_VAR_deploy_strategy',
-        'kubernetes': 'TF_VAR_kubernetes_strategy',
         'license': 'TF_VAR_license_model',
         'ui': 'TF_VAR_ui_strategy'
     }.get(param)
@@ -107,32 +127,29 @@ def get_tf_var(param):
     else:
         return 'TF_VAR_' + param
 
+
 def longhand(key, abbreviations):
     current = params[key]
     if current in abbreviations:
         return abbreviations[current]
     else:
         return current
-        
+
+
 def db_rules():
-    params['database'] = longhand('database', {'atp': 'autonomous', 'dbsystem': 'database'})
-    params['db_existing_strategy'] = NEW
-    db_deps = {'db_ocid': 'database', 'atp_ocid': 'autonomous', 'pdb_ocid': 'pluggable', 'mysql_ocid':'mysql'}
-    for dep in db_deps:
-        if params.get(dep) is not None:
-            params['db_existing_strategy'] = EXISTING
-        elif params.get('database') == params.get(db_deps[dep]) and params.get('db_existing_strategy') == EXISTING:
-            error(f"-{dep} required if db_existing_strategy is existing")
+    params['database'] = longhand(
+        'database', {'atp': 'autonomous', 'dbsystem': 'database'})
+
     if params.get('database') != 'autonomous' and params.get('language') == 'ords':
         error(f'OCI starter only supports ORDS on ATP (Autonomous)')
     if params.get('database') == 'pluggable':
-        if (params.get('db_ocid') is not None):
-            params['db_existing_strategy'] = NEW
         if (params.get('db_ocid') is None and params.get('pdb_ocid') is None):
-          error(f'Plugglable Database needs an existing DB_OCID or PDB_OCID')
+            error(f'Pluggable Database needs an existing DB_OCID or PDB_OCID')
     if params.get('db_user') == None:
-        default_users = {'autonomous':'admin', 'database':'system', 'pluggable':'system',  'mysql':'root', 'none': ''}
+        default_users = {'autonomous': 'admin', 'database': 'system',
+                         'pluggable': 'system',  'mysql': 'root', 'none': ''}
         params['db_user'] = default_users[params['database']]
+
 
 def language_rules():
     if params.get('language') != 'java':
@@ -143,26 +160,21 @@ def language_rules():
         warning('Helidon only supports Java 17. Forcing Java version to 17')
         params['java_version'] = 17
 
+
 def kubernetes_rules():
-    params['deploy'] = longhand('deploy',{'oke':'kubernetes', 'ci':'container_instance'})
-    if params.get('oke_ocid') is not None:
-       params['oke_strategy'] = EXISTING
-    if params.get('deploy') == 'kubernetes':
-        if params.get('kubernetes') == 'docker':
-            params['kubernetes'] = 'Docker image only'
-        else:
-            params['kubernetes'] = 'OKE'
-            if params.get('oke_strategy') == None:
-               params['oke_strategy'] = NEW
+    if 'deploy' in params:
+      params['deploy'] = longhand('deploy', {'oke': 'kubernetes', 'ci': 'container_instance'})
+
 
 def vcn_rules():
-    if 'vcn_ocid' in params:
-        params['vcn_strategy'] = EXISTING
-    elif 'subnet_ocid' in params:
+    if 'vcn_ocid' in params and 'subnet_ocid' not in params:
+        error('-subnet_ocid required for -vcn_ocid')
+    elif 'vcn_ocid' not in params and 'subnet_ocid' in params:
         error('-vcn_ocid required for -subnet_ocid')
 
+
 def ui_rules():
-    params['ui'] = longhand('ui', {'reactjs':'ReactJS','none':'None'})
+    params['ui'] = longhand('ui', {'reactjs': 'ReactJS'})
     if params.get('ui') == 'jsp':
         params['language'] = 'java'
         params['java_framework'] = 'tomcat'
@@ -171,28 +183,47 @@ def ui_rules():
     elif params.get('ui') == 'ruby':
         params['language'] = 'ruby'
 
+
 def auth_token_rules():
     if params.get('deploy') != 'compute' and params.get('auth_token') is None:
         warning('-auth_token is not set. Will need to be set in env.sh')
         params['auth_token'] = TO_FILL
 
+
 def compartment_rules():
     if params.get('compartment_ocid') is None:
-        warning('-compartment_ocid is not set. Components will be created in root compartment. Shame on you!')
+        warning(
+            '-compartment_ocid is not set. Components will be created in root compartment. Shame on you!')
+
 
 def license_rules():
     license_model = os.getenv('LICENSE_MODEL')
     if license_model is not None:
-       params['license'] = license_model
-    params['license'] = longhand('license', {'included': 'LICENSE_INCLUDED','byol': 'BRING_YOUR_OWN_LICENSE'})
+        params['license'] = license_model
+    params['license'] = longhand(
+        'license', {'included': 'LICENSE_INCLUDED', 'byol': 'BRING_YOUR_OWN_LICENSE'})
+
 
 def zip_rules():
     if 'zip' in params:
-       OUTPUT_DIR = params['zip']
-       del params['zip']
-       file_output( 'zip' + os.sep + OUTPUT_DIR + '.param', [json.dumps(params)])
+        global output_dir, zip_dir
+        if 'common_prefix' in params:
+             zip_dir = params['common_prefix']
+        else:
+             zip_dir = params['prefix']
+        output_dir = "zip" + os.sep + params['zip'] + os.sep + zip_dir
+        file_output('zip' + os.sep + params['zip'] + '.param', [json.dumps(params)])
+
+
+def common_rules():
+    if 'common_prefix' in params:
+        global a_common 
+        a_common=params['common'].split(',')
+
 
 def apply_rules():
+    zip_rules()
+    common_rules()
     language_rules()
     kubernetes_rules()
     ui_rules()
@@ -201,16 +232,19 @@ def apply_rules():
     auth_token_rules()
     compartment_rules()
     license_rules()
-    zip_rules()
+
 
 def error(msg):
     errors.append(f'Error: {msg}')
 
+
 def warning(msg):
     warnings.append(f'WARNING: {msg}')
 
+
 def print_warnings():
     print(get_warnings())
+
 
 def get_warnings():
     s = ''
@@ -218,11 +252,14 @@ def get_warnings():
         s += (f'{warning}\n')
     return s
 
+
 def help():
     message = f'''
 Usage: {script_name()} [OPTIONS]
 
 oci-starter.sh
+   -common (optional) atp | database | mysql | fnapp | apigw | oke 
+   -common_prefix (optional)
    -apigw_ocid (optional)
    -atp_ocid (optional)
    -auth_token (optional)
@@ -271,13 +308,16 @@ oci-starter.sh
     message += get_warnings()
     return message
 
+
 def list_to_dict(a_list):
     it = iter(a_list)
     res_dct = dict(zip(it, it))
     return res_dct
 
-def deprefix_keys(a_dict, prefix_length = 1):
-    return dict(map(lambda x: (x[0][prefix_length:],x[1]),a_dict.items()))
+
+def deprefix_keys(a_dict, prefix_length=1):
+    return dict(map(lambda x: (x[0][prefix_length:], x[1]), a_dict.items()))
+
 
 def missing_parameters(supplied_params, expected_params):
     expected_set = set(expected_params)
@@ -286,16 +326,41 @@ def missing_parameters(supplied_params, expected_params):
         expected_set.discard(supplied)
     return list(expected_set)
 
+
 def get_params():
-    return deprefix_keys( {**default_options, **prog_arg_dict()} )
+    return deprefix_keys({**default_options, **prog_arg_dict()})
+
 
 def git_params():
     keys = ['git_url', 'repository_name', 'oci_username']
     values = prog_arg_list()
     return dict(zip(keys, values))
 
+
 def readme_contents():
-    contents = ['''## OCI-Starter
+    if 'common_prefix' in params:
+        contents = ['''## OCI-Starter - Common Resources
+### Usage 
+
+### Commands
+- common
+    - build.sh   : Create the Common Resources using Terraform
+    - destroy.sh : Destroy the objects created by Terraform
+    - env.sh     : Contains the settings of the project
+
+### Directories
+- common/src     : Sources files
+    - terraform  : Terraform scripts (Command: plan.sh / apply.sh)
+
+### After Build
+- common.sh      : File created during the build.sh and imported in each application
+- app1           : Directory with an application using "common.sh" 
+- app2           : ...
+...
+    '''
+                ]
+    else:
+        contents = ['''## OCI-Starter
 ### Usage 
 
 ### Commands
@@ -305,32 +370,47 @@ def readme_contents():
 
 ### Directories
 - src           : Sources files
-  - app         : Source of the Backend Application (Command: build_app.sh)
-  - ui          : Source of the User Interface (Command: build_ui.sh)
-  - db          : SQL files of the database
-  - terraform   : Terraform scripts (Command: plan.sh / apply.sh)'''
-    ]
-    if params['deploy'] == 'compute':
-        contents.append("  - compute     : Contains the deployment files to Compute")
-    elif params['deploy'] == 'kubernetes':
-        contents.append("  - oke         : Contains the deployment files to Kubernetes")
+    - app       : Source of the Backend Application (Command: build_app.sh)
+    - ui        : Source of the User Interface (Command: build_ui.sh)
+    - db        : SQL files of the database
+    - terraform : Terraform scripts (Command: plan.sh / apply.sh)'''
+                ]
+        if params['deploy'] == 'compute':
+            contents.append(
+                "  - compute     : Contains the deployment files to Compute")
+        elif params['deploy'] == 'kubernetes':
+            contents.append(
+                "  - oke         : Contains the deployment files to Kubernetes")
+
     contents.append('\n### Next Steps:')
     if TO_FILL in params.values():
-        contents.append("- Edit the file env.sh. Some variables need to be filled:")
+        contents.append(
+            "- Edit the file env.sh. Some variables need to be filled:")
         for param, value in params.items():
             if value == TO_FILL:
-                contents.append(f'export {get_tf_var(param)}="{params[param]}"')
+                contents.append(
+                    f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
-    if mode == CLI:
-        contents.append("  cd output")
+    if 'common_prefix' in params:
+        contents.append("  # Build Common Resources")
+        contents.append(f"  cd {params['common_prefix']}/common")
+        contents.append("  ./build.sh")       
+        contents.append("  # Build Application")
+        contents.append(f"  cd ../{params['prefix']}")
+    else:
+        contents.append(f"  cd {params['prefix']}")
     contents.append("  ./build.sh")
     return contents
 
 def env_param_list():
     env_params = list(params.keys())
-    exclude = ['mode','infra_as_code']
-    if params['language'] != 'java':
+    exclude = ['mode', 'infra_as_code', 'zip', 'prefix']
+    if params.get('language') != 'java' or 'common_prefix' in params:
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
+    if 'common_prefix' in params:
+        exclude.extend(['ui', 'database', 'language', 'deploy', 'db_user', 'common_prefix'])
+    else:
+        exclude.append('common')
     print(exclude)
     for x in exclude:
         if x in env_params:
@@ -342,79 +422,407 @@ def env_sh_contents():
     print(env_params)
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")
     contents = ['#!/bin/bash']
-    contents.append('SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
+    contents.append(
+        'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
     contents.append(f'export OCI_STARTER_CREATION_DATE={timestamp}')
     contents.append(f'export OCI_STARTER_VERSION=1.4')
     contents.append('')
     contents.append('# Env Variables')
-    if params.get('compartment_ocid') == None:
-        contents.append('# export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')
-    for param in env_params:
-        tf_var_comment(contents, param)
-        contents.append(f'export {get_tf_var(param)}="{params[param]}"')
+    if 'common_prefix' in params:
+        prefix = params["common_prefix"]
+    else:
+        prefix = params["prefix"]
+    contents.append(f'export TF_VAR_prefix="{prefix}"')
     contents.append('')
-    contents.append('# Get other env variables automatically (-silent flag can be passed)')
+
+    common_contents = []
+    for param in env_params:
+        if param.endswith("_ocid") or param in ["db_password", "auth_token", "license"]:
+            tf_var_comment(common_contents, param)
+            common_contents.append(f'export {get_tf_var(param)}="{params[param]}"')
+        else:
+            tf_var_comment(contents, param)
+            contents.append(f'export {get_tf_var(param)}="{params[param]}"')
+    contents.append('')
+    if 'common_prefix' in params:
+        contents.append("if [ -f $SCRIPT_DIR/../../common.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../../common.sh")      
+    else:
+        contents.append("if [ -f $SCRIPT_DIR/../common.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../common.sh")      
+    contents.append("else")      
+    if params.get('compartment_ocid') == None:
+        contents.append('  # export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')       
+
+    for x in common_contents:
+        contents.append("  " + x)
+
+    contents.append('')
+    contents.append('  # Landing Zone')
+    contents.append('  # export TF_VAR_lz_appdev_cmp_ocid=$TF_VAR_compartment_ocid')
+    contents.append('  # export TF_VAR_lz_database_cmp_ocid=$TF_VAR_compartment_ocid')
+    contents.append('  # export TF_VAR_lz_network_cmp_ocid=$TF_VAR_compartment_ocid')
+    contents.append('  # export TF_VAR_lz_security_cmp_ocid=$TF_VAR_compartment_ocid')
+
+    contents.append("fi")      
+
+    contents.append('')
+    contents.append(
+        '# Get other env variables automatically (-silent flag can be passed)')
     contents.append('. $SCRIPT_DIR/bin/auto_env.sh $1')
     return contents
+
 
 def tf_var_comment(contents, param):
     comments = {
         'auth_token': ['See doc: https://docs.oracle.com/en-us/iaas/Content/Registry/Tasks/registrygettingauthtoken.htm'],
-        'db_password': ['Requires at least 12 characters, 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345','If not filled, it will be generated randomly during the first build.'],
+        'db_password': ['Requires at least 12 characters, 2 letters in lowercase, 2 in uppercase, 2 numbers, 2 special characters. Ex: LiveLab__12345', 'If not filled, it will be generated randomly during the first build.'],
         'license': ['BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED']
     }.get(param)
     if comments is not None:
-       for comment in comments:
-          contents.append(f'# {get_tf_var(param)} : {comment}')
+        for comment in comments:
+            contents.append(f'# {get_tf_var(param)} : {comment}')
 
-def write_env_sh(output_dir = OUTPUT_DIR):
+
+def write_env_sh():
     output_path = output_dir + os.sep + 'env.sh'
     file_output(output_path, env_sh_contents())
     os.chmod(output_path, 0o755)
 
-def write_readme(output_dir = OUTPUT_DIR):
+
+def write_readme():
     output_path = output_dir + os.sep + 'README.md'
     file_output(output_path, readme_contents())
+
 
 def file_output(file_path, contents):
     output_file = open(file_path, "w")
     output_file.writelines('%s\n' % line for line in contents)
     output_file.close()
 
-def copy_basis(basis_dir = BASIS_DIR, output_dir = OUTPUT_DIR):
-    shutil.copytree(basis_dir, output_dir)
+
+## COPY FILES ###############################################################
+def copy_basis(basis_dir=BASIS_DIR):
+    print( "output_dir="+output_dir )
+    copy_tree(basis_dir, output_dir)
+
+def output_replace(old_string, new_string, filename):
+    # Safely read the input filename using 'with'
+    with open(output_dir + os.sep + filename) as f:
+        s = f.read()
+        if old_string not in s:
+            print('"{old_string}" not found in {filename}.'.format(**locals()))
+            return
+
+    # Safely write the changed content, if found in the file
+    with open(output_dir + os.sep + filename, 'w') as f:
+        s = s.replace(old_string, new_string)
+        f.write(s)
+
+def cp_terraform(file1, file2=None):
+    print("cp_terraform " + file1)
+    shutil.copy2("option/terraform/"+file1, output_dir + "/src/terraform")
+
+    # Append a second file
+    if file2 is not None:
+        print("append " + file2)
+        # opening first file in append mode and second file in read mode
+        f1 = open(output_dir + "/src/terraform/"+file1, 'a+')
+        f2 = open("option/terraform/"+file2, 'r')
+        # appending the contents of the second file to the first file
+        f1.write('\n\n')
+        f1.write(f2.read())
+        f1.close()
+        f2.close()
+
+def output_copy_tree(src, target):
+    copy_tree(src, output_dir + os.sep + target)
+
+def output_move(src, target):
+    shutil.move(output_dir + os.sep + src, output_dir + os.sep + target)
+
+def output_mkdir(src):
+    os.mkdir(output_dir+ os.sep + src)
+
+def output_rm_tree(src):
+    shutil.rmtree(output_dir + os.sep + src)
+ 
+def cp_dir_src_db(db_type):
+    print("cp_dir_src_db "+db_type)
+    output_copy_tree("option/src/db/"+db_type, "src/db")
+
+#----------------------------------------------------------------------------
+# Create Directory (shared for common and output)
+def create_dir_shared():
+    copy_basis()
+    write_env_sh()
+    write_readme()
+
+    # -- Infrastructure As Code ---------------------------------------------
+    # Default state local
+    if params.get('infra_as_code') == "resource_manager":
+        output_copy_tree("option/infra_as_code/resource_manager", "src/terraform")
+    elif params.get('infra_as_code') == "terraform_object_storage":
+        output_copy_tree("option/infra_as_code/terraform_object_storage", "src/terraform")
+    else:
+        output_copy_tree("option/infra_as_code/terraform_local", "src/terraform")
+
+    # -- Network ------------------------------------------------------------
+    if 'vcn_ocid' in params:
+        cp_terraform("network_existing.tf")
+    else:
+        cp_terraform("network.tf")
+
+    # -- Bastion ------------------------------------------------------------
+    if 'bastion_ocid' in params:
+        cp_terraform("bastion_existing.tf")
+    else:
+        cp_terraform("bastion.tf")
+
+#----------------------------------------------------------------------------
+# Create Output Directory
+def create_output_dir():
+    create_dir_shared()
+
+    # -- APP ----------------------------------------------------------------
+    if params['language'] == "none":
+        output_rm_tree("src/app")
+    else:
+        if params.get('deploy') == "function":
+            app = "fn/fn_"+params['language']
+        else:
+            app = params['language']
+            if params['language'] == "java":
+                app = "java_" + params['java_framework']
+
+        if params['database'] == "autonomous" or params['database'] == "database" or params['database'] == "pluggable":
+            app_db = "oracle"
+        elif params['database'] == "mysql":
+            app_db = "mysql"
+        elif params['database'] == "none":
+            app_db = "none"
+
+        app_dir = app+"_"+app_db
+        print("app_dir="+app_dir)
+
+        # Function Common
+        if params.get('deploy') == "function":
+            output_copy_tree("option/src/app/fn/fn_common", "src/app")
+
+        # Generic version for Oracle DB
+        if os.path.exists("option/src/app/"+app):
+            output_copy_tree("option/src/app/"+app, "src/app")
+
+        # Overwrite the generic version (ex for mysql)
+        if os.path.exists("option/src/app/"+app_dir):
+            output_copy_tree("option/src/app/"+app_dir, "src/app")
+
+        if params['language'] == "java":
+            # FROM ghcr.io/graalvm/jdk:java17
+            # FROM openjdk:17
+            # FROM openjdk:17-jdk-slim
+            if os.path.exists(output_dir + "/src/app/Dockerfile"):
+                if params['java_vm'] == "graalvm":
+                    output_replace('##DOCKER_IMAGE##', 'ghcr.io/graalvm/jdk:java17', "src/app/Dockerfile")
+                else:
+                    output_replace('##DOCKER_IMAGE##', 'openjdk:17-jdk-slim', "src/app/Dockerfile")
+
+    # -- User Interface -----------------------------------------------------
+    if params.get('ui') == "none":
+        print("No UI")
+        output_rm_tree("src/ui")
+    else:
+        ui_lower = params.get('ui').lower()
+        output_copy_tree("option/src/ui/"+ui_lower, "src/ui")
+
+    # -- Deployment ---------------------------------------------------------
+    if params['language'] != "none":
+        if params.get('deploy') == "kubernetes":
+            if 'oke_ocid' in params:
+                cp_terraform("oke_existing.tf", "oke_append.tf")
+            else:
+                cp_terraform("oke.tf", "oke_append.tf")
+            output_mkdir("src/oke")
+            output_copy_tree("option/oke", "src/oke")
+            output_move("src/oke/oke_deploy.sh", "bin/oke_deploy.sh")
+            output_move("src/oke/oke_destroy.sh", "bin/oke_destroy.sh")
+
+            if os.path.exists(output_dir+"/src/app/ingress-app.yaml"):
+                output_move("src/app/ingress-app.yaml", "src/oke/ingress-app.yaml")
+
+            output_replace('##PREFIX##', params["prefix"], "src/app/app.yaml")
+            output_replace('##PREFIX##', params["prefix"], "src/ui/ui.yaml")
+            output_replace('##PREFIX##', params["prefix"], "src/oke/ingress-app.yaml")
+            output_replace('##PREFIX##', params["prefix"], "src/oke/ingress-ui.yaml")
+
+        elif params.get('deploy') == "function":
+            if 'fnapp_ocid' in params:
+                cp_terraform("function_existing.tf", "function_append.tf")
+            else:
+                cp_terraform("function.tf", "function_append.tf")
+            if params['language'] == "ords":
+                apigw_append = "apigw_fn_ords_append.tf"
+            else:
+                apigw_append = "apigw_fn_append.tf"
+            if 'apigw_ocid' in params:
+                cp_terraform("apigw_existing.tf", apigw_append)
+            else:
+                cp_terraform("apigw.tf", apigw_append)
+
+        elif params.get('deploy') == "compute":
+            cp_terraform("compute.tf")
+            output_mkdir("src/compute")
+            output_copy_tree("option/compute", "src/compute")
+
+        elif params.get('deploy') == "container_instance":
+            cp_terraform("container_instance.tf")
+            # output_mkdir src/container_instance
+            output_copy_tree("option/container_instance", "bin")
+
+            if params['language'] == "ords":
+                app_url = "${local.ords_url}/starter/module/$${request.path[pathname]}"
+            elif params['language'] == "java" and params['java_framework'] == "tomcat":
+                app_url = "http://${local.ci_private_ip}:8080/starter-1.0/$${request.path[pathname]}"
+            else:
+                app_url = "http://${local.ci_private_ip}:8080/$${request.path[pathname]}"
+
+            if 'apigw_ocid' in params:
+                cp_terraform("apigw_existing.tf", "apigw_ci_append.tf")
+                output_replace('##APP_URL##', app_url,"src/terraform/apigw_existing.tf")
+            else:
+                cp_terraform("apigw.tf", "apigw_ci_append.tf")
+                output_replace('##APP_URL##', app_url, "src/terraform/apigw.tf")
+
+    # -- Database ----------------------------------------------------------------
+    if params.get('database') != "none":
+        cp_terraform("output.tf")
+        output_mkdir("src/db")
+
+        if params.get('database') == "autonomous":
+            cp_dir_src_db("oracle")
+            if 'atp_ocid' in params:
+                cp_terraform("atp_existing.tf", "atp_append.tf")
+            else:
+                cp_terraform("atp.tf", "atp_append.tf")
+
+        if params.get('database') == "database":
+            cp_dir_src_db("oracle")
+            if 'db_ocid' in params:
+                cp_terraform("dbsystem_existing.tf", "dbsystem_append.tf")
+            else:
+                cp_terraform("dbsystem.tf", "dbsystem_append.tf")
+
+        if params.get('database') == "pluggable":
+            cp_dir_src_db("oracle")
+            if 'pdb_ocid' in params:
+                cp_terraform("dbsystem_pluggable_existing.tf")
+            else:
+                cp_terraform("dbsystem_existing.tf", "dbsystem_pluggable.tf")
+
+        if params.get('database') == "mysql":
+            cp_dir_src_db("mysql")
+            if 'mysql_ocid' in params:
+                cp_terraform("mysql_existing.tf", "mysql_append.tf")
+            else:
+                cp_terraform("mysql.tf", "mysql_append.tf")
+
+    if os.path.exists(output_dir + "/src/app/oracle.sql"):
+        output_move("src/app/oracle.sql", "src/db/oracle.sql")
+
+#----------------------------------------------------------------------------
+# Create Common Directory
+def create_common_dir():
+    create_dir_shared()
+
+    # -- APP ----------------------------------------------------------------
+    output_copy_tree("option/src/app/common", "src/app")
+    os.remove(output_dir + "/src/app/app.yaml")
+
+    # -- User Interface -----------------------------------------------------
+    output_rm_tree("src/ui")
+
+    # -- Common -------------------------------------------------------------
+    if "atp" in a_common:
+        if 'atp_ocid' in params:
+            cp_terraform("atp_existing.tf")
+        else:
+            cp_terraform("atp.tf")
+
+    if "database" in a_common:
+        if 'db_ocid' in params:
+            cp_terraform("dbsystem_existing.tf")
+        else:
+            cp_terraform("dbsystem.tf")
+
+    if "mysql" in a_common:
+        if 'mysql_ocid' in params:
+            cp_terraform("mysql_existing.tf")
+        else:
+            cp_terraform("mysql.tf")
+
+    if 'oke' in a_common:
+        if 'oke_ocid' in params:
+            cp_terraform("oke_existing.tf", "oke_append.tf")
+        else:
+            cp_terraform("oke.tf", "oke_append.tf")
+            shutil.copy2("option/oke/oke_destroy.sh", output_dir +"/bin")
+
+    if 'fnapp' in a_common:
+        if 'fnapp_ocid' in params:
+            cp_terraform("function_existing.tf")
+        else:
+            cp_terraform("function.tf")
+
+    if 'apigw' in a_common:
+        if 'apigw_ocid' in params:
+            cp_terraform("apigw_existing.tf")
+        else:
+            cp_terraform("apigw.tf")
+
+    allfiles = os.listdir(output_dir)
+    allfiles.remove('README.md')
+    # Create a common directory
+    output_mkdir('common')
+    # iterate on all files to move them to 'common'
+    for f in allfiles:
+        os.rename(output_dir + os.sep + f, output_dir + os.sep + 'common' + os.sep + f)
+
+#----------------------------------------------------------------------------
 
 # the script
-print(title())
+print(title(script_name()))
 
-script_dir=os.getcwd()
+script_dir = os.getcwd()
 
 params = get_params()
 mode = get_mode()
 unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
 illegal_params = check_values()
-missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(mode))
+if 'common_prefix' in params:
+  missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(COMMON))
+else:  
+  missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(mode))
+
 if len(unknown_params) > 0 or len(illegal_params) > 0 or len(missing_params) > 0:
     mode = ABORT
 
-warnings=[]
-errors=[]
+warnings = []
+errors = []
 
 if mode == CLI:
     apply_rules()
     if len(errors) > 0:
         mode = ABORT
-    elif os.path.isdir(OUTPUT_DIR):
+    elif os.path.isdir(output_dir):
         print("Output dir exists already.")
         mode = ABORT
     else:
-          print_warnings()
-          copy_basis()
-          write_env_sh()
-          write_readme()
+        print_warnings()
 
 if mode == GIT:
     print("GIT mode currently not implemented.")
+    # git clone $GIT_URL
+    # cp ../mode/git/* $REPOSITORY_NAME/.
     exit()
 
 if mode == ABORT:
@@ -423,5 +831,48 @@ if mode == ABORT:
 
 print(f'Mode: {mode}')
 print(f'params: {params}')
-print("That's all Folks!")
-print(title())
+
+# -- Copy Files -------------------------------------------------------------
+output_dir_orig = output_dir
+
+if 'common_prefix' in params:
+    create_common_dir()
+   
+if 'common' in params:
+    output_dir = output_dir + os.sep + params['prefix']
+    # The application will use the Common Resources created by common above.
+    del params['common']
+    params['vcn_ocid'] = TO_FILL
+    params['subnet_ocid'] = TO_FILL
+    params['bastion_ocid'] = TO_FILL
+    to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid"}
+    for x in a_common:
+        ocid = to_ocid[x]
+        params[ocid] = TO_FILL
+
+if 'deploy' in params:
+    create_output_dir()
+
+# -- Done --------------------------------------------------------------------
+title("Done")
+print("Directory "+output_dir+" created.")
+
+# -- Post Creation -----------------------------------------------------------
+
+if mode == GIT:
+    print("GIT mode currently not implemented.")
+    # git config --local user.email "test@example.com"
+    # git config --local user.name "${OCI_USERNAME}"
+    # git add .
+    # git commit -m "added latest files"
+    # git push origin main
+
+elif "zip" in params:
+    # The goal is to have a file that when uncompressed create a directory prefix.
+    shutil.make_archive("zip"+os.sep+params['zip'], format='zip',root_dir="zip"+os.sep+params['zip'], base_dir=zip_dir)
+    print("Zip file created: zip"+os.sep+params['zip']+".zip")
+else:
+    print()
+    readme= output_dir_orig + os.sep + "README.md"
+    with open(readme, 'r') as fin:
+        print(fin.read())

@@ -26,11 +26,11 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   # Replace the user and password in the start file
   replace_db_user_password_in_file ../../target/compute/app/start.sh  
 else
-  docker image rm app:latest
+  docker image rm ${TF_VAR_prefix}-app:latest
   if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
-    docker build -f Dockerfile.native -t app:latest .
+    docker build -f Dockerfile.native -t ${TF_VAR_prefix}-app:latest .
   else
-    docker build -t app:latest . 
+    docker build -t ${TF_VAR_prefix}-app:latest . 
   fi
   exit_on_error    
 fi  

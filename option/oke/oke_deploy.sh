@@ -3,7 +3,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
 cd $SCRIPT_DIR/..
 
-# Call build_common to push the app:latest and ui:latest to OCIR Docker registry
+# Call build_common to push the ${TF_VAR_prefix}-app:latest and ${TF_VAR_prefix}-ui:latest to OCIR Docker registry
 ocir_docker_push
 
 # One time configuration

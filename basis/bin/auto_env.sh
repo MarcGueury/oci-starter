@@ -3,7 +3,7 @@ export BIN_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pw
 export ROOT_DIR=${BIN_DIR%/*}
 
 # Shared BASH Functions
-. $BIN_DIR/common.sh
+. $BIN_DIR/shared_bash_function.sh
 
 # Silent mode (default is not silent)
 if [ "$1" == "-silent" ]; then
@@ -26,13 +26,15 @@ if [ "$TF_VAR_db_password" == "__TO_FILL__" ]; then
 fi
 
 # -- env.sh
-if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
-  echo "Error: missing environment variables."
-  echo
-  echo "Edit the file env.sh. Some variables needs to be filled:" 
-  echo `cat env.sh | grep __TO_FILL__` 
-  exit
-fi
+if [ -v TF_VAR_common ] || [ ! -v TF_VAR_common_prefix ]; then 
+  if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
+    echo "Error: missing environment variables."
+    echo
+    echo "Edit the file env.sh. Some variables needs to be filled:" 
+    echo `cat env.sh | grep __TO_FILL__` 
+    exit
+  fi
+fi  
 # . $ROOT_DIR/env.sh
 
 if ! command -v jq &> /dev/null; then
@@ -86,9 +88,11 @@ else
   fi
 
   # SSH keys
-  export TF_VAR_ssh_public_key=$(cat $TARGET_DIR/ssh_key_starter.pub)
-  export TF_VAR_ssh_private_key=$(cat $TARGET_DIR/ssh_key_starter)
-
+  if [ -f $TARGET_DIR/ssh_key_starter ]; then 
+    export TF_VAR_ssh_public_key=$(cat $TARGET_DIR/ssh_key_starter.pub)
+    export TF_VAR_ssh_private_key=$(cat $TARGET_DIR/ssh_key_starter)
+    export TF_VAR_ssh_private_path=$TARGET_DIR/ssh_key_starter
+  fi
 
   if [ -z "$TF_VAR_compartment_ocid" ]; then
     echo "WARNING: compartment_ocid is not defined."

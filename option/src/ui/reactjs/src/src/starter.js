@@ -73,7 +73,7 @@ export default function Starter() {
                     </Toolbar>
                 </AppBar>
             </Box>
-            <Container maxWidth="sm">
+            <Container style={{ marginLeft: "0px" }}>
                 <br></br>
                 <Typography variant="h3">Sample</Typography>
                 <br></br>
@@ -82,7 +82,7 @@ export default function Starter() {
                 <br></br>
                 <Typography variant="h5">Department Table</Typography>
 
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                <Table sx={{ maxWidth: 650 }} size="small" aria-label="a dense table">
                     <TableHead>
                         <TableRow>
                             <TableCell align="right">Number</TableCell>

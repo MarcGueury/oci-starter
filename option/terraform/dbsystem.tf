@@ -10,11 +10,6 @@ variable character_set {
   default = "AL32UTF8"
 }
 
-# BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
-variable license_model {
-  default="BRING_YOUR_OWN_LICENSE"
-}
-
 resource "oci_database_db_system" "starter_dbsystem" {
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = local.lz_database_cmp_ocid
@@ -50,4 +45,8 @@ resource "oci_database_db_system" "starter_dbsystem" {
 data "oci_database_db_homes" "starter_db_homes" {
   compartment_id = local.lz_database_cmp_ocid
   db_system_id   = oci_database_db_system.starter_dbsystem.id
+}
+
+locals {
+  db_compartment_ocid = local.lz_database_cmp_ocid
 }

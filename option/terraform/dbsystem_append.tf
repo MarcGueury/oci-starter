@@ -1,5 +1,5 @@
 data "oci_database_databases" "starter_dbs" {
-  compartment_id = local.lz_database_cmp_ocid
+  compartment_id = local.db_compartment_ocid
   db_home_id     = data.oci_database_db_homes.starter_db_homes.db_homes.0.db_home_id
 }
 
