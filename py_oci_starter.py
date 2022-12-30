@@ -644,11 +644,11 @@ def create_output_dir():
                 cp_terraform("oke.tf", "oke_append.tf")
             output_mkdir("src/oke")
             output_copy_tree("option/oke", "src/oke")
-            output_move("src/oke/oke_deploy.sh", "bin")
-            output_move("src/oke/oke_destroy.sh", "bin")
+            output_move("src/oke/oke_deploy.sh", "bin/oke_deploy.sh")
+            output_move("src/oke/oke_destroy.sh", "bin/oke_destroy.sh")
 
             if os.path.exists(output_dir+"/src/app/ingress-app.yaml"):
-                output_move("src/app/ingress-app.yaml", "src/oke")
+                output_move("src/app/ingress-app.yaml", "src/oke/ingress-app.yaml")
 
             output_replace('##PREFIX##', params["prefix"], "src/app/app.yaml")
             output_replace('##PREFIX##', params["prefix"], "src/ui/ui.yaml")
@@ -727,7 +727,7 @@ def create_output_dir():
                 cp_terraform("mysql.tf", "mysql_append.tf")
 
     if os.path.exists(output_dir + "/src/app/oracle.sql"):
-        output_move("src/app/oracle.sql", "src/db")
+        output_move("src/app/oracle.sql", "src/db/oracle.sql")
 
 #----------------------------------------------------------------------------
 # Create Common Directory

@@ -77,13 +77,18 @@ build_option() {
        -oke_ocid $TF_VAR_oke_ocid \
        -atp_ocid $TF_VAR_atp_ocid \
        -mysql_ocid $TF_VAR_mysql_ocid \
-       -db_ocid $TF_VAR_db_ocid \
-       -db_compartment_ocid $EX_COMPARTMENT_OCID \
        -auth_token $OCI_TOKEN \
        -apigw_ocid $TF_VAR_apigw_ocid \
        -bastion_ocid $TF_VAR_bastion_ocid \
        -fnapp_ocid $TF_VAR_fnapp_ocid > ${TEST_DIR}.log 2>&1 
+
+#       -db_ocid $TF_VAR_db_ocid \
+#       -db_compartment_ocid $EX_COMPARTMENT_OCID \
+
+
   if [ -d output ]; then 
+    mkdir output/target
+    cp $TEST_HOME/common/target/ssh* output/target/.
     mv output $TEST_DIR               
     build_test_destroy
   else
@@ -201,7 +206,7 @@ cd $TEST_HOME
 git clone https://github.com/mgueury/oci-starter
 
 cd $TEST_HOME/oci-starter
-./oci_starter.sh -common_prefix test-all -common atp,mysql,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
+./oci_starter.sh -common_prefix tsall -common atp,mysql,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
 mv output/common ../common
 cd $TEST_HOME/common
 ./build.sh

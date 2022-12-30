@@ -84,7 +84,7 @@ export TF_VAR_bastion_ocid=$TF_VAR_bastion_ocid
 
 EOT
 
-conditional_append autonomous TF_VAR_atp_ocid
+conditional_append atp TF_VAR_atp_ocid
 conditional_append database TF_VAR_db_ocid
 conditional_append mysql TF_VAR_mysql_ocid
 conditional_append oke TF_VAR_oke_ocid
