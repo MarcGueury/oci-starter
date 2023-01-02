@@ -53,6 +53,11 @@ resource "oci_core_instance" "starter_instance" {
       "date"
     ]
   }
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }    
 }
 
 # Output the private and public IPs of the instance

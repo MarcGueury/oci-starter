@@ -72,9 +72,14 @@ resource "oci_core_security_list" "starter_seclist_lb" {
       max = 80
     }
   }
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
-#---------------
+#----------------------------------------------------------------------------
 
 resource "oci_core_security_list" "starter_seclist_node" {
   compartment_id = local.lz_network_cmp_ocid
@@ -187,9 +192,14 @@ resource "oci_core_security_list" "starter_seclist_node" {
       min = "22"
     }
   }
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
-#---------------
+#----------------------------------------------------------------------------
 
 resource oci_core_security_list starter_seclist_api {
   compartment_id = local.lz_network_cmp_ocid
@@ -259,6 +269,11 @@ resource oci_core_security_list starter_seclist_api {
     source_type = "CIDR_BLOCK"
     stateless   = "false"
   }
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 #----------------------------------------------------------------------------
@@ -274,6 +289,11 @@ resource "oci_core_subnet" "starter_nodepool_subnet" {
   security_list_ids = [oci_core_security_list.starter_seclist_node.id,oci_core_vcn.starter_vcn.default_security_list_id,oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-nodepool-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 resource "oci_core_subnet" "starter_lb_subnet" {
@@ -286,6 +306,12 @@ resource "oci_core_subnet" "starter_lb_subnet" {
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id, oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-lb-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
+
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 resource "oci_core_subnet" "starter_api_subnet" {
@@ -298,6 +324,12 @@ resource "oci_core_subnet" "starter_api_subnet" {
   security_list_ids = [oci_core_security_list.starter_seclist_api.id,oci_core_vcn.starter_vcn.default_security_list_id,oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-api-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
+
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 #----------------------------------------------------------------------------
@@ -336,6 +368,11 @@ resource "oci_containerengine_cluster" "starter_oke" {
       services_cidr = "10.2.0.0/16"
     }
   }
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 resource "oci_containerengine_node_pool" "starter_node_pool" {
@@ -363,8 +400,13 @@ resource "oci_containerengine_node_pool" "starter_node_pool" {
     }
     size = var.node_pool_node_config_details_size
   }
-
   ssh_public_key      = var.ssh_public_key
+
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 #----------------------------------------------------------------------------

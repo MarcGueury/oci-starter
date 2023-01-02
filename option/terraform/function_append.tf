@@ -18,6 +18,11 @@ resource "oci_functions_function" "starter_fn_function" {
   trace_config {
     is_enabled = true
   }
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 /*
   # To start faster
   provisioned_concurrency_config {
@@ -39,6 +44,11 @@ resource "oci_identity_policy" "starter_fn_policy" {
     # "ALLOW any-user to use functions-family in compartment id ${local.lz_appdev_cmp_ocid} where ALL {request.principal.type= 'ApiGateway', request.resource.compartment.id = '${local.lz_appdev_cmp_ocid}'}"
     "ALLOW any-user to use functions-family in compartment id ${local.lz_appdev_cmp_ocid} where ALL {request.principal.type= 'ApiGateway'}"
   ]
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 #-- Object Storage ----------------------------------------------------------
@@ -50,6 +60,11 @@ resource "oci_objectstorage_bucket" "starter_bucket" {
   namespace      = var.namespace
   name           = "${var.prefix}-public-bucket"
   access_type    = "ObjectReadWithoutList"
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 locals {

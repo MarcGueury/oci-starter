@@ -1,12 +1,12 @@
 #!/bin/bash
 # Build_app.sh
 #
-# Build the common.sh file.
+# Build the group_common.sh file.
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../../bin/build_common.sh
 
 append () {
-   echo "$1" >> ../../../common.sh
+   echo "$1" >> ../../../group_common.sh
 }
 
 conditional_append() {
@@ -50,9 +50,9 @@ if [ -z "$TF_VAR_bastion_ocid" ]; then
   get_id_from_tfstate "TF_VAR_bastion_ocid" "starter_bastion"
 fi
 
-COMMON=,${TF_VAR_common},
+COMMON=,${TF_VAR_group_common},
 
-cat > ../../../common.sh <<'EOT' 
+cat > ../../../group_common.sh <<'EOT' 
 COMMON_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Commment to create an new oci-starter compartment automatically
@@ -64,10 +64,10 @@ else
   append "export TF_VAR_compartment_ocid=$TF_VAR_compartment_ocid"
 fi
 
-cat >> ../../../common.sh <<EOT 
+cat >> ../../../group_common.sh <<EOT 
 
 # Common Resources Name (Typically: dev, test, qa, prod)
-export TF_VAR_common_prefix=$TF_VAR_prefix
+export TF_VAR_group_name=$TF_VAR_prefix
 
 # Landing Zone
 # export TF_VAR_lz_appdev_cmp_ocid=$TF_VAR_compartment_ocid
@@ -91,7 +91,7 @@ conditional_append oke TF_VAR_oke_ocid
 conditional_append apigw TF_VAR_apigw_ocid
 conditional_append fnapp TF_VAR_fnapp_ocid
 
-cat >> ../../../common.sh <<EOT 
+cat >> ../../../group_common.sh <<EOT 
 
 # Database Password
 export TF_VAR_db_password="$TF_VAR_db_password"
@@ -100,14 +100,14 @@ export TF_VAR_auth_token="$TF_VAR_auth_token"
 
 EOT
 
-cat >> ../../../common.sh <<'EOT' 
+cat >> ../../../group_common.sh <<'EOT' 
 
 # SSH Keys
-export TF_VAR_ssh_public_key=$(cat $COMMON_DIR/common/target/ssh_key_starter.pub)
-export TF_VAR_ssh_private_key=$(cat $COMMON_DIR/common/target/ssh_key_starter)
-export TF_VAR_ssh_private_path=$COMMON_DIR/common/target/ssh_key_starter
+export TF_VAR_ssh_public_key=$(cat $COMMON_DIR/group_common/target/ssh_key_starter.pub)
+export TF_VAR_ssh_private_key=$(cat $COMMON_DIR/group_common/target/ssh_key_starter)
+export TF_VAR_ssh_private_path=$COMMON_DIR/group_common/target/ssh_key_starter
 EOT
 
 echo
-echo "File common.sh created."
+echo "File group_common.sh created."
 echo

@@ -3,6 +3,10 @@ resource oci_apigateway_gateway starter_apigw {
   display_name  = "${var.prefix}-apigw"
   endpoint_type = "PUBLIC"
   subnet_id = data.oci_core_subnet.starter_subnet.id
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 locals {

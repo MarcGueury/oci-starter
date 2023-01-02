@@ -12,6 +12,10 @@ resource "oci_identity_dynamic_group" "starter_ci_dyngroup" {
   description    = "Starter - All Container Instances"
   compartment_id = var.tenancy_ocid
   matching_rule  = "ALL {resource.type='computecontainerinstance'}"
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }    
 }
 
 resource "oci_identity_policy" "starter-ci_policy" {
@@ -21,6 +25,10 @@ resource "oci_identity_policy" "starter-ci_policy" {
   statements = [
     "allow dynamic-group starter-ci-dyngroup to read repos in tenancy"
   ]
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }    
 }
 
 resource oci_container_instances_container_instance starter_container_instance {
@@ -61,6 +69,10 @@ resource oci_container_instances_container_instance starter_container_instance {
     skip_source_dest_check = "true"
     subnet_id              = data.oci_core_subnet.starter_subnet.id
   }
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }    
 }
 
 locals {

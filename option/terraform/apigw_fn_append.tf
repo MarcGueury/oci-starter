@@ -1,4 +1,3 @@
-
 resource "oci_apigateway_deployment" "starter_apigw_deployment" {
   count          = var.fn_image == "" ? 0 : 1
   compartment_id = local.lz_appdev_cmp_ocid
@@ -51,5 +50,9 @@ resource "oci_apigateway_deployment" "starter_apigw_deployment" {
         url    = "${local.bucket_url}/$${request.path[pathname]}"
       }
     }
+  }
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
   }
 }

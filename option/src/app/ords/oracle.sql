@@ -64,5 +64,5 @@ end;
 /
 
 EXIT
--- GET http://ords_url/ords/starter/rest/dept
--- GET http://ords_url/ords/starter/rest/info
+-- GET http://ords_url/ords/starter/module/dept
+-- GET http://ords_url/ords/starter/module/info
