@@ -7,7 +7,7 @@ variable ssh_private_key {}
 # Prefix
 variable prefix { default = "starter" }
 
-# JAVA
+# Java
 variable language { default = "java" }
 variable java_version { default = "17" }
 
@@ -37,4 +37,11 @@ locals {
 # BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
 variable license_model {
   default="BRING_YOUR_OWN_LICENSE"
+}
+
+# Group
+variable group_name { default="" }
+
+locals {
+  group_name = var.group_name == "" ? "none" : var.group_name
 }

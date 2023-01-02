@@ -26,7 +26,9 @@ if [ "$TF_VAR_db_password" == "__TO_FILL__" ]; then
 fi
 
 # -- env.sh
-if [ -v TF_VAR_common ] || [ ! -v TF_VAR_common_prefix ]; then 
+# Do not stop if __TO_FILL__ are not replaced if TF_VAR_group_name exist in env variable
+# XXX -> It would be safer to check also for TF_VAR_xxx containing __TO_FILL__ too
+if [ -v TF_VAR_group_common ] || [ ! -v TF_VAR_group_name ]; then 
   if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
     echo "Error: missing environment variables."
     echo
@@ -35,7 +37,6 @@ if [ -v TF_VAR_common ] || [ ! -v TF_VAR_common_prefix ]; then
     exit
   fi
 fi  
-# . $ROOT_DIR/env.sh
 
 if ! command -v jq &> /dev/null; then
   echo "Command jq could not be found. Please install it"

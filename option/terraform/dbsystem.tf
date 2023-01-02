@@ -39,6 +39,11 @@ resource "oci_database_db_system" "starter_dbsystem" {
   data_storage_size_in_gb = "256"
   license_model           = var.license_model
   node_count              = 1
+
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 # Compatibility with db_existing.tf 

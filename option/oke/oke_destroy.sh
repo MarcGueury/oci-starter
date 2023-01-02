@@ -3,6 +3,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR/..
 
 if [ ! -z "$TF_VAR_oke_ocid" ]; then
+  echo "TF_VAR_oke_ocid=$TF_VAR_oke_ocid"
   echo "Nothing to delete. This was an existing OKE installation"
   exit
   # XXXX Should I delete the app, ui and ingress ?

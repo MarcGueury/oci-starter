@@ -4,13 +4,18 @@ data "oci_database_databases" "starter_dbs" {
 }
 
 resource "oci_database_pluggable_database" "starter_pluggable_database" {
-    #Required
-    container_database_id = data.oci_database_databases.starter_dbs.databases.0.id
-    pdb_name =  "${var.prefix}pdb"
+  #Required
+  container_database_id = data.oci_database_databases.starter_dbs.databases.0.id
+  pdb_name =  "${var.prefix}pdb"
 
-    pdb_admin_password = var.db_password
-    should_pdb_admin_account_be_locked = false
-    tde_wallet_password = var.db_password
+  pdb_admin_password = var.db_password
+  should_pdb_admin_account_be_locked = false
+  tde_wallet_password = var.db_password
+  
+  freeform_tags = {
+    "group" = local.group_name
+    "app_prefix" = var.prefix
+  }
 }
 
 data "oci_database_pluggable_databases" "starter_pdbs" {

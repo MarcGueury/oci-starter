@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-export TEST_HOME=$SCRIPT_DIR/test_common_all
+export TEST_HOME=$SCRIPT_DIR/test_group_all
 . $HOME/bin/env_oci_starter_testsuite.sh
 
 # No color for terraforms logs
@@ -88,7 +88,7 @@ build_option() {
 
   if [ -d output ]; then 
     mkdir output/target
-    cp $TEST_HOME/common/target/ssh* output/target/.
+    cp $TEST_HOME/group_common/target/ssh* output/target/.
     mv output $TEST_DIR               
     build_test_destroy
   else
@@ -206,16 +206,16 @@ cd $TEST_HOME
 git clone https://github.com/mgueury/oci-starter
 
 cd $TEST_HOME/oci-starter
-./oci_starter.sh -common_prefix tsall -common atp,mysql,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
-mv output/common ../common
-cd $TEST_HOME/common
+./oci_starter.sh -group_name tsall -group_common atp,mysql,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
+mv output/group_common ../group_common
+cd $TEST_HOME/group_common
 ./build.sh
 cd $TEST_HOME
-. ./common.sh
+. ./group_common.sh
 
 date
 loop_deploy
 date
 
-cd $TEST_HOME/common/common
+cd $TEST_HOME/group_common
 ./destroy.sh --auto-approve

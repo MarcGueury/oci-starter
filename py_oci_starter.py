@@ -17,7 +17,7 @@ from distutils.dir_util import copy_tree
 ABORT = 'ABORT'
 GIT = 'git'
 CLI = 'cli'
-COMMON='common'
+GROUP='group'
 ZIP = 'zip'
 EXISTING = 'existing'
 NEW = 'new'
@@ -28,7 +28,7 @@ BASIS_DIR = "basis"
 
 output_dir = "output"
 zip_dir = ""
-a_common = []
+a_group_common = []
 
 ## functions ################################################################
 
@@ -57,7 +57,7 @@ def prog_arg_dict():
 
 MANDATORY_OPTIONS = {
     CLI: ['-language', '-deploy', '-db_password'],
-    COMMON: ['-common', '-common_prefix','-db_password']
+    GROUP: ['-group_name','-group_common','-db_password']
 }
 
 def mandatory_options(mode):
@@ -82,7 +82,7 @@ no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid',
                       '-subnet_ocid']
 
 # hidden_options - allowed but not advertised
-hidden_options = ['-zip', '-common','-common_prefix']
+hidden_options = ['-zip', '-group_common','-group_name']
 
 
 def allowed_options():
@@ -207,23 +207,23 @@ def license_rules():
 def zip_rules():
     if 'zip' in params:
         global output_dir, zip_dir
-        if 'common_prefix' in params:
-             zip_dir = params['common_prefix']
+        if 'group_name' in params:
+             zip_dir = params['group_name']
         else:
              zip_dir = params['prefix']
         output_dir = "zip" + os.sep + params['zip'] + os.sep + zip_dir
         file_output('zip' + os.sep + params['zip'] + '.param', [json.dumps(params)])
 
 
-def common_rules():
-    if 'common_prefix' in params:
-        global a_common 
-        a_common=params['common'].split(',')
+def group_common_rules():
+    if 'group_name' in params:
+        global a_group_common 
+        a_group_common=params['group_common'].split(',')
 
 
 def apply_rules():
     zip_rules()
-    common_rules()
+    group_common_rules()
     language_rules()
     kubernetes_rules()
     ui_rules()
@@ -258,8 +258,6 @@ def help():
 Usage: {script_name()} [OPTIONS]
 
 oci-starter.sh
-   -common (optional) atp | database | mysql | fnapp | apigw | oke 
-   -common_prefix (optional)
    -apigw_ocid (optional)
    -atp_ocid (optional)
    -auth_token (optional)
@@ -271,6 +269,8 @@ oci-starter.sh
    -db_user (default admin)
    -deploy (mandatory) compute | kubernetes | function | container_instance 
    -fnapp_ocid (optional)
+   -group_common (optional) atp | database | mysql | fnapp | apigw | oke 
+   -group_name (optional)
    -java_framework (default helidon | springboot | tomcat)
    -java_version (default 17 | 11 | 8)
    -java_vm (default jdk | graalvm)  
@@ -338,24 +338,24 @@ def git_params():
 
 
 def readme_contents():
-    if 'common_prefix' in params:
+    if 'group_name' in params:
         contents = ['''## OCI-Starter - Common Resources
 ### Usage 
 
 ### Commands
-- common
-    - build.sh   : Create the Common Resources using Terraform
-    - destroy.sh : Destroy the objects created by Terraform
-    - env.sh     : Contains the settings of the project
+- group_common
+    - build.sh     : Create the Common Resources using Terraform
+    - destroy.sh   : Destroy the objects created by Terraform
+    - env.sh       : Contains the settings of the project
 
 ### Directories
-- common/src     : Sources files
-    - terraform  : Terraform scripts (Command: plan.sh / apply.sh)
+- group_common/src : Sources files
+    - terraform    : Terraform scripts (Command: plan.sh / apply.sh)
 
 ### After Build
-- common.sh      : File created during the build.sh and imported in each application
-- app1           : Directory with an application using "common.sh" 
-- app2           : ...
+- group_common.sh  : File created during the build.sh and imported in each application
+- app1             : Directory with an application using "group_common.sh" 
+- app2             : ...
 ...
     '''
                 ]
@@ -391,9 +391,9 @@ def readme_contents():
                 contents.append(
                     f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
-    if 'common_prefix' in params:
+    if 'group_name' in params:
         contents.append("  # Build Common Resources")
-        contents.append(f"  cd {params['common_prefix']}/common")
+        contents.append(f"  cd {params['group_name']}/group_common")
         contents.append("  ./build.sh")       
         contents.append("  # Build Application")
         contents.append(f"  cd ../{params['prefix']}")
@@ -405,12 +405,12 @@ def readme_contents():
 def env_param_list():
     env_params = list(params.keys())
     exclude = ['mode', 'infra_as_code', 'zip', 'prefix']
-    if params.get('language') != 'java' or 'common_prefix' in params:
+    if params.get('language') != 'java' or 'group_name' in params:
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
-    if 'common_prefix' in params:
-        exclude.extend(['ui', 'database', 'language', 'deploy', 'db_user', 'common_prefix'])
+    if 'group_name' in params:
+        exclude.extend(['ui', 'database', 'language', 'deploy', 'db_user', 'group_name'])
     else:
-        exclude.append('common')
+        exclude.append('group_common')
     print(exclude)
     for x in exclude:
         if x in env_params:
@@ -428,33 +428,33 @@ def env_sh_contents():
     contents.append(f'export OCI_STARTER_VERSION=1.4')
     contents.append('')
     contents.append('# Env Variables')
-    if 'common_prefix' in params:
-        prefix = params["common_prefix"]
+    if 'group_name' in params:
+        prefix = params["group_name"]
     else:
         prefix = params["prefix"]
     contents.append(f'export TF_VAR_prefix="{prefix}"')
     contents.append('')
 
-    common_contents = []
+    group_common_contents = []
     for param in env_params:
         if param.endswith("_ocid") or param in ["db_password", "auth_token", "license"]:
-            tf_var_comment(common_contents, param)
-            common_contents.append(f'export {get_tf_var(param)}="{params[param]}"')
+            tf_var_comment(group_common_contents, param)
+            group_common_contents.append(f'export {get_tf_var(param)}="{params[param]}"')
         else:
             tf_var_comment(contents, param)
             contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append('')
-    if 'common_prefix' in params:
-        contents.append("if [ -f $SCRIPT_DIR/../../common.sh ]; then")      
-        contents.append("  . $SCRIPT_DIR/../../common.sh")      
+    if 'group_name' in params:
+        contents.append("if [ -f $SCRIPT_DIR/../../group_common.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../../group_common.sh")      
     else:
-        contents.append("if [ -f $SCRIPT_DIR/../common.sh ]; then")      
-        contents.append("  . $SCRIPT_DIR/../common.sh")      
+        contents.append("if [ -f $SCRIPT_DIR/../group_common.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../group_common.sh")      
     contents.append("else")      
     if params.get('compartment_ocid') == None:
         contents.append('  # export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')       
 
-    for x in common_contents:
+    for x in group_common_contents:
         contents.append("  " + x)
 
     contents.append('')
@@ -552,7 +552,7 @@ def cp_dir_src_db(db_type):
     output_copy_tree("option/src/db/"+db_type, "src/db")
 
 #----------------------------------------------------------------------------
-# Create Directory (shared for common and output)
+# Create Directory (shared for group_common and output)
 def create_dir_shared():
     copy_basis()
     write_env_sh()
@@ -730,50 +730,50 @@ def create_output_dir():
         output_move("src/app/oracle.sql", "src/db/oracle.sql")
 
 #----------------------------------------------------------------------------
-# Create Common Directory
-def create_common_dir():
+# Create group_common Directory
+def create_group_common_dir():
     create_dir_shared()
 
     # -- APP ----------------------------------------------------------------
-    output_copy_tree("option/src/app/common", "src/app")
+    output_copy_tree("option/src/app/group_common", "src/app")
     os.remove(output_dir + "/src/app/app.yaml")
 
     # -- User Interface -----------------------------------------------------
     output_rm_tree("src/ui")
 
     # -- Common -------------------------------------------------------------
-    if "atp" in a_common:
+    if "atp" in a_group_common:
         if 'atp_ocid' in params:
             cp_terraform("atp_existing.tf")
         else:
             cp_terraform("atp.tf")
 
-    if "database" in a_common:
+    if "database" in a_group_common:
         if 'db_ocid' in params:
             cp_terraform("dbsystem_existing.tf")
         else:
             cp_terraform("dbsystem.tf")
 
-    if "mysql" in a_common:
+    if "mysql" in a_group_common:
         if 'mysql_ocid' in params:
             cp_terraform("mysql_existing.tf")
         else:
             cp_terraform("mysql.tf")
 
-    if 'oke' in a_common:
+    if 'oke' in a_group_common:
         if 'oke_ocid' in params:
             cp_terraform("oke_existing.tf", "oke_append.tf")
         else:
             cp_terraform("oke.tf", "oke_append.tf")
             shutil.copy2("option/oke/oke_destroy.sh", output_dir +"/bin")
 
-    if 'fnapp' in a_common:
+    if 'fnapp' in a_group_common:
         if 'fnapp_ocid' in params:
             cp_terraform("function_existing.tf")
         else:
             cp_terraform("function.tf")
 
-    if 'apigw' in a_common:
+    if 'apigw' in a_group_common:
         if 'apigw_ocid' in params:
             cp_terraform("apigw_existing.tf")
         else:
@@ -781,11 +781,11 @@ def create_common_dir():
 
     allfiles = os.listdir(output_dir)
     allfiles.remove('README.md')
-    # Create a common directory
-    output_mkdir('common')
-    # iterate on all files to move them to 'common'
+    # Create a group_common directory
+    output_mkdir('group_common')
+    # iterate on all files to move them to 'group_common'
     for f in allfiles:
-        os.rename(output_dir + os.sep + f, output_dir + os.sep + 'common' + os.sep + f)
+        os.rename(output_dir + os.sep + f, output_dir + os.sep + 'group_common' + os.sep + f)
 
 #----------------------------------------------------------------------------
 
@@ -798,8 +798,8 @@ params = get_params()
 mode = get_mode()
 unknown_params = missing_parameters(allowed_options(), prog_arg_dict().keys())
 illegal_params = check_values()
-if 'common_prefix' in params:
-  missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(COMMON))
+if 'group_name' in params:
+  missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(GROUP))
 else:  
   missing_params = missing_parameters(prog_arg_dict().keys(), mandatory_options(mode))
 
@@ -835,18 +835,18 @@ print(f'params: {params}')
 # -- Copy Files -------------------------------------------------------------
 output_dir_orig = output_dir
 
-if 'common_prefix' in params:
-    create_common_dir()
+if 'group_name' in params:
+    create_group_common_dir()
    
-if 'common' in params:
+if 'group_common' in params:
     output_dir = output_dir + os.sep + params['prefix']
-    # The application will use the Common Resources created by common above.
-    del params['common']
+    # The application will use the Common Resources created by group_name above.
+    del params['group_common']
     params['vcn_ocid'] = TO_FILL
     params['subnet_ocid'] = TO_FILL
     params['bastion_ocid'] = TO_FILL
     to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid"}
-    for x in a_common:
+    for x in a_group_common:
         ocid = to_ocid[x]
         params[ocid] = TO_FILL
 
