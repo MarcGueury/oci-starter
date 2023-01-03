@@ -214,4 +214,13 @@ if [ -f $STATE_FILE ]; then
     # OKE
     get_output_from_tfstate "OKE_OCID" "oke_ocid"
   fi
+
+  # JMS
+  if [ -f $ROOT_DIR/src/terraform/jms.tf ]; then 
+    if [ ! -f $TARGET/jms_install.sh ]; then
+      get_output_from_tfstate "FLEET_OCID" "fleet_ocid"
+      get_output_from_tfstate "INSTALL_KEY_OCID" "install_key_ocid"
+      oci jms fleet generate-agent-deploy-script --file $TARGET/jms_install.sh --fleet-id $FLEET_OCID --install-key-id $INSTALL_KEY_OCID --is-user-name-enabled true --os-family "LINUX"
+    fi 
+  fi
 fi

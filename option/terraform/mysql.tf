@@ -7,11 +7,7 @@ resource "oci_mysql_mysql_db_system" "starter_mysql" {
   compartment_id      = local.lz_database_cmp_ocid
   shape_name          = "MySQL.VM.Standard.E4.1.8GB"
   subnet_id           = data.oci_core_subnet.starter_subnet.id
-
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags       = local.freeform_tags
 }
 
 # Compatibility with mysql_existing.tf 

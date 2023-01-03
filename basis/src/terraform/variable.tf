@@ -1,6 +1,7 @@
 variable tenancy_ocid {}
 variable region {}
 variable compartment_ocid {}
+variable user_ocid {}
 variable ssh_public_key {}
 variable ssh_private_key {}
 
@@ -27,13 +28,6 @@ variable lz_security_cmp_ocid { default="" }
 # OCIR
 variable username { default="" }
 
-locals {
-  lz_appdev_cmp_ocid = var.lz_appdev_cmp_ocid == "" ? var.compartment_ocid : var.lz_appdev_cmp_ocid
-  lz_database_cmp_ocid = var.lz_database_cmp_ocid == "" ? var.compartment_ocid : var.lz_database_cmp_ocid
-  lz_network_cmp_ocid = var.lz_network_cmp_ocid == "" ? var.compartment_ocid : var.lz_network_cmp_ocid
-  lz_security_cmp_ocid = var.lz_security_cmp_ocid == "" ? var.compartment_ocid : var.lz_security_cmp_ocid
-}
-
 # BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
 variable license_model {
   default="BRING_YOUR_OWN_LICENSE"
@@ -44,4 +38,16 @@ variable group_name { default="" }
 
 locals {
   group_name = var.group_name == "" ? "none" : var.group_name
+
+  # Tags
+  freeform_tags = {
+    group = local.group_name
+    app_prefix = var.prefix
+  }
+  
+  # Landing Zone
+  lz_appdev_cmp_ocid = var.lz_appdev_cmp_ocid == "" ? var.compartment_ocid : var.lz_appdev_cmp_ocid
+  lz_database_cmp_ocid = var.lz_database_cmp_ocid == "" ? var.compartment_ocid : var.lz_database_cmp_ocid
+  lz_network_cmp_ocid = var.lz_network_cmp_ocid == "" ? var.compartment_ocid : var.lz_network_cmp_ocid
+  lz_security_cmp_ocid = var.lz_security_cmp_ocid == "" ? var.compartment_ocid : var.lz_security_cmp_ocid
 }

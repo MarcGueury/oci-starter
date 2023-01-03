@@ -9,10 +9,7 @@ resource "oci_functions_application" "starter_fn_application" {
     is_policy_enabled = false
   }
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 resource "oci_logging_log_group" "starter_log_group" {
@@ -20,10 +17,7 @@ resource "oci_logging_log_group" "starter_log_group" {
   compartment_id = local.lz_security_cmp_ocid
   display_name   = "${var.prefix}-log-group"
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 resource oci_logging_log export_starter_fn_application_invoke {
@@ -42,10 +36,7 @@ resource oci_logging_log export_starter_fn_application_invoke {
   log_type           = "SERVICE"
   retention_duration = "30"
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 locals {

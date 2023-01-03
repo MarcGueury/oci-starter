@@ -68,6 +68,11 @@ data "oci_identity_availability_domain" "ad" {
   ad_number      = 1
 }
 
+## Compartment
+data "oci_identity_compartment" "compartment" {
+  id = var.compartment_ocid
+}
+
 locals {
   ocir_docker_repository = join("", [lower(lookup(data.oci_identity_regions.current_region.regions[0], "key")), ".ocir.io"])
   ocir_namespace = lookup(data.oci_objectstorage_namespace.ns, "namespace")

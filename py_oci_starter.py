@@ -779,6 +779,12 @@ def create_group_common_dir():
         else:
             cp_terraform("apigw.tf")
 
+    if 'jms' in a_group_common:
+        if 'jms_ocid' in params:
+            cp_terraform("jms_existing.tf")
+        else:
+            cp_terraform("jms.tf")            
+
     allfiles = os.listdir(output_dir)
     allfiles.remove('README.md')
     # Create a group_common directory

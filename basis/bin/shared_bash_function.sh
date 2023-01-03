@@ -1,12 +1,20 @@
 ### Commmon functions
 
-# Check java version
-check_java_version() {
+# Java Build Common
+java_build_common() {
   if [ "$OCI_CLI_CLOUD_SHELL" == "true" ]; then
     ## XX Check Java Version in env variables
     export JAVA_ID=`csruntimectl java list | grep jdk-17 | sed -e 's/^.*\(graal[^ ]*\) .*$/\1/'`
     csruntimectl java set $JAVA_ID
   fi
+  if [ -f $TARGET_DIR/jms_install.sh ]; then
+    cp $TARGET_DIR/jms_install.sh $TARGET_DIR/compute/.
+  fi
+  if [ -f $COMMON_DIR/group_common/target/jms_install.sh ]; then
+    cp $COMMON_DIR/group_common/target/jms_install.sh $TARGET_DIR/compute/.
+  fi
+
+
 }
 
 build_ui() {
@@ -108,3 +116,16 @@ get_output_from_tfstate () {
   set_if_not_null $1 $RESULT
 }
 
+# Check is the option '$1' is part of the TF_VAR_group_common
+# If the app is not a group_common one, return false
+group_common_contain() {
+  if [ "$TF_VAR_group_common" == "" ]; then
+    return 0
+  fi  
+  COMMON=,${TF_VAR_group_common},
+  if [[ "$COMMON" == *",$1,"* ]]; then
+    return 1
+  else 
+    return 0  
+  fi
+}

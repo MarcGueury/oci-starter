@@ -9,7 +9,7 @@
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../../bin/build_common.sh
-check_java_version
+java_build_common
 
 if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
   mvn package -Dpackaging=native-image

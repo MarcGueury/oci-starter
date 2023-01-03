@@ -36,6 +36,11 @@ if [ "$TF_VAR_language" == "java" ]; then
       sudo yum install -y jdk-17.x86_64  
     fi
   fi
+
+  if [ -f jms_agent_deploy.sh ]; then
+    chmod +x jms_agent_deploy.sh
+    ./jms_agent_deploy.sh
+  fi
 fi
 
 # -- App --------------------------------------------------------------------

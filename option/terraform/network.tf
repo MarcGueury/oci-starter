@@ -4,22 +4,14 @@ resource "oci_core_vcn" "starter_vcn" {
   compartment_id = local.lz_network_cmp_ocid
   display_name   = "${var.prefix}-vcn"
   dns_label      = "${var.prefix}vcn"
-
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags  = local.freeform_tags
 }
 
 resource "oci_core_internet_gateway" "starter_internet_gateway" {
   compartment_id = local.lz_network_cmp_ocid
   display_name   = "${var.prefix}-internet-gateway"
   vcn_id         = oci_core_vcn.starter_vcn.id
-
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags  = local.freeform_tags
 }
 
 resource "oci_core_default_route_table" "default_route_table" {
@@ -32,10 +24,7 @@ resource "oci_core_default_route_table" "default_route_table" {
     network_entity_id = oci_core_internet_gateway.starter_internet_gateway.id
   }
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 #  XXXXXX split Private / Public network
@@ -48,11 +37,7 @@ resource "oci_core_subnet" "starter_subnet" {
   vcn_id            = oci_core_vcn.starter_vcn.id
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
   dhcp_options_id   = oci_core_vcn.starter_vcn.default_dhcp_options_id
-
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags     = local.freeform_tags
 }
 
 resource "oci_core_security_list" "starter_security_list" {
@@ -166,10 +151,7 @@ resource "oci_core_security_list" "starter_security_list" {
     }
   }  
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 # Compatibility with network_existing.tf

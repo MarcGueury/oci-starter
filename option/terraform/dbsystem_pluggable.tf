@@ -11,11 +11,8 @@ resource "oci_database_pluggable_database" "starter_pluggable_database" {
   pdb_admin_password = var.db_password
   should_pdb_admin_account_be_locked = false
   tde_wallet_password = var.db_password
-  
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+
+  freeform_tags = local.freeform_tags
 }
 
 data "oci_database_pluggable_databases" "starter_pdbs" {

@@ -40,10 +40,7 @@ resource "oci_database_db_system" "starter_dbsystem" {
   license_model           = var.license_model
   node_count              = 1
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 # Compatibility with db_existing.tf 
