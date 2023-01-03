@@ -82,7 +82,7 @@ resource oci_jms_fleet starter_fleet {
 
 data "oci_management_agent_management_agent_install_keys" "starter_install_key" {
   compartment_id = var.compartment_ocid
-  display_name = oci_jms_fleet.fleet.display_name
+  display_name = oci_jms_fleet.starter_fleet.display_name
   state = "ACTIVE"
 }
 
