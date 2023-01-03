@@ -1,8 +1,3 @@
-## Compartment
-data "oci_identity_compartment" "compartment" {
-  id = var.compartment_ocid
-}
-
 # Groups names
 locals {
 #  jms_group="${var.prefix}-fleet-managers"
