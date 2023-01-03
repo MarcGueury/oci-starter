@@ -269,7 +269,7 @@ oci-starter.sh
    -db_user (default admin)
    -deploy (mandatory) compute | kubernetes | function | container_instance 
    -fnapp_ocid (optional)
-   -group_common (optional) atp | database | mysql | fnapp | apigw | oke 
+   -group_common (optional) atp | database | mysql | fnapp | apigw | oke | jms 
    -group_name (optional)
    -java_framework (default helidon | springboot | tomcat)
    -java_version (default 17 | 11 | 8)
@@ -851,7 +851,7 @@ if 'group_common' in params:
     params['vcn_ocid'] = TO_FILL
     params['subnet_ocid'] = TO_FILL
     params['bastion_ocid'] = TO_FILL
-    to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid"}
+    to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid", "jms": "jms_ocid"}
     for x in a_group_common:
         ocid = to_ocid[x]
         params[ocid] = TO_FILL
