@@ -7,14 +7,12 @@ java_build_common() {
     export JAVA_ID=`csruntimectl java list | grep jdk-17 | sed -e 's/^.*\(graal[^ ]*\) .*$/\1/'`
     csruntimectl java set $JAVA_ID
   fi
-  if [ -f $TARGET_DIR/jms_install.sh ]; then
-    cp $TARGET_DIR/jms_install.sh $TARGET_DIR/compute/.
+  if [ -f $TARGET_DIR/jms_agent_deploy.sh ]; then
+    cp $TARGET_DIR/jms_agent_deploy.sh $TARGET_DIR/compute/.
   fi
-  if [ -f $COMMON_DIR/group_common/target/jms_install.sh ]; then
-    cp $COMMON_DIR/group_common/target/jms_install.sh $TARGET_DIR/compute/.
+  if [ -f $COMMON_DIR/group_common/target/jms_agent_deploy.sh ]; then
+    cp $COMMON_DIR/group_common/target/jms_agent_deploy.sh $TARGET_DIR/compute/.
   fi
-
-
 }
 
 build_ui() {
