@@ -848,6 +848,7 @@ if 'group_common' in params:
     output_dir = output_dir + os.sep + params['prefix']
     # The application will use the Common Resources created by group_name above.
     del params['group_common']
+    del params['group_name']    
     params['vcn_ocid'] = TO_FILL
     params['subnet_ocid'] = TO_FILL
     params['bastion_ocid'] = TO_FILL

@@ -28,7 +28,7 @@ fi
 # -- env.sh
 # Do not stop if __TO_FILL__ are not replaced if TF_VAR_group_name exist in env variable
 # XXX -> It would be safer to check also for TF_VAR_xxx containing __TO_FILL__ too
-if [ -v TF_VAR_group_common ] || [ ! -v TF_VAR_group_name ]; then 
+if [ ! -f $ROOT_DIR/../group_common.sh ]; then 
   if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
     echo "Error: missing environment variables."
     echo
@@ -217,10 +217,10 @@ if [ -f $STATE_FILE ]; then
 
   # JMS
   if [ -f $ROOT_DIR/src/terraform/jms.tf ]; then 
-    if [ ! -f $TARGET/jms_agent_deploy.sh ]; then
+    if [ ! -f $TARGET_DIR/jms_agent_deploy.sh ]; then
       get_output_from_tfstate "FLEET_OCID" "fleet_ocid"
-      get_output_from_tfstate "INSTALL_KEY_OCID" "install_key_ocid"
-      oci jms fleet generate-agent-deploy-script --file $TARGET/jms_agent_deploy.sh --fleet-id $FLEET_OCID --install-key-id $INSTALL_KEY_OCID --is-user-name-enabled true --os-family "LINUX"
+      INSTALL_KEY_OCID=`oci management-agent install-key list --compartment-id $TF_VAR_compartment_ocid | jq -r ".data[0].id"`
+      oci jms fleet generate-agent-deploy-script --file $TARGET_DIR/jms_agent_deploy.sh --fleet-id $FLEET_OCID --install-key-id $INSTALL_KEY_OCID --is-user-name-enabled true --os-family "LINUX"
     fi 
   fi
 fi
