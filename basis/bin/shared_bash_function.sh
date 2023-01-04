@@ -12,9 +12,8 @@ java_build_common() {
     cp $TARGET_DIR/jms_agent_deploy.sh $TARGET_DIR/compute/.
   fi
 
-  echo "debug: $COMMON_DIR/group_common/target/jms_agent_deploy.sh"
-  if [ -f $COMMON_DIR/group_common/target/jms_agent_deploy.sh ]; then
-    cp $COMMON_DIR/group_common/target/jms_agent_deploy.sh $TARGET_DIR/compute/.
+  if [ -f $ROOT_DIR/../group_common/target/jms_agent_deploy.sh ]; then
+    cp $ROOT_DIR/../group_common/target/jms_agent_deploy.sh $TARGET_DIR/compute/.
   fi
 }
 

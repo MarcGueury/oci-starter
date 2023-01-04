@@ -19,7 +19,7 @@ if [ "$1" != "--auto-approve" ]; then
 fi
 
 for d in */ ; do
-    if[ "$d" != "group_common" ]; then
+    if [ "$d" != "group_common/" ]; then
       echo "-- BUILD_ALL -------- $d ----------"
       cd $d
       ./destroy.sh --auto-approve
