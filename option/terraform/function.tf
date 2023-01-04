@@ -12,14 +12,6 @@ resource "oci_functions_application" "starter_fn_application" {
   freeform_tags = local.freeform_tags
 }
 
-resource "oci_logging_log_group" "starter_log_group" {
-  #Required
-  compartment_id = local.lz_security_cmp_ocid
-  display_name   = "${var.prefix}-log-group"
-
-  freeform_tags = local.freeform_tags
-}
-
 resource oci_logging_log export_starter_fn_application_invoke {
   configuration {
     compartment_id = local.lz_security_cmp_ocid

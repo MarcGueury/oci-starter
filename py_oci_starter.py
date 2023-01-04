@@ -660,6 +660,7 @@ def create_output_dir():
                 cp_terraform("function_existing.tf", "function_append.tf")
             else:
                 cp_terraform("function.tf", "function_append.tf")
+                cp_terraform("log_group.tf")
             if params['language'] == "ords":
                 apigw_append = "apigw_fn_ords_append.tf"
             else:
@@ -772,6 +773,7 @@ def create_group_common_dir():
             cp_terraform("function_existing.tf")
         else:
             cp_terraform("function.tf")
+            cp_terraform("log_group.tf")
 
     if 'apigw' in a_group_common:
         if 'apigw_ocid' in params:
@@ -784,6 +786,7 @@ def create_group_common_dir():
             cp_terraform("jms_existing.tf")
         else:
             cp_terraform("jms.tf")            
+            cp_terraform("log_group.tf")
 
     allfiles = os.listdir(output_dir)
     allfiles.remove('README.md')
