@@ -11,7 +11,7 @@ java_build_common() {
   if [ -f $TARGET_DIR/jms_agent_deploy.sh ]; then
     cp $TARGET_DIR/jms_agent_deploy.sh $TARGET_DIR/compute/.
   fi
-  
+
   if [ -f $COMMON_DIR/group_common/target/jms_agent_deploy.sh ]; then
     cp $COMMON_DIR/group_common/target/jms_agent_deploy.sh $TARGET_DIR/compute/.
   fi
@@ -117,15 +117,15 @@ get_output_from_tfstate () {
 }
 
 # Check is the option '$1' is part of the TF_VAR_group_common
-# If the app is not a group_common one, return false
+# If the app is not a group_common one, return 1==false
 group_common_contain() {
   if [ "$TF_VAR_group_common" == "" ]; then
-    return 0
+    return 1 
   fi  
   COMMON=,${TF_VAR_group_common},
   if [[ "$COMMON" == *",$1,"* ]]; then
-    return 1
+    return 0
   else 
-    return 0  
+    return 1  
   fi
 }
