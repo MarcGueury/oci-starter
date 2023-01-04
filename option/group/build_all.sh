@@ -8,7 +8,7 @@ cd $SCRIPT_DIR
 
 for d in */ ; do
     if [ "$d" != "group_common/" ]; then
-      echo "-- BUILD_ALL -------- $d ----------"
+      echo "-- BUILD_ALL - $d ---------------------------------"
 
       cd $d
       ./build.sh
