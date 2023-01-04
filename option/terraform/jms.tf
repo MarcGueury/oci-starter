@@ -74,6 +74,7 @@ resource "oci_logging_log" "starter_jms_operation_log" {
   freeform_tags = local.freeform_tags
 }
 
+/*
 resource "oci_objectstorage_bucket" "starter_jms_bucket" {
   compartment_id = var.compartment_ocid
   namespace      = var.namespace
@@ -81,6 +82,7 @@ resource "oci_objectstorage_bucket" "starter_jms_bucket" {
 
   freeform_tags = local.freeform_tags
 }
+*/
 
 # JMS Fleet
 resource oci_jms_fleet starter_fleet {
