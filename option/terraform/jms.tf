@@ -61,21 +61,40 @@ resource "oci_identity_policy" "starter_jms_policy" {
 }
 
 resource "oci_logging_log" "starter_jms_inventory_log" {
-  display_name = "${var.prefix}-jms-log"
+  display_name = "${var.prefix}-jms-inventory-log"
   log_group_id = oci_logging_log_group.starter_log_group.id
   log_type     = "CUSTOM"
+  freeform_tags = local.freeform_tags
+}
+
+resource "oci_logging_log" "starter_jms_operation_log" {
+  display_name = "${var.prefix}-jms-operation-log"
+  log_group_id = oci_logging_log_group.starter_log_group.id
+  log_type     = "CUSTOM"
+  freeform_tags = local.freeform_tags
+}
+
+resource "oci_objectstorage_bucket" "starter_jms_bucket" {
+  compartment_id = var.compartment_ocid
+  namespace      = var.namespace
+  name           = "${var.prefix}-jms-bucket"
+
   freeform_tags = local.freeform_tags
 }
 
 # JMS Fleet
 resource oci_jms_fleet starter_fleet {
   compartment_id = var.compartment_ocid
-  display_name   = "${var.prefix}-fleet"
-  description = "${var.prefix}-fleet"
+  display_name   = "${var.prefix}-jms-fleet"
+  description = "${var.prefix}-jms-fleet"
   is_advanced_features_enabled = true
-   inventory_log {
+  inventory_log {
      log_group_id = oci_logging_log_group.starter_log_group.id
      log_id = oci_logging_log.starter_jms_inventory_log.id
+  }
+  operation_log {
+    log_group_id = oci_logging_log_group.starter_log_group.id
+    log_id       = oci_logging_log.starter_jms_operation_log.id
   }
   freeform_tags = local.freeform_tags
 }
@@ -113,7 +132,7 @@ cd data/github/mgueury.skynet.be/testsuite/test_group_all/group_common
 . ./env.sh
 oci management-agent install-key list --compartment-id $TF_VAR_compartment_ocid
 oci jms fleet list --compartment-id $TF_VAR_compartment_ocid
-INSTALL_KEY_OCID=ocid1.managementagentinstallkey.oc1.eu-frankfurt-1.amaaaaaaivkshgaaeskfirm2aeo72s3gm5cbtwpvnec6ifam37xc6nl5meia
-FLEET_OCID=ocid1.jmsfleet.oc1.eu-frankfurt-1.amaaaaaaivkshgaa6fjf7pu4gf42qcdqzxpojfx6cp34iokyqgogbkvss7na
+INSTALL_KEY_OCID=ocid1.managementagentinstallkey.oc1.xxx
+FLEET_OCID=ocid1.jmsfleet.oc1.xxx
 oci jms fleet generate-agent-deploy-script --file /tmp/install_jms.sh --fleet-id $FLEET_OCID --install-key-id $INSTALL_KEY_OCID --is-user-name-enabled true --os-family "LINUX"
 */
