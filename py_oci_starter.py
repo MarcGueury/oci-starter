@@ -796,6 +796,8 @@ def create_group_common_dir():
     for f in allfiles:
         os.rename(output_dir + os.sep + f, output_dir + os.sep + 'group_common' + os.sep + f)
 
+    output_copy_tree("option/group", ".")
+    
 #----------------------------------------------------------------------------
 
 # the script

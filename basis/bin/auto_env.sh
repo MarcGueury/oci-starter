@@ -219,7 +219,7 @@ if [ -f $STATE_FILE ]; then
   if [ -f $ROOT_DIR/src/terraform/jms.tf ]; then 
     if [ ! -f $TARGET_DIR/jms_agent_deploy.sh ]; then
       get_output_from_tfstate "FLEET_OCID" "fleet_ocid"
-      INSTALL_KEY_OCID=`oci management-agent install-key list --compartment-id $TF_VAR_compartment_ocid | jq -r ".data[0].id"`
+      get_output_from_tfstate "INSTALL_KEY_OCID" "install_key_ocid"
        # JMS requires a "jms" tag namespace / tag "fleet_ocid" (that is unique and should not be deleted by terraform destroy) 
       TAG_NAMESPACE_OCID=`oci iam tag-namespace list --compartment-id=$TF_VAR_tenancy_ocid | jq -r '.data[] | select(.name=="jms") | .id'`
       if [ "$TAG_NAMESPACE_OCID" == "" ]; then

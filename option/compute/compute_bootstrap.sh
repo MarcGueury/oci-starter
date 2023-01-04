@@ -37,9 +37,10 @@ if [ "$TF_VAR_language" == "java" ]; then
     fi
   fi
 
+  # JMS agent deploy (to fleet_ocid )
   if [ -f jms_agent_deploy.sh ]; then
     chmod +x jms_agent_deploy.sh
-    ./jms_agent_deploy.sh
+    sudo ./jms_agent_deploy.sh
   fi
 fi
 

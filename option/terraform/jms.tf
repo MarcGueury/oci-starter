@@ -55,7 +55,8 @@ resource "oci_identity_policy" "starter_jms_policy" {
     "ALLOW GROUP ${local.jms_group} TO MANAGE log-groups IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW GROUP ${local.jms_group} TO MANAGE log-content IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW SERVICE javamanagementservice TO READ instances IN tenancy",
-    "ALLOW SERVICE javamanagementservice TO INSPECT instance-agent-plugins IN tenancy"
+    "ALLOW SERVICE javamanagementservice TO INSPECT instance-agent-plugins IN tenancy",
+    "ALLOW dynamic-group ${local.jms_dyngroup} TO MANAGE instances IN COMPARTMENT ID ${var.compartment_ocid}"
   ]
   freeform_tags = local.freeform_tags
 }
@@ -101,10 +102,12 @@ resource oci_jms_fleet starter_fleet {
   freeform_tags = local.freeform_tags
 }
 
-data "oci_management_agent_management_agent_install_keys" "starter_install_key" {
-  compartment_id = var.compartment_ocid
-  display_name = oci_jms_fleet.starter_fleet.display_name
-  state = "ACTIVE"
+resource "oci_management_agent_management_agent_install_key" "starter_install_key" {
+    #Required
+    compartment_id = var.compartment_ocid
+    display_name   = "${var.prefix}-install-key"
+    #Optional
+    is_unlimited = true
 }
 
 output fleet_ocid {
@@ -112,7 +115,7 @@ output fleet_ocid {
 }
 
 output install_key_ocid {
-  value=data.oci_management_agent_management_agent_install_keys.starter_install_key.id
+  value=oci_management_agent_management_agent_install_key.starter_install_key.id
 }
 
 /*
