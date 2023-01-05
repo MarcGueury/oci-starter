@@ -66,7 +66,7 @@ resource "oci_core_subnet" "starter_private_subnet" {
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id, oci_core_security_list.starter_security_list.id]
   compartment_id    = local.lz_network_cmp_ocid
   vcn_id            = oci_core_vcn.starter_vcn.id
-  route_table_id    = oci_core_vcn.starter_vcn.starter_route_private
+  route_table_id    = oci_core_route_table.starter_route_private.id
   dhcp_options_id   = oci_core_vcn.starter_vcn.default_dhcp_options_id
   freeform_tags     = local.freeform_tags
 }
