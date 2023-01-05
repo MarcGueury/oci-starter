@@ -353,9 +353,9 @@ def readme_contents():
     - terraform    : Terraform scripts (Command: plan.sh / apply.sh)
 
 ### After Build
-- group_common.sh  : File created during the build.sh and imported in each application
-- app1             : Directory with an application using "group_common.sh" 
-- app2             : ...
+- group_common_env.sh : File created during the build.sh and imported in each application
+- app1                : Directory with an application using "group_common_env.sh" 
+- app2                : ...
 ...
     '''
                 ]
@@ -445,11 +445,11 @@ def env_sh_contents():
             contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append('')
     if 'group_name' in params:
-        contents.append("if [ -f $SCRIPT_DIR/../../group_common.sh ]; then")      
-        contents.append("  . $SCRIPT_DIR/../../group_common.sh")      
+        contents.append("if [ -f $SCRIPT_DIR/../../group_common_env.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../../group_common_env.sh")      
     else:
-        contents.append("if [ -f $SCRIPT_DIR/../group_common.sh ]; then")      
-        contents.append("  . $SCRIPT_DIR/../group_common.sh")      
+        contents.append("if [ -f $SCRIPT_DIR/../group_common_env.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../group_common_env.sh")      
     contents.append("else")      
     if params.get('compartment_ocid') == None:
         contents.append('  # export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')       
@@ -790,7 +790,7 @@ def create_group_common_dir():
 
     allfiles = os.listdir(output_dir)
     allfiles.remove('README.md')
-    # Create a group_common directory
+    # Create a group directory
     output_mkdir('group_common')
     # iterate on all files to move them to 'group_common'
     for f in allfiles:

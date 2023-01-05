@@ -211,7 +211,7 @@ mv output/group_common ../group_common
 cd $TEST_HOME/group_common
 ./build.sh
 cd $TEST_HOME
-. ./group_common.sh
+. ./group_common_env.sh
 
 date
 loop_deploy

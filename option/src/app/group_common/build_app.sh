@@ -1,12 +1,12 @@
 #!/bin/bash
 # Build_app.sh
 #
-# Build the group_common.sh file.
+# Build the group_common_env.sh file.
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../../bin/build_common.sh
 
 append () {
-   echo "$1" >> ../../../group_common.sh
+   echo "$1" >> ../../../group_common_env.sh
 }
 
 conditional_append() {
@@ -52,7 +52,7 @@ fi
 
 COMMON=,${TF_VAR_group_common},
 
-cat > ../../../group_common.sh <<'EOT' 
+cat > ../../../group_common_env.sh <<'EOT' 
 COMMON_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Commment to create an new oci-starter compartment automatically
@@ -64,7 +64,7 @@ else
   append "export TF_VAR_compartment_ocid=$TF_VAR_compartment_ocid"
 fi
 
-cat >> ../../../group_common.sh <<EOT 
+cat >> ../../../group_common_env.sh <<EOT 
 
 # Common Resources Name (Typically: dev, test, qa, prod)
 export TF_VAR_group_name=$TF_VAR_prefix
@@ -91,7 +91,7 @@ conditional_append oke TF_VAR_oke_ocid
 conditional_append apigw TF_VAR_apigw_ocid
 conditional_append fnapp TF_VAR_fnapp_ocid
 
-cat >> ../../../group_common.sh <<EOT 
+cat >> ../../../group_common_env.sh <<EOT 
 
 # Database Password
 export TF_VAR_db_password="$TF_VAR_db_password"
@@ -100,7 +100,7 @@ export TF_VAR_auth_token="$TF_VAR_auth_token"
 
 EOT
 
-cat >> ../../../group_common.sh <<'EOT' 
+cat >> ../../../group_common_env.sh <<'EOT' 
 
 # SSH Keys
 export TF_VAR_ssh_public_key=$(cat $COMMON_DIR/group_common/target/ssh_key_starter.pub)
@@ -109,5 +109,5 @@ export TF_VAR_ssh_private_path=$COMMON_DIR/group_common/target/ssh_key_starter
 EOT
 
 echo
-echo "File group_common.sh created."
+echo "File group_common_env.sh created."
 echo
