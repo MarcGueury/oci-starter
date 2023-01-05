@@ -129,12 +129,10 @@ else
   auto_echo TF_VAR_compartment_ocid=$TF_VAR_compartment_ocid
   auto_echo TF_VAR_region=$TF_VAR_region
 
-  # Object Storage
-  export TF_VAR_namespace=`oci os ns get | jq -r .data`
-  auto_echo TF_VAR_namespace=$TF_VAR_namespace
-
   # Kubernetes and OCIR
   if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
+    export TF_VAR_namespace=`oci os ns get | jq -r .data`
+    auto_echo TF_VAR_namespace=$TF_VAR_namespace
     # Find TF_VAR_username based on TF_VAR_user_ocid or the opposite
     if [ "$TF_VAR_username" != "" ]; then
       export TF_VAR_user_ocid=`oci iam user list --name $TF_VAR_username | jq -r .data[0].id`
