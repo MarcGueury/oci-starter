@@ -6,7 +6,6 @@ locals {
 }
 
 /*
-XXXXXX 
 # User Group
 resource "oci_identity_group" "starter_jms_group" {
   name           = local.jms_group
@@ -37,25 +36,28 @@ resource "oci_identity_policy" "starter_jms_policy" {
   description    = "${var.prefix}-jms-${data.oci_identity_compartment.compartment.name}"
   name           = "${var.prefix}-jms-${data.oci_identity_compartment.compartment.name}"
   statements     = [
+/*
     "ALLOW GROUP ${local.jms_group} TO MANAGE fleet IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW GROUP ${local.jms_group} TO MANAGE management-agents IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW GROUP ${local.jms_group} TO READ METRICS IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW GROUP ${local.jms_group} TO MANAGE tag-namespaces IN TENANCY",
     "ALLOW GROUP ${local.jms_group} TO MANAGE instance-family IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW GROUP ${local.jms_group} TO READ instance-agent-plugins IN COMPARTMENT ID ${var.compartment_ocid}",
-    "ALLOW SERVICE javamanagementservice TO USE management-agent-install-keys IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW GROUP ${local.jms_group} TO MANAGE management-agent-install-keys IN COMPARTMENT ID ${var.compartment_ocid}",
-    "ALLOW DYNAMIC-GROUP ${local.jms_dyngroup} TO USE METRICS IN COMPARTMENT ID ${var.compartment_ocid}",
-    "ALLOW DYNAMIC-GROUP ${local.jms_dyngroup}  TO MANAGE management-agents IN COMPARTMENT ID ${var.compartment_ocid}",
-    "ALLOW SERVICE javamanagementservice TO MANAGE metrics IN COMPARTMENT ID ${var.compartment_ocid} WHERE target.metrics.namespace='java_management_service'", 
-    "ALLOW DYNAMIC-GROUP ${local.jms_dyngroup}  TO USE tag-namespaces IN TENANCY", 
-    "ALLOW SERVICE javamanagementservice TO MANAGE log-groups IN COMPARTMENT ID ${var.compartment_ocid}",
-    "ALLOW SERVICE javamanagementservice TO MANAGE log-content IN COMPARTMENT ID ${var.compartment_ocid}",
-    "ALLOW DYNAMIC-GROUP ${local.jms_dyngroup}  TO MANAGE log-content IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW GROUP ${local.jms_group} TO MANAGE log-groups IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW GROUP ${local.jms_group} TO MANAGE log-content IN COMPARTMENT ID ${var.compartment_ocid}",
+*/
+    "ALLOW SERVICE javamanagementservice TO USE management-agent-install-keys IN COMPARTMENT ID ${var.compartment_ocid}",
+    "ALLOW SERVICE javamanagementservice TO MANAGE metrics IN COMPARTMENT ID ${var.compartment_ocid} WHERE target.metrics.namespace='java_management_service'", 
+    "ALLOW SERVICE javamanagementservice TO MANAGE log-groups IN COMPARTMENT ID ${var.compartment_ocid}",
+    "ALLOW SERVICE javamanagementservice TO MANAGE log-content IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW SERVICE javamanagementservice TO READ instances IN tenancy",
     "ALLOW SERVICE javamanagementservice TO INSPECT instance-agent-plugins IN tenancy",
+
+    "ALLOW DYNAMIC-GROUP ${local.jms_dyngroup} TO USE METRICS IN COMPARTMENT ID ${var.compartment_ocid}",
+    "ALLOW DYNAMIC-GROUP ${local.jms_dyngroup}  TO MANAGE management-agents IN COMPARTMENT ID ${var.compartment_ocid}",
+    "ALLOW DYNAMIC-GROUP ${local.jms_dyngroup}  TO USE tag-namespaces IN TENANCY", 
+    "ALLOW DYNAMIC-GROUP ${local.jms_dyngroup}  TO MANAGE log-content IN COMPARTMENT ID ${var.compartment_ocid}",
     "ALLOW dynamic-group ${local.jms_dyngroup} TO MANAGE instances IN COMPARTMENT ID ${var.compartment_ocid}"
   ]
   freeform_tags = local.freeform_tags

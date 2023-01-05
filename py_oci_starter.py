@@ -343,6 +343,9 @@ def readme_contents():
 ### Usage 
 
 ### Commands
+- build_group.sh   : Build first the Common Resources (group_common), then other directories
+- destroy_group.sh : Destroy other directories, then the Common Resources
+
 - group_common
     - build.sh     : Create the Common Resources using Terraform
     - destroy.sh   : Destroy the objects created by Terraform
@@ -392,14 +395,12 @@ def readme_contents():
                     f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
     if 'group_name' in params:
-        contents.append("  # Build Common Resources")
-        contents.append(f"  cd {params['group_name']}/group_common")
-        contents.append("  ./build.sh")       
-        contents.append("  # Build Application")
-        contents.append(f"  cd ../{params['prefix']}")
+        contents.append("  # Build first the group common resources (group_common), then other directories")
+        contents.append(f"  cd {params['group_name']}")
+        contents.append("  ./build_group.sh")       
     else:
         contents.append(f"  cd {params['prefix']}")
-    contents.append("  ./build.sh")
+        contents.append("  ./build.sh")
     return contents
 
 def env_param_list():
