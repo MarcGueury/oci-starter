@@ -168,8 +168,8 @@ def kubernetes_rules():
 
 def vcn_rules():
     if 'subnet_ocid' in params:
-        params['public_subnet_ocid'] = params['private_subnet_ocid']
-        params['private_subnet_ocid'] = params['public_subnet_ocid']
+        params['public_subnet_ocid'] = params['subnet_ocid']
+        params['private_subnet_ocid'] = params['subnet_ocid']
         params.pop('subnet_ocid')
     if 'vcn_ocid' in params and 'public_subnet_ocid' not in params:
         error('-subnet_ocid or required for -vcn_ocid')
