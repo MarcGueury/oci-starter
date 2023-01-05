@@ -77,16 +77,6 @@ resource "oci_logging_log" "starter_jms_operation_log" {
   freeform_tags = local.freeform_tags
 }
 
-/*
-resource "oci_objectstorage_bucket" "starter_jms_bucket" {
-  compartment_id = var.compartment_ocid
-  namespace      = var.namespace
-  name           = "${var.prefix}-jms-bucket"
-
-  freeform_tags = local.freeform_tags
-}
-*/
-
 # JMS Fleet
 resource oci_jms_fleet starter_fleet {
   compartment_id = var.compartment_ocid
@@ -104,6 +94,15 @@ resource oci_jms_fleet starter_fleet {
   freeform_tags = local.freeform_tags
 }
 
+# Object storage bucket with the name=ocid of the Fleet
+resource "oci_objectstorage_bucket" "starter_jms_bucket" {
+  compartment_id = var.compartment_ocid
+  namespace      = var.namespace
+  name           = "${oci_jms_fleet.starter_fleet.id}"
+  freeform_tags = local.freeform_tags
+}
+
+# Installation Key
 resource "oci_management_agent_management_agent_install_key" "starter_install_key" {
     #Required
     compartment_id = var.compartment_ocid
