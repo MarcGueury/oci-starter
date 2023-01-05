@@ -47,6 +47,9 @@ resource "oci_identity_policy" "starter_fn_policy" {
 
 #-- Object Storage ----------------------------------------------------------
 
+# Object Storage
+variable "namespace" {}
+
 resource "oci_objectstorage_bucket" "starter_bucket" {
   compartment_id = local.lz_security_cmp_ocid
   namespace      = var.namespace
