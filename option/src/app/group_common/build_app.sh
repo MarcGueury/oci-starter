@@ -57,7 +57,7 @@ fi
 COMMON=,${TF_VAR_group_common},
 
 cat > ../../../group_common_env.sh <<'EOT' 
-COMMON_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export COMMON_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Commment to create an new oci-starter compartment automatically
 EOT
