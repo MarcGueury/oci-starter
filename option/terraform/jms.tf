@@ -1,7 +1,7 @@
 # Groups names
 locals {
-#  jms_group="${var.prefix}-fleet-managers"
-  jms_group="FLEET_MANAGERS"
+# jms_group="${var.prefix}-fleet-managers"
+# jms_group="FLEET_MANAGERS"
   jms_dyngroup="${var.prefix}-jms-dyngroup"
 }
 
@@ -94,16 +94,6 @@ resource oci_jms_fleet starter_fleet {
   freeform_tags = local.freeform_tags
 }
 
-/*
-# Object storage bucket with the name=ocid of the Fleet
-resource "oci_objectstorage_bucket" "starter_jms_bucket" {
-  compartment_id = var.compartment_ocid
-  namespace      = var.namespace
-  name           = "${oci_jms_fleet.starter_fleet.id}"
-  freeform_tags = local.freeform_tags
-}
-*/
-
 # Installation Key
 resource "oci_management_agent_management_agent_install_key" "starter_install_key" {
     #Required
@@ -121,26 +111,3 @@ output install_key_ocid {
   value=oci_management_agent_management_agent_install_key.starter_install_key.id
 }
 
-/*
-oci management-agent install-key list --compartment-id $TF_VAR_compartment_ocid
-
-
-    export compartment_id=<substitute-value-of-compartment_id> # https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/jms/fleet/create.html#cmdoption-compartment-id
-    export display_name=<substitute-value-of-display_name> # https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/jms/fleet/create.html#cmdoption-display-name
-    export install_key_id=ocid1.managementagentinstallkey.oc1.xxxxxxxx
-    
-    
-    <substitute-value-of-install_key_id> # https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/jms/fleet/generate-agent-deploy-script.html#cmdoption-install-key-id
-    export is_user_name_enabled=<substitute-value-of-is_user_name_enabled> # https://docs.cloud.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/jms/fleet/generate-agent-deploy-script.html#cmdoption-is-user-name-enabled
-    export os_family="LINUX"
-
-    fleet_id=$(oci jms fleet create --compartment-id $compartment_id --display-name $display_name --inventory-log file://inventory-log.json --query data.id --raw-output)
-
-cd data/github/mgueury.skynet.be/testsuite/test_group_all/group_common
-. ./env.sh
-oci management-agent install-key list --compartment-id $TF_VAR_compartment_ocid
-oci jms fleet list --compartment-id $TF_VAR_compartment_ocid
-INSTALL_KEY_OCID=ocid1.managementagentinstallkey.oc1.xxx
-FLEET_OCID=ocid1.jmsfleet.oc1.xxx
-oci jms fleet generate-agent-deploy-script --file /tmp/install_jms.sh --fleet-id $FLEET_OCID --install-key-id $INSTALL_KEY_OCID --is-user-name-enabled true --os-family "LINUX"
-*/
