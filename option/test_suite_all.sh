@@ -73,7 +73,8 @@ build_option() {
        -db_password $TEST_DB_PASSWORD \
        -compartment_ocid $EX_COMPARTMENT_OCID \
        -vcn_ocid $EX_VNC_OCID \
-       -subnet_ocid $EX_SUBNET_OCID \
+       -public_subnet_ocid $EX_SUBNET_OCID \
+       -private_subnet_ocid $EX_SUBNET_OCID \
        -oke_ocid $EX_OKE_OCID \
        -atp_ocid $EX_ATP_OCID \
        -mysql_ocid $EX_MYSQL_OCID \

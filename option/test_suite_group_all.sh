@@ -73,7 +73,8 @@ build_option() {
        -db_password $TEST_DB_PASSWORD \
        -compartment_ocid $EX_COMPARTMENT_OCID \
        -vcn_ocid $TF_VAR_vcn_ocid \
-       -subnet_ocid $TF_VAR_subnet_ocid \
+       -public_subnet_ocid $TF_VAR_public_subnet_ocid \
+       -private_subnet_ocid $TF_VAR_private_subnet_ocid \
        -oke_ocid $TF_VAR_oke_ocid \
        -atp_ocid $TF_VAR_atp_ocid \
        -mysql_ocid $TF_VAR_mysql_ocid \

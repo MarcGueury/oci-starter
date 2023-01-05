@@ -79,7 +79,7 @@ default_options = {
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid',
                       '-atp_ocid', '-db_ocid', '-db_compartment_ocid', '-pdb_ocid', '-mysql_ocid',
                       '-db_user', '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token',
-                      '-subnet_ocid']
+                      '-subnet_ocid','-public_subnet_ocid','-private_subnet_ocid']
 
 # hidden_options - allowed but not advertised
 hidden_options = ['-zip', '-group_common','-group_name']
@@ -167,11 +167,16 @@ def kubernetes_rules():
 
 
 def vcn_rules():
-    if 'vcn_ocid' in params and 'subnet_ocid' not in params:
-        error('-subnet_ocid required for -vcn_ocid')
-    elif 'vcn_ocid' not in params and 'subnet_ocid' in params:
+    if 'subnet_ocid' in params:
+        params['public_subnet_ocid'] = params['private_subnet_ocid']
+        params['private_subnet_ocid'] = params['public_subnet_ocid']
+        params.pop('subnet_ocid')
+    if 'vcn_ocid' in params and 'public_subnet_ocid' not in params:
+        error('-subnet_ocid or required for -vcn_ocid')
+    elif 'vcn_ocid' not in params and 'public_subnet_ocid' in params:
         error('-vcn_ocid required for -subnet_ocid')
-
+    
+ 
 
 def ui_rules():
     params['ui'] = longhand('ui', {'reactjs': 'ReactJS'})
@@ -280,7 +285,8 @@ oci-starter.sh
    -mysql_ocid (optional)
    -oke_ocid (optional)
    -prefix (default starter)
-   -subnet_ocid (optional)
+   -public_subnet_ocid (optional)
+   -private_subnet_ocid (optional)
    -ui (default html | reactjs | jet | angular | none) 
    -vcn_ocid (optional)
 
@@ -856,7 +862,8 @@ if 'group_common' in params:
     del params['group_common']
     del params['group_name']    
     params['vcn_ocid'] = TO_FILL
-    params['subnet_ocid'] = TO_FILL
+    params['public_subnet_ocid'] = TO_FILL
+    params['private_subnet_ocid'] = TO_FILL
     params['bastion_ocid'] = TO_FILL
     to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid", "jms": "jms_ocid"}
     for x in a_group_common:

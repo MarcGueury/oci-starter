@@ -61,7 +61,7 @@ resource oci_container_instances_container_instance starter_container_instance {
     hostname_label         = "${var.prefix}-ci"
     is_public_ip_assigned  = "true"
     skip_source_dest_check = "true"
-    subnet_id              = data.oci_core_subnet.starter_subnet.id
+    subnet_id              = data.oci_core_subnet.starter_private_subnet.id
   }
   freeform_tags = local.freeform_tags    
 }

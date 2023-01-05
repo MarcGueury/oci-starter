@@ -20,8 +20,12 @@ if [ -z "$TF_VAR_vcn_ocid" ]; then
    get_id_from_tfstate "TF_VAR_vcn_ocid" "starter_vcn"
 fi   
 
-if [ -z "$TF_VAR_subnet_ocid" ]; then
-   get_id_from_tfstate "TF_VAR_subnet_ocid" "starter_subnet"
+if [ -z "$TF_VAR_public_subnet_ocid" ]; then
+   get_id_from_tfstate "TF_VAR_public_subnet_ocid" "starter_public_subnet"
+fi   
+
+if [ -z "$TF_VAR_private_subnet_ocid" ]; then
+   get_id_from_tfstate "TF_VAR_private_subnet_ocid" "starter_private_subnet"
 fi   
 
 if [ -z "$TF_VAR_atp_ocid" ]; then
@@ -77,7 +81,8 @@ export TF_VAR_group_name=$TF_VAR_prefix
 
 # Network
 export TF_VAR_vcn_ocid=$TF_VAR_vcn_ocid
-export TF_VAR_subnet_ocid=$TF_VAR_subnet_ocid
+export TF_VAR_public_subnet_ocid=$TF_VAR_public_subnet_ocid
+export TF_VAR_private_subnet_ocid=$TF_VAR_private_subnet_ocid
 
 # Bastion
 export TF_VAR_bastion_ocid=$TF_VAR_bastion_ocid

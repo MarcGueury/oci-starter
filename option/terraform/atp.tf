@@ -15,7 +15,7 @@ resource "oci_database_autonomous_database" "starter_atp" {
   # XXXXX  
   #  whitelisted_ips                             = [ data.oci_core_vcn.starter_vcn.id ]
   # whitelisted_ips                              = [ "0.0.0.0/0" ]
-  subnet_id                                      = data.oci_core_subnet.starter_subnet.id
+  subnet_id                                      = data.oci_core_subnet.starter_private_subnet.id
   is_mtls_connection_required                    = false
   freeform_tags = local.freeform_tags
 }

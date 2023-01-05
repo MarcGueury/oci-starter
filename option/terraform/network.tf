@@ -14,6 +14,13 @@ resource "oci_core_internet_gateway" "starter_internet_gateway" {
   freeform_tags  = local.freeform_tags
 }
 
+resource "oci_core_nat_gateway" "starter_nat_gateway" {
+  compartment_id = local.lz_network_cmp_ocid
+  vcn_id         = oci_core_vcn.starter_vcn.id
+  display_name   = "${var.prefix}-nat-gateway"
+  freeform_tags  = local.freeform_tags
+}
+
 resource "oci_core_default_route_table" "default_route_table" {
   manage_default_resource_id = oci_core_vcn.starter_vcn.default_route_table_id
   display_name               = "DefaultRouteTable"
@@ -23,12 +30,23 @@ resource "oci_core_default_route_table" "default_route_table" {
     destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_internet_gateway.starter_internet_gateway.id
   }
-
   freeform_tags = local.freeform_tags
 }
 
-#  XXXXXX split Private / Public network
-resource "oci_core_subnet" "starter_subnet" {
+resource "oci_core_route_table" "starter_route_private" {
+  compartment_id = var.compartment_ocid
+  vcn_id         = local.lz_network_cmp_ocid
+  display_name   = "${var.prefix}-route-private"
+
+  route_rules {
+    destination       = "0.0.0.0/0"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_nat_gateway.starter_nat_gateway.id
+  }
+}
+
+# Public Subnet
+resource "oci_core_subnet" "starter_public_subnet" {
   cidr_block        = "10.0.1.0/24"
   display_name      = "${var.prefix}-subnet"
   dns_label         = "${var.prefix}sub"
@@ -36,6 +54,19 @@ resource "oci_core_subnet" "starter_subnet" {
   compartment_id    = local.lz_network_cmp_ocid
   vcn_id            = oci_core_vcn.starter_vcn.id
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
+  dhcp_options_id   = oci_core_vcn.starter_vcn.default_dhcp_options_id
+  freeform_tags     = local.freeform_tags
+}
+
+# Private Subnet
+resource "oci_core_subnet" "starter_private_subnet" {
+  cidr_block        = "10.0.2.0/24"
+  display_name      = "${var.prefix}-subnet"
+  dns_label         = "${var.prefix}sub"
+  security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id, oci_core_security_list.starter_security_list.id]
+  compartment_id    = local.lz_network_cmp_ocid
+  vcn_id            = oci_core_vcn.starter_vcn.id
+  route_table_id    = oci_core_vcn.starter_vcn.starter_route_private
   dhcp_options_id   = oci_core_vcn.starter_vcn.default_dhcp_options_id
   freeform_tags     = local.freeform_tags
 }
@@ -161,4 +192,12 @@ data "oci_core_vcn" "starter_vcn" {
 
 data "oci_core_subnet" "starter_subnet" {
   subnet_id = oci_core_subnet.starter_subnet.id
+}
+
+data "oci_core_subnet" "starter_public_subnet" {
+  subnet_id = oci_core_subnet.starter_public_subnet.id
+}
+
+data "oci_core_subnet" "starter_private_subnet" {
+  subnet_id = oci_core_subnet.starter_private_subnet.id
 }

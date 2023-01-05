@@ -32,7 +32,7 @@ resource "oci_database_db_system" "starter_dbsystem" {
   }
 
   shape                   = "VM.Standard2.1"
-  subnet_id               = data.oci_core_subnet.starter_subnet.id
+  subnet_id               = data.oci_core_subnet.starter_private_subnet.id
   ssh_public_keys         = [var.ssh_public_key]
   display_name            = "${var.prefix}db"
   hostname                = "${var.prefix}db"
