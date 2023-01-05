@@ -34,8 +34,8 @@ resource "oci_core_default_route_table" "default_route_table" {
 }
 
 resource "oci_core_route_table" "starter_route_private" {
-  compartment_id = var.compartment_ocid
-  vcn_id         = local.lz_network_cmp_ocid
+  compartment_id = local.lz_network_cmp_ocid
+  vcn_id         = oci_core_vcn.starter_vcn.id
   display_name   = "${var.prefix}-route-private"
 
   route_rules {
