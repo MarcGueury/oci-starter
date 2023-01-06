@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
-cd $SCRIPT_DIR/..
+cd $BIN_DIR/..
 
 if [ ! -z "$TF_VAR_oke_ocid" ]; then
   echo "TF_VAR_oke_ocid=$TF_VAR_oke_ocid"
