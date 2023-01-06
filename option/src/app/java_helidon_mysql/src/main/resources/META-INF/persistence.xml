@@ -23,15 +23,9 @@
 
     <persistence-unit name="pu1" transaction-type="JTA">
         <jta-data-source>ds1</jta-data-source>
-        <class>me.opc.mp.database.Dept</class>        
+        <class>me.opc.mp.database.Dept</class>       
         <properties>
-            <property name="eclipselink.deploy-on-startup" value="true"/>
-            <property name="eclipselink.jdbc.native-sql" value="true"/>
-            <property name="eclipselink.logging.logger" value="JavaLogger"/>
-            <property name="eclipselink.logging.parameters" value="true"/>
-            <property name="eclipselink.weaving" value=""/>
-            <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.MySQLPlatform"/>
-            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
         </properties>
     </persistence-unit>
 </persistence>
