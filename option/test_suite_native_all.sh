@@ -107,6 +107,8 @@ loop_db() {
   loop_ui
   OPTION_DB=mysql
   loop_ui
+  OPTION_DB=none
+  loop_ui  
 }
 
 loop_java_vm() {
