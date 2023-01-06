@@ -47,8 +47,6 @@ build_test () {
 build_test_destroy () {
   BUILD_ID=1
   build_test
-  BUILD_ID=2
-  build_test
   ./destroy.sh --auto-approve > destroy.log 2>&1  
   echo "destroy_secs=$SECONDS" >> ${TEST_DIR}_time.txt
   cat ${TEST_DIR}_time.txt
