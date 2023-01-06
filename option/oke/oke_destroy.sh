@@ -17,6 +17,10 @@ if [ "$1" != "--auto-approve" ]; then
   exit
 fi
 
+if [ "$KUBECONFIG" == "" ]; then
+  . ./env.sh
+fi
+
 if [ ! -f $KUBECONFIG ]; then
   create_kubeconfig
 fi
