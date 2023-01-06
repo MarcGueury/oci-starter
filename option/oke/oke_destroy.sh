@@ -1,5 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+. $SCRIPT_DIR/../bin/build_common.sh
 cd $SCRIPT_DIR/..
 
 if [ ! -z "$TF_VAR_oke_ocid" ]; then
@@ -15,7 +16,10 @@ if [ "$1" != "--auto-approve" ]; then
   echo "Error: Please call this script via destroy.sh"
   exit
 fi
-export KUBECONFIG=target/kubeconfig_starter
+
+if [ ! -f $KUBECONFIG ]; then
+  create_kubeconfig
+fi
 
 # The goal is to destroy all LoadBalancers created by OKE in OCI before to delete OKE.
 #

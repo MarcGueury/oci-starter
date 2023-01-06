@@ -57,6 +57,12 @@ build_function() {
   src/terraform/apply.sh --auto-approve
 }
 
+# Create KUBECONFIG file
+create_kubeconfig() {
+  oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONFIG --region $TF_VAR_region --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
+  chmod 600 $KUBECONFIG
+}
+
 ocir_docker_push () {
   # Docker Login
   docker login ${TF_VAR_ocir} -u ${TF_VAR_namespace}/${TF_VAR_username} -p "${TF_VAR_auth_token}"

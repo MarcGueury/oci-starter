@@ -8,8 +8,7 @@ ocir_docker_push
 
 # One time configuration
 if [ ! -f $KUBECONFIG ]; then
-  oci ce cluster create-kubeconfig --cluster-id $OKE_OCID --file $KUBECONFIG --region $TF_VAR_region --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
-  chmod 600 $KUBECONFIG
+  create_kubeconfig
  
   # Deploy ingress-nginx
   kubectl create clusterrolebinding starter_clst_adm --clusterrole=cluster-admin --user=$TF_VAR_user_ocid
