@@ -130,7 +130,7 @@ else
   auto_echo TF_VAR_region=$TF_VAR_region
 
   # Kubernetes and OCIR
-  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
+  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ] || [ -f $ROOT_DIR/src/terraform/oke.tf ]; then
     export TF_VAR_namespace=`oci os ns get | jq -r .data`
     auto_echo TF_VAR_namespace=$TF_VAR_namespace
     # Find TF_VAR_username based on TF_VAR_user_ocid or the opposite
@@ -147,8 +147,8 @@ else
     
     export DOCKER_PREFIX=${TF_VAR_ocir}/${TF_VAR_namespace}
     auto_echo DOCKER_PREFIX=$DOCKER_PREFIX
+    export KUBECONFIG=$ROOT_DIR/target/kubeconfig_starter
   fi
-  export KUBECONFIG=$ROOT_DIR/target/kubeconfig_starter
 fi
 
 #-- POST terraform ----------------------------------------------------------
@@ -210,7 +210,7 @@ if [ -f $STATE_FILE ]; then
     get_output_from_tfstate "ORDS_URL" "ords_url"
   fi
 
-  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
+  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ -f $ROOT_DIR/src/terraform/oke.tf ]; then
     # OKE
     get_output_from_tfstate "OKE_OCID" "oke_ocid"
   fi

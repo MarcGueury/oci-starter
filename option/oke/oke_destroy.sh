@@ -3,11 +3,10 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
 cd $BIN_DIR/..
 
-if [ ! -z "$TF_VAR_oke_ocid" ]; then
-  echo "TF_VAR_oke_ocid=$TF_VAR_oke_ocid"
+if [ ! -f $ROOT_DIR/src/terrafor/oke.tf ]; then
+  echo "oke.tf not found"
   echo "Nothing to delete. This was an existing OKE installation"
   exit
-  # XXXX Should I delete the app, ui and ingress ?
 fi  
 
 echo "OKE DESTROY"
@@ -15,10 +14,6 @@ echo "OKE DESTROY"
 if [ "$1" != "--auto-approve" ]; then
   echo "Error: Please call this script via destroy.sh"
   exit
-fi
-
-if [ "$KUBECONFIG" == "" ]; then
-  . ./env.sh
 fi
 
 if [ ! -f $KUBECONFIG ]; then
