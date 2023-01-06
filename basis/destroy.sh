@@ -21,7 +21,7 @@ if [ "$1" != "--auto-approve" ]; then
 fi
 
 . env.sh
-if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || group_common_contain "oke"; then
+if [ -f $ROOT_DIR/src/terraform/oke.tf ]; then
   bin/oke_destroy.sh --auto-approve
 elif [ "$TF_VAR_deploy_strategy" == "function" ]; then
   # delete the UI website
