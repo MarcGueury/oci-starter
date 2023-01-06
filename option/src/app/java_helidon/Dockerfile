@@ -8,9 +8,7 @@ WORKDIR /helidon
 # Incremental docker builds will always resume after that, unless you update
 # the pom
 ADD pom.xml .
-# XXXX Bug: https://github.com/helidon-io/helidon/issues/5215
-# RUN mvn package -Dmaven.test.skip -Declipselink.weave.skip
-RUN mvn package -Dmaven.test.skip -Dexec.skip
+RUN mvn package -Dmaven.test.skip -Declipselink.weave.skip
 
 # Do the Maven build!
 # Incremental docker builds will resume here when you change sources
@@ -20,13 +18,13 @@ RUN mvn package -DskipTests
 RUN echo "done!"
 
 # 2nd stage, build the runtime image
-FROM ##DOCKER_IMAGE##
+FROM openjdk:17-jdk-slim
 WORKDIR /helidon
 
 # Copy the binary built in the 1st stage
-COPY --from=build /helidon/target/helidon.jar ./
+COPY --from=build /helidon/target/myproject.jar ./
 COPY --from=build /helidon/target/libs ./libs
 
-CMD ["java", "-jar", "helidon.jar"]
+CMD ["java", "-jar", "myproject.jar"]
 
 EXPOSE 8080

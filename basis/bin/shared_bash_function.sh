@@ -136,10 +136,3 @@ group_common_contain() {
   fi
 }
 
-is_new_install() {
-  if [ -f "$ROOT_DIR/src/terraform/${1}.tf" ]; then
-    return 0 
-  else
-    return 1
-  fi  
-}
