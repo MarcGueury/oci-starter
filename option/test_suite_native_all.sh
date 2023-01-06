@@ -116,7 +116,6 @@ loop_java_vm() {
   loop_db
   OPTION_JAVA_VM=graalvm_native
   loop_db
-  fi  
 }
 
 loop_java_framework () {
