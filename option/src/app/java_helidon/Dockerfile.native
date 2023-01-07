@@ -21,6 +21,7 @@ WORKDIR /helidon
 # Incremental docker builds will always resume after that, unless you update
 # the pom
 ADD pom.xml .
+ADD src/main/resources/META-INF/native-image src/main/resources/META-INF/native-image
 RUN mvn package -Pnative-image -Dnative.image.skip -Dmaven.test.skip -Declipselink.weave.skip
 
 # Do the Maven build!
@@ -35,8 +36,8 @@ FROM scratch
 WORKDIR /helidon
 
 # Copy the binary built in the 1st stage
-COPY --from=build /helidon/target/myproject .
+COPY --from=build /helidon/target/helidon .
 
-ENTRYPOINT ["./myproject"]
+ENTRYPOINT ["./helidon"]
 
 EXPOSE 8080
