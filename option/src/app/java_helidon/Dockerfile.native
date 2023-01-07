@@ -32,11 +32,13 @@ RUN mvn package -Pnative-image -Dnative.image.buildStatic -DskipTests
 RUN echo "done!"
 
 # 2nd stage, build the runtime image
-FROM scratch
+# FROM scratch
+FROM oraclelinux:9-slim
 WORKDIR /helidon
 
 # Copy the binary built in the 1st stage
 COPY --from=build /helidon/target/helidon .
+COPY --from=build /helidon/target/classes /helidon/target/classes
 
 ENTRYPOINT ["./helidon"]
 
