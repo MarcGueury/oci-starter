@@ -112,7 +112,7 @@ loop_db() {
 loop_java_vm() {
   OPTION_JAVA_VM=jdk 
   loop_db
-  OPTION_JAVA_VM=graalvm_native
+  OPTION_JAVA_VM=graalvm-native
   loop_db
 }
 

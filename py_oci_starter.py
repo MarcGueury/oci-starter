@@ -94,7 +94,7 @@ allowed_values = {
     '-language': {'java', 'node', 'python', 'dotnet', 'go', 'php', 'ords', 'none'},
     '-deploy': {'compute', 'kubernetes', 'function', 'container_instance', 'ci'},
     '-java_framework': {'springboot', 'helidon', 'tomcat', 'micronaut'},
-    '-java_vm': {'jdk', 'graalvm', 'graalvm_native'},
+    '-java_vm': {'jdk', 'graalvm', 'graalvm-native'},
     '-java_version': {'8', '11', '17'},
     '-kubernetes': {'oke', 'docker'},
     '-ui': {'html', 'jet', 'angular', 'reactjs', 'jsp', 'php', 'none'},
