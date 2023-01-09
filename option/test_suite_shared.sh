@@ -2,6 +2,7 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 . $HOME/bin/env_oci_starter_testsuite.sh
+export BUILD_COUNT=1
 
 # No color for terraforms logs
 export nocolorarg=1
@@ -10,10 +11,6 @@ start_test() {
   export TEST_NAME=$1
   export TEST_DIR=$TEST_HOME/$OPTION_DEPLOY/$TEST_NAME
   echo "-- TEST: $OPTION_DEPLOY - $TEST_NAME ---------------------------------------"   
-}
-
-append_csv() {
-
 }
 
 build_test () {
@@ -60,7 +57,7 @@ build_test () {
 build_test_destroy () {
   BUILD_ID=1
   build_test
-  if [ "$1" = "2" ]; then
+  if [ "$BUILD_COUNT" = "2" ]; then
     BUILD_ID=2
     build_test
   fi  
@@ -133,8 +130,6 @@ pre_test_suite() {
   mv output/group_common ../group_common
   cd $TEST_HOME/group_common
   ./build.sh
-  cd $TEST_HOME
-  . ./group_common_env.sh
   date
   echo "CSV_DATE, OPTION_DEPLOY, CSV_NAME, CSV_HTML_OK, CSV_JSON_OK, CSV_BUILD_SECOND, CSV_DESTROY_SECOND" > $TEST_HOME/result.csv 
 }

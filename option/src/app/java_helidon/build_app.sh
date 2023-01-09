@@ -11,11 +11,17 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../../bin/build_common.sh
 java_build_common
 
+# XXXX microprofile-config.properties values should all go in start.sh like JDBC_USER
+cp microprofile-config.properties src/main/resources/META-INF/microprofile-config.properties
 replace_db_user_password_in_file src/main/resources/META-INF/microprofile-config.properties
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   if [ "$TF_VAR_java_vm" == "graalvm-native" ]; then
-    # This will not work with GraalVM 22+ Helidon 3 works with only GraalVM 21.3. See : https://github.com/helidon-io/helidon/issues/5299
+    # XXXX The sample use Helidon/JPA 3.1 that is not supported with GraalVM Native 22.3
+    # There are 2 issues with Work-arounds
+    # (1) OracleDialect constructor in reflect-config.json 
+    # (2) env var JAVAX_SQL_DATASOURCE_DS1_DATASOURCE_URL is not detected 
+    sed -i "s/##JDBC_URL##/$JDBC_URL/" src/main/resources/META-INF/microprofile-config.properties
     mvn package -Pnative-image -Dnative.image.buildStatic -DskipTests
   else 
     mvn package -DskipTests
@@ -33,3 +39,4 @@ else
   fi
   exit_on_error  
 fi  
+
