@@ -1,4 +1,4 @@
-FROM ##DOCKER_IMAGE##
+FROM oraclelinux:9-slim
 COPY target/demo /app/app
 WORKDIR /app
-ENTRYPOINT ["app"]
+ENTRYPOINT ["./app"]

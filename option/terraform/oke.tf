@@ -73,10 +73,7 @@ resource "oci_core_security_list" "starter_seclist_lb" {
     }
   }
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 #----------------------------------------------------------------------------
@@ -193,10 +190,7 @@ resource "oci_core_security_list" "starter_seclist_node" {
     }
   }
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 #----------------------------------------------------------------------------
@@ -270,10 +264,7 @@ resource oci_core_security_list starter_seclist_api {
     stateless   = "false"
   }
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 #----------------------------------------------------------------------------
@@ -290,10 +281,7 @@ resource "oci_core_subnet" "starter_nodepool_subnet" {
   display_name      = "${var.prefix}-oke-nodepool-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 resource "oci_core_subnet" "starter_lb_subnet" {
@@ -308,10 +296,7 @@ resource "oci_core_subnet" "starter_lb_subnet" {
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags     = local.freeform_tags
 }
 
 resource "oci_core_subnet" "starter_api_subnet" {
@@ -326,10 +311,7 @@ resource "oci_core_subnet" "starter_api_subnet" {
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
 
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags     = local.freeform_tags
 }
 
 #----------------------------------------------------------------------------
@@ -369,10 +351,7 @@ resource "oci_containerengine_cluster" "starter_oke" {
     }
   }
 
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 resource "oci_containerengine_node_pool" "starter_node_pool" {
@@ -402,11 +381,7 @@ resource "oci_containerengine_node_pool" "starter_node_pool" {
   }
   ssh_public_key      = var.ssh_public_key
 
-
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 
 #----------------------------------------------------------------------------

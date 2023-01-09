@@ -9,7 +9,7 @@
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../../bin/build_common.sh
-check_java_version
+java_build_common
 
 mvn package
 exit_on_error

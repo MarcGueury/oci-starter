@@ -9,9 +9,9 @@
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../../bin/build_common.sh
-check_java_version
+java_build_common
 
-if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
+if [ "$TF_VAR_java_vm" == "graalvm-native" ]; then
   mvn package -Dpackaging=native-image
 else 
   mvn package 
@@ -27,7 +27,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
   replace_db_user_password_in_file ../../target/compute/app/start.sh  
 else
   docker image rm ${TF_VAR_prefix}-app:latest
-  if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
+  if [ "$TF_VAR_java_vm" == "graalvm-native" ]; then
     docker build -f Dockerfile.native -t ${TF_VAR_prefix}-app:latest .
   else
     docker build -t ${TF_VAR_prefix}-app:latest . 

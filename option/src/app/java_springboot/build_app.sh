@@ -9,9 +9,9 @@
 # - build the image
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../../bin/build_common.sh
-check_java_version
+java_build_common
 
-if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
+if [ "$TF_VAR_java_vm" == "graalvm-native" ]; then
   # Native Build about 14 mins. Output is ./demo
   mvn -Pnative native:compile
 else 
@@ -29,7 +29,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
 else
   docker image rm ${TF_VAR_prefix}-app:latest
  
-  if [ "$TF_VAR_java_vm" == "graalvm_native" ]; then
+  if [ "$TF_VAR_java_vm" == "graalvm-native" ]; then
     mvn -Pnative spring-boot:build-image -Dspring-boot.build-image.imageName=${TF_VAR_prefix}-app:latest
   else
     # It does not use mvn build image. Else no choice of the JIT

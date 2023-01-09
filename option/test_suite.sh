@@ -94,17 +94,17 @@ build_test_destroy
 
 # Java Compute ATP + Existing Subnet
 start_test 02_JAVA_HELIDON_COMPUTE_ATP_EX_SUBNET
-$OCI_STARTER -language java -java_framework helidon -deploy compute -db_password $TEST_DB_PASSWORD -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -java_framework helidon -deploy compute -db_password $TEST_DB_PASSWORD -vcn_ocid $EX_VNC_OCID -public_subnet_ocid $EX_SUBNET_OCID -private_subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # DB System
 start_test 03_JAVA_SPRINGBOOT_COMPUTE_PLUGGABLE_NEW
-$OCI_STARTER -language java -database pluggable -deploy compute -db_password $TEST_DB_PASSWORD -db_password $TEST_DB_PASSWORD -db_compartment_ocid $EX_DB_COMPARTMENT_OCID -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -database pluggable -deploy compute -db_password $TEST_DB_PASSWORD -db_password $TEST_DB_PASSWORD -db_compartment_ocid $EX_DB_COMPARTMENT_OCID -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -public_subnet_ocid $EX_SUBNET_OCID -private_subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
  
 # DB System
 start_test 03B_JAVA_SPRINGBOOT_COMPUTE_PLUGGABLE_EXISTING
-$OCI_STARTER -language java -database pluggable -deploy compute -db_password $TEST_DB_PASSWORD -db_password $TEST_DB_PASSWORD -pdb_ocid $EX_PDB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -database pluggable -deploy compute -db_password $TEST_DB_PASSWORD -db_password $TEST_DB_PASSWORD -pdb_ocid $EX_PDB_OCID -vcn_ocid $EX_VNC_OCID -public_subnet_ocid $EX_SUBNET_OCID -private_subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # GraalVM
@@ -134,17 +134,17 @@ build_test_destroy
 
 # Java Compute + Existing ATP + Existing Subnet
 start_test 08_JAVA_SPRINGBOOT_COMPUTE_EX_ATP_SUBNET
-$OCI_STARTER -language java -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_SHARED_ATP_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -deploy compute -db_password $TEST_DB_PASSWORD -atp_ocid $EX_SHARED_ATP_OCID -vcn_ocid $EX_VNC_OCID -public_subnet_ocid $EX_SUBNET_OCID -private_subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute + Existing DB + Existing Subnet
 start_test 09_JAVA_SPRINGBOOT_COMPUTE_EX_DB_SUBNET
-$OCI_STARTER -language java -deploy compute -database database -db_password $TEST_DB_PASSWORD -db_compartment_ocid $EX_DB_COMPARTMENT_OCID -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -deploy compute -database database -db_password $TEST_DB_PASSWORD -db_compartment_ocid $EX_DB_COMPARTMENT_OCID -db_ocid $EX_DB_OCID -vcn_ocid $EX_VNC_OCID -public_subnet_ocid $EX_SUBNET_OCID -private_subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute + Existing MYSQL + Existing Subnet
 start_test 10_JAVA_SPRINGBOOT_COMPUTE_EX_MYSQL_SUBNET
-$OCI_STARTER -language java -deploy compute -database mysql -db_password $TEST_DB_PASSWORD -mysql_ocid $EX_MYSQL_OCID -vcn_ocid $EX_VNC_OCID -subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
+$OCI_STARTER -language java -deploy compute -database mysql -db_password $TEST_DB_PASSWORD -mysql_ocid $EX_MYSQL_OCID -vcn_ocid $EX_VNC_OCID -public_subnet_ocid $EX_SUBNET_OCID -private_subnet_ocid $EX_SUBNET_OCID > $TEST_DIR.log 2>&1  
 build_test_destroy
 
 # Java Compute + Existing MYSQL + Existing Subnet

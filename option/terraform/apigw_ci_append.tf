@@ -31,9 +31,6 @@ resource "oci_apigateway_deployment" "starter_apigw_deployment" {
       }
     }
   }
-  freeform_tags = {
-    "group" = local.group_name
-    "app_prefix" = var.prefix
-  }
+  freeform_tags = local.freeform_tags
 }
 

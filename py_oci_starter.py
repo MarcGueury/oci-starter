@@ -79,7 +79,7 @@ default_options = {
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid',
                       '-atp_ocid', '-db_ocid', '-db_compartment_ocid', '-pdb_ocid', '-mysql_ocid',
                       '-db_user', '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token',
-                      '-subnet_ocid']
+                      '-subnet_ocid','-public_subnet_ocid','-private_subnet_ocid']
 
 # hidden_options - allowed but not advertised
 hidden_options = ['-zip', '-group_common','-group_name']
@@ -94,7 +94,7 @@ allowed_values = {
     '-language': {'java', 'node', 'python', 'dotnet', 'go', 'php', 'ords', 'none'},
     '-deploy': {'compute', 'kubernetes', 'function', 'container_instance', 'ci'},
     '-java_framework': {'springboot', 'helidon', 'tomcat', 'micronaut'},
-    '-java_vm': {'jdk', 'graalvm', 'graalvm_native'},
+    '-java_vm': {'jdk', 'graalvm', 'graalvm-native'},
     '-java_version': {'8', '11', '17'},
     '-kubernetes': {'oke', 'docker'},
     '-ui': {'html', 'jet', 'angular', 'reactjs', 'jsp', 'php', 'none'},
@@ -167,11 +167,16 @@ def kubernetes_rules():
 
 
 def vcn_rules():
-    if 'vcn_ocid' in params and 'subnet_ocid' not in params:
-        error('-subnet_ocid required for -vcn_ocid')
-    elif 'vcn_ocid' not in params and 'subnet_ocid' in params:
+    if 'subnet_ocid' in params:
+        params['public_subnet_ocid'] = params['subnet_ocid']
+        params['private_subnet_ocid'] = params['subnet_ocid']
+        params.pop('subnet_ocid')
+    if 'vcn_ocid' in params and 'public_subnet_ocid' not in params:
+        error('-subnet_ocid or required for -vcn_ocid')
+    elif 'vcn_ocid' not in params and 'public_subnet_ocid' in params:
         error('-vcn_ocid required for -subnet_ocid')
-
+    
+ 
 
 def ui_rules():
     params['ui'] = longhand('ui', {'reactjs': 'ReactJS'})
@@ -269,7 +274,7 @@ oci-starter.sh
    -db_user (default admin)
    -deploy (mandatory) compute | kubernetes | function | container_instance 
    -fnapp_ocid (optional)
-   -group_common (optional) atp | database | mysql | fnapp | apigw | oke 
+   -group_common (optional) atp | database | mysql | fnapp | apigw | oke | jms 
    -group_name (optional)
    -java_framework (default helidon | springboot | tomcat)
    -java_version (default 17 | 11 | 8)
@@ -280,7 +285,8 @@ oci-starter.sh
    -mysql_ocid (optional)
    -oke_ocid (optional)
    -prefix (default starter)
-   -subnet_ocid (optional)
+   -public_subnet_ocid (optional)
+   -private_subnet_ocid (optional)
    -ui (default html | reactjs | jet | angular | none) 
    -vcn_ocid (optional)
 
@@ -343,6 +349,9 @@ def readme_contents():
 ### Usage 
 
 ### Commands
+- build_group.sh   : Build first the Common Resources (group_common), then other directories
+- destroy_group.sh : Destroy other directories, then the Common Resources
+
 - group_common
     - build.sh     : Create the Common Resources using Terraform
     - destroy.sh   : Destroy the objects created by Terraform
@@ -353,9 +362,9 @@ def readme_contents():
     - terraform    : Terraform scripts (Command: plan.sh / apply.sh)
 
 ### After Build
-- group_common.sh  : File created during the build.sh and imported in each application
-- app1             : Directory with an application using "group_common.sh" 
-- app2             : ...
+- group_common_env.sh : File created during the build.sh and imported in each application
+- app1                : Directory with an application using "group_common_env.sh" 
+- app2                : ...
 ...
     '''
                 ]
@@ -392,14 +401,12 @@ def readme_contents():
                     f'export {get_tf_var(param)}="{params[param]}"')
     contents.append("\n- Run:")
     if 'group_name' in params:
-        contents.append("  # Build Common Resources")
-        contents.append(f"  cd {params['group_name']}/group_common")
-        contents.append("  ./build.sh")       
-        contents.append("  # Build Application")
-        contents.append(f"  cd ../{params['prefix']}")
+        contents.append("  # Build first the group common resources (group_common), then other directories")
+        contents.append(f"  cd {params['group_name']}")
+        contents.append("  ./build_group.sh")       
     else:
         contents.append(f"  cd {params['prefix']}")
-    contents.append("  ./build.sh")
+        contents.append("  ./build.sh")
     return contents
 
 def env_param_list():
@@ -445,11 +452,11 @@ def env_sh_contents():
             contents.append(f'export {get_tf_var(param)}="{params[param]}"')
     contents.append('')
     if 'group_name' in params:
-        contents.append("if [ -f $SCRIPT_DIR/../../group_common.sh ]; then")      
-        contents.append("  . $SCRIPT_DIR/../../group_common.sh")      
+        contents.append("if [ -f $SCRIPT_DIR/../../group_common_env.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../../group_common_env.sh")      
     else:
-        contents.append("if [ -f $SCRIPT_DIR/../group_common.sh ]; then")      
-        contents.append("  . $SCRIPT_DIR/../group_common.sh")      
+        contents.append("if [ -f $SCRIPT_DIR/../group_common_env.sh ]; then")      
+        contents.append("  . $SCRIPT_DIR/../group_common_env.sh")      
     contents.append("else")      
     if params.get('compartment_ocid') == None:
         contents.append('  # export TF_VAR_compartment_ocid=ocid1.compartment.xxxxx')       
@@ -660,6 +667,7 @@ def create_output_dir():
                 cp_terraform("function_existing.tf", "function_append.tf")
             else:
                 cp_terraform("function.tf", "function_append.tf")
+                cp_terraform("log_group.tf")
             if params['language'] == "ords":
                 apigw_append = "apigw_fn_ords_append.tf"
             else:
@@ -772,6 +780,7 @@ def create_group_common_dir():
             cp_terraform("function_existing.tf")
         else:
             cp_terraform("function.tf")
+            cp_terraform("log_group.tf")
 
     if 'apigw' in a_group_common:
         if 'apigw_ocid' in params:
@@ -779,14 +788,23 @@ def create_group_common_dir():
         else:
             cp_terraform("apigw.tf")
 
+    if 'jms' in a_group_common:
+        if 'jms_ocid' in params:
+            cp_terraform("jms_existing.tf")
+        else:
+            cp_terraform("jms.tf")            
+            cp_terraform("log_group.tf")
+
     allfiles = os.listdir(output_dir)
     allfiles.remove('README.md')
-    # Create a group_common directory
+    # Create a group directory
     output_mkdir('group_common')
     # iterate on all files to move them to 'group_common'
     for f in allfiles:
         os.rename(output_dir + os.sep + f, output_dir + os.sep + 'group_common' + os.sep + f)
 
+    output_copy_tree("option/group", ".")
+    
 #----------------------------------------------------------------------------
 
 # the script
@@ -842,10 +860,12 @@ if 'group_common' in params:
     output_dir = output_dir + os.sep + params['prefix']
     # The application will use the Common Resources created by group_name above.
     del params['group_common']
+    del params['group_name']    
     params['vcn_ocid'] = TO_FILL
-    params['subnet_ocid'] = TO_FILL
+    params['public_subnet_ocid'] = TO_FILL
+    params['private_subnet_ocid'] = TO_FILL
     params['bastion_ocid'] = TO_FILL
-    to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid"}
+    to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid", "jms": "jms_ocid"}
     for x in a_group_common:
         ocid = to_ocid[x]
         params[ocid] = TO_FILL

@@ -28,7 +28,7 @@ fi
 # -- env.sh
 # Do not stop if __TO_FILL__ are not replaced if TF_VAR_group_name exist in env variable
 # XXX -> It would be safer to check also for TF_VAR_xxx containing __TO_FILL__ too
-if [ -v TF_VAR_group_common ] || [ ! -v TF_VAR_group_name ]; then 
+if [ ! -f $ROOT_DIR/../group_common_env.sh ]; then 
   if grep -q "__TO_FILL__" $ROOT_DIR/env.sh; then
     echo "Error: missing environment variables."
     echo
@@ -130,7 +130,7 @@ else
   auto_echo TF_VAR_region=$TF_VAR_region
 
   # Kubernetes and OCIR
-  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
+  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ] || [ -f $ROOT_DIR/src/terraform/oke.tf ]; then
     export TF_VAR_namespace=`oci os ns get | jq -r .data`
     auto_echo TF_VAR_namespace=$TF_VAR_namespace
     # Find TF_VAR_username based on TF_VAR_user_ocid or the opposite
@@ -210,8 +210,24 @@ if [ -f $STATE_FILE ]; then
     get_output_from_tfstate "ORDS_URL" "ords_url"
   fi
 
-  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
+  if [ "$TF_VAR_deploy_strategy" == "kubernetes" ] || [ -f $ROOT_DIR/src/terraform/oke.tf ]; then
     # OKE
     get_output_from_tfstate "OKE_OCID" "oke_ocid"
+  fi
+
+  # JMS
+  if [ -f $ROOT_DIR/src/terraform/jms.tf ]; then 
+    if [ ! -f $TARGET_DIR/jms_agent_deploy.sh ]; then
+      get_output_from_tfstate "FLEET_OCID" "fleet_ocid"
+      get_output_from_tfstate "INSTALL_KEY_OCID" "install_key_ocid"
+       # JMS requires a "jms" tag namespace / tag "fleet_ocid" (that is unique and should not be deleted by terraform destroy) 
+      TAG_NAMESPACE_OCID=`oci iam tag-namespace list --compartment-id=$TF_VAR_tenancy_ocid | jq -r '.data[] | select(.name=="jms") | .id'`
+      if [ "$TAG_NAMESPACE_OCID" == "" ]; then
+        oci iam tag-namespace create --compartment-id $TF_VAR_tenancy_ocid --description jms --name jms | tee $TARGET_DIR/jms_tag_namespace.log
+        TAG_NAMESPACE_OCID=`cat $TARGET_DIR/jms_tag_namespace.log | jq -r .data.id`
+        oci iam tag create --description fleet_ocid --name fleet_ocid --tag-namespace-id $TAG_NAMESPACE_OCID | tee $TARGET_DIR/jms_tag_definition.log
+      fi  
+      oci jms fleet generate-agent-deploy-script --file $TARGET_DIR/jms_agent_deploy.sh --fleet-id $FLEET_OCID --install-key-id $INSTALL_KEY_OCID --is-user-name-enabled true --os-family "LINUX"
+    fi 
   fi
 fi

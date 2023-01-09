@@ -1,6 +1,6 @@
 
 # 1st stage, build the app
-FROM ghcr.io/graalvm/graalvm-ce:java17-21.3.0 as build
+FROM ghcr.io/graalvm/graalvm-ce:ol9-java17-22.3.0 as build
 
 # Install native-image
 RUN gu install native-image
@@ -21,6 +21,7 @@ WORKDIR /helidon
 # Incremental docker builds will always resume after that, unless you update
 # the pom
 ADD pom.xml .
+ADD src/main/resources/META-INF/native-image src/main/resources/META-INF/native-image
 RUN mvn package -Pnative-image -Dnative.image.skip -Dmaven.test.skip -Declipselink.weave.skip
 
 # Do the Maven build!
@@ -31,11 +32,13 @@ RUN mvn package -Pnative-image -Dnative.image.buildStatic -DskipTests
 RUN echo "done!"
 
 # 2nd stage, build the runtime image
-FROM scratch
+# FROM scratch
+FROM oraclelinux:9-slim
 WORKDIR /helidon
 
 # Copy the binary built in the 1st stage
 COPY --from=build /helidon/target/helidon .
+COPY --from=build /helidon/target/classes /helidon/target/classes
 
 ENTRYPOINT ["./helidon"]
 
