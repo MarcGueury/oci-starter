@@ -10,5 +10,9 @@
   {
     "name":"com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector",
     "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"com.mysql.cj.conf.PropertyDefinitions",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
   }  
 ]
