@@ -21,7 +21,7 @@ if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
     # There are 2 issues with Work-arounds
     # (1) OracleDialect constructor in reflect-config.json 
     # (2) env var JAVAX_SQL_DATASOURCE_DS1_DATASOURCE_URL is not detected (Helidon bug logged) 
-    sed -i "s/##JDBC_URL##/$JDBC_URL/" src/main/resources/META-INF/microprofile-config.properties
+    sed -i "s&##JDBC_URL##&$JDBC_URL&" src/main/resources/META-INF/microprofile-config.properties
     mvn package -Pnative-image -Dnative.image.buildStatic -DskipTests
   else 
     mvn package -DskipTests
