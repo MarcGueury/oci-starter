@@ -1,21 +1,7 @@
 [
 {
-  "name":"[B"
-},
-{
-  "name":"[C"
-},
-{
-  "name":"[D"
-},
-{
-  "name":"[F"
-},
-{
-  "name":"[I"
-},
-{
-  "name":"[J"
+  "name": "org.hibernate.dialect.OracleDialect",
+  "methods": [{"name":"<init>","parameterTypes":[]}]
 },
 {
   "name":"[Lcom.zaxxer.hikari.util.ConcurrentBag$IConcurrentBagEntry;"
@@ -24,13 +10,7 @@
   "name":"[Ljava.lang.Class;"
 },
 {
-  "name":"[Ljava.lang.String;"
-},
-{
   "name":"[Ljava.sql.Statement;"
-},
-{
-  "name":"[Ljavax.management.openmbean.CompositeData;"
 },
 {
   "name":"[Lorg.hibernate.event.spi.AutoFlushEventListener;"
@@ -100,15 +80,6 @@
 },
 {
   "name":"[Lorg.hibernate.event.spi.SaveOrUpdateEventListener;"
-},
-{
-  "name":"[Lsun.security.pkcs.SignerInfo;"
-},
-{
-  "name":"[S"
-},
-{
-  "name":"[Z"
 },
 {
   "name":"ch.qos.logback.classic.Logger"
@@ -475,6 +446,35 @@
   "name":"com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector"
 },
 {
+  "name":"com.mysql.cj.conf.url.SingleConnectionUrl",
+  "methods":[{"name":"<init>","parameterTypes":["com.mysql.cj.conf.ConnectionUrlParser","java.util.Properties"] }]
+},
+{
+  "name":"com.mysql.cj.jdbc.AbandonedConnectionCleanupThread"
+},
+{
+  "name":"com.mysql.cj.jdbc.Clob",
+  "methods":[{"name":"free","parameterTypes":[] }]
+},
+{
+  "name":"com.mysql.cj.jdbc.MysqlDataSource",
+  "queryAllPublicMethods":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setPassword","parameterTypes":["java.lang.String"] }, 
+    {"name":"setUrl","parameterTypes":["java.lang.String"] }, 
+    {"name":"setUser","parameterTypes":["java.lang.String"] }
+  ]
+},
+{
+  "name":"com.mysql.cj.log.StandardLogger",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"com.mysql.cj.protocol.StandardSocketFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.sun.crypto.provider.AESCipher$General",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -495,31 +495,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"com.sun.crypto.provider.DHKeyAgreement",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.sun.crypto.provider.DHKeyFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.sun.crypto.provider.DHKeyPairGenerator",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"com.sun.crypto.provider.DHParameters",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"com.sun.crypto.provider.GaloisCounterMode$AESGCM",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.sun.crypto.provider.HmacCore$HmacSHA512",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"com.sun.crypto.provider.PBKDF2Core$HmacSHA512",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -540,46 +520,6 @@
 },
 {
   "name":"com.sun.jndi.url.java.javaURLContextFactory"
-},
-{
-  "name":"com.sun.management.GarbageCollectorMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"com.sun.management.GcInfo",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"com.sun.management.HotSpotDiagnosticMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"com.sun.management.ThreadMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"com.sun.management.UnixOperatingSystemMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"com.sun.management.VMOption",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"com.sun.management.internal.GarbageCollectorExtImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"com.sun.management.internal.HotSpotDiagnostic",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"com.sun.management.internal.HotSpotThreadImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"com.sun.management.internal.OperatingSystemImpl",
-  "queryAllPublicConstructors":true
 },
 {
   "name":"com.sun.org.apache.xerces.internal.impl.dv.xs.ExtendedSchemaDVFactoryImpl",
@@ -1280,7 +1220,6 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "methods":[
-    {"name":"<init>","parameterTypes":[] }, 
     {"name":"aroundConstruct","parameterTypes":["jakarta.interceptor.InvocationContext"] }, 
     {"name":"aroundInvoke","parameterTypes":["jakarta.interceptor.InvocationContext"] }
   ]
@@ -2012,45 +1951,16 @@
   "methods":[{"name":"close","parameterTypes":[] }]
 },
 {
-  "name":"java.lang.Boolean",
-  "fields":[{"name":"TYPE"}]
-},
-{
-  "name":"java.lang.Byte",
-  "fields":[{"name":"TYPE"}]
-},
-{
-  "name":"java.lang.Character",
-  "fields":[{"name":"TYPE"}]
-},
-{
   "name":"java.lang.Class",
   "methods":[{"name":"getModule","parameterTypes":[] }]
 },
 {
   "name":"java.lang.Deprecated",
-  "queryAllDeclaredMethods":true,
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.lang.Double",
-  "fields":[{"name":"TYPE"}]
-},
-{
-  "name":"java.lang.Float",
-  "fields":[{"name":"TYPE"}]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"java.lang.FunctionalInterface",
   "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.lang.Integer",
-  "fields":[{"name":"TYPE"}]
-},
-{
-  "name":"java.lang.Long",
-  "fields":[{"name":"TYPE"}]
 },
 {
   "name":"java.lang.Module",
@@ -2086,20 +1996,8 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"java.lang.Short",
-  "fields":[{"name":"TYPE"}]
-},
-{
-  "name":"java.lang.StackTraceElement",
-  "queryAllPublicMethods":true
-},
-{
   "name":"java.lang.String",
   "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"java.lang.Void",
-  "fields":[{"name":"TYPE"}]
 },
 {
   "name":"java.lang.annotation.Annotation",
@@ -2129,73 +2027,12 @@
   "queryAllDeclaredMethods":true
 },
 {
-  "name":"java.lang.management.BufferPoolMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.lang.management.ClassLoadingMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.lang.management.CompilationMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.lang.management.LockInfo",
-  "queryAllPublicMethods":true
-},
-{
   "name":"java.lang.management.ManagementFactory",
   "methods":[{"name":"getRuntimeMXBean","parameterTypes":[] }]
 },
 {
-  "name":"java.lang.management.ManagementPermission",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
-},
-{
-  "name":"java.lang.management.MemoryMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.lang.management.MemoryManagerMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.lang.management.MemoryPoolMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.lang.management.MemoryUsage",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.lang.management.MonitorInfo",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.lang.management.PlatformLoggingMXBean",
-  "queryAllPublicMethods":true,
-  "methods":[
-    {"name":"getLoggerLevel","parameterTypes":["java.lang.String"] }, 
-    {"name":"getLoggerNames","parameterTypes":[] }, 
-    {"name":"getParentLoggerName","parameterTypes":["java.lang.String"] }, 
-    {"name":"setLoggerLevel","parameterTypes":["java.lang.String","java.lang.String"] }
-  ]
-},
-{
   "name":"java.lang.management.RuntimeMXBean",
-  "queryAllPublicMethods":true,
   "methods":[{"name":"getInputArguments","parameterTypes":[] }]
-},
-{
-  "name":"java.lang.management.ThreadInfo",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"java.math.BigDecimal"
-},
-{
-  "name":"java.math.BigInteger"
 },
 {
   "name":"java.nio.Bits",
@@ -2224,13 +2061,13 @@
   "name":"java.security.AlgorithmParametersSpi"
 },
 {
-  "name":"java.security.KeyStoreSpi"
-},
-{
   "name":"java.security.SecureRandomParameters"
 },
 {
-  "name":"java.security.cert.CertStoreParameters"
+  "name":"java.security.interfaces.ECPrivateKey"
+},
+{
+  "name":"java.security.interfaces.ECPublicKey"
 },
 {
   "name":"java.security.interfaces.RSAPrivateKey"
@@ -2239,108 +2076,11 @@
   "name":"java.security.interfaces.RSAPublicKey"
 },
 {
-  "name":"java.sql.Array",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.Blob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.CallableStatement",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.Clob",
-  "queryAllDeclaredMethods":true
-},
-{
   "name":"java.sql.Connection",
-  "queryAllDeclaredMethods":true,
   "methods":[{"name":"createClob","parameterTypes":[] }]
 },
 {
-  "name":"java.sql.DatabaseMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
   "name":"java.sql.Date"
-},
-{
-  "name":"java.sql.NClob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.ParameterMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.PreparedStatement",
-  "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"execute","parameterTypes":[] }, 
-    {"name":"executeQuery","parameterTypes":[] }, 
-    {"name":"executeUpdate","parameterTypes":[] }
-  ]
-},
-{
-  "name":"java.sql.Ref",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.ResultSet",
-  "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"last","parameterTypes":[] }, 
-    {"name":"next","parameterTypes":[] }
-  ]
-},
-{
-  "name":"java.sql.ResultSetMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.RowId",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.SQLData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.SQLInput",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.SQLOutput",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.SQLXML",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.Savepoint",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"java.sql.Statement",
-  "queryAllDeclaredMethods":true,
-  "methods":[
-    {"name":"execute","parameterTypes":["java.lang.String"] }, 
-    {"name":"execute","parameterTypes":["java.lang.String","int"] }, 
-    {"name":"execute","parameterTypes":["java.lang.String","int[]"] }, 
-    {"name":"execute","parameterTypes":["java.lang.String","java.lang.String[]"] }, 
-    {"name":"executeQuery","parameterTypes":["java.lang.String"] }, 
-    {"name":"executeUpdate","parameterTypes":["java.lang.String"] }, 
-    {"name":"executeUpdate","parameterTypes":["java.lang.String","int"] }, 
-    {"name":"executeUpdate","parameterTypes":["java.lang.String","int[]"] }, 
-    {"name":"executeUpdate","parameterTypes":["java.lang.String","java.lang.String[]"] }
-  ]
-},
-{
-  "name":"java.sql.Struct",
-  "queryAllDeclaredMethods":true
 },
 {
   "name":"java.sql.Timestamp"
@@ -2358,64 +2098,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"java.util.Date"
-},
-{
-  "name":"java.util.PropertyPermission",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }]
-},
-{
-  "name":"java.util.logging.LogManager",
-  "methods":[{"name":"getLoggingMXBean","parameterTypes":[] }]
-},
-{
-  "name":"java.util.logging.LoggingMXBean",
-  "queryAllPublicMethods":true
-},
-{
   "name":"javafx.beans.value.ObservableValue"
 },
 {
-  "name":"javax.crypto.interfaces.DHPrivateKey"
-},
-{
-  "name":"javax.crypto.interfaces.DHPublicKey"
-},
-{
-  "name":"javax.json.JsonValue"
-},
-{
-  "name":"javax.management.MBeanOperationInfo",
-  "queryAllPublicMethods":true,
-  "methods":[{"name":"getSignature","parameterTypes":[] }]
-},
-{
-  "name":"javax.management.MBeanServerBuilder",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"javax.management.ObjectName"
-},
-{
-  "name":"javax.management.openmbean.CompositeData"
-},
-{
-  "name":"javax.management.openmbean.OpenMBeanOperationInfoSupport"
-},
-{
-  "name":"javax.management.openmbean.TabularData"
-},
-{
   "name":"javax.money.MonetaryAmount"
-},
-{
-  "name":"javax.net.ssl.KeyManagerFactory"
-},
-{
-  "name":"javax.net.ssl.TrustManagerFactory"
-},
-{
-  "name":"javax.security.auth.kerberos.KerberosCredMessage"
 },
 {
   "name":"javax.security.auth.x500.X500Principal",
@@ -2440,30 +2126,6 @@
 {
   "name":"jdk.internal.vm.annotation.IntrinsicCandidate",
   "queryAllDeclaredMethods":true
-},
-{
-  "name":"jdk.management.jfr.ConfigurationInfo",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"jdk.management.jfr.EventTypeInfo",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"jdk.management.jfr.FlightRecorderMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"jdk.management.jfr.FlightRecorderMXBeanImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"jdk.management.jfr.RecordingInfo",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"jdk.management.jfr.SettingDescriptorInfo",
-  "queryAllPublicMethods":true
 },
 {
   "name":"me.opc.mp.database.Dept",
@@ -2496,395 +2158,6 @@
 },
 {
   "name":"module-info"
-},
-{
-  "name":"oracle.as.jmx.framework.PortableMBeanFactory"
-},
-{
-  "name":"oracle.i18n.text.OraBoot"
-},
-{
-  "name":"oracle.i18n.text.converter.CharacterConverterSJIS"
-},
-{
-  "name":"oracle.jdbc.AdditionalDatabaseMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleArray",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleBfile",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleBlob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleCallableStatement",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleClob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleConnection",
-  "queryAllDeclaredMethods":true,
-  "methods":[{"name":"createOracleArray","parameterTypes":["java.lang.String","java.lang.Object"] }]
-},
-{
-  "name":"oracle.jdbc.OracleDriver"
-},
-{
-  "name":"oracle.jdbc.OracleNClob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleOpaque",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleParameterMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OraclePreparedStatement",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleRef",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleResultSet",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleResultSetMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleSavepoint",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleStatement",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleStruct",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleTypeMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleTypeMetaData$Array",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleTypeMetaData$Opaque",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.OracleTypeMetaData$Struct",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.datasource.impl.OracleDataSource",
-  "methods":[
-    {"name":"setPassword","parameterTypes":["java.lang.String"] }, 
-    {"name":"setURL","parameterTypes":["java.lang.String"] }, 
-    {"name":"setUser","parameterTypes":["java.lang.String"] }
-  ]
-},
-{
-  "name":"oracle.jdbc.driver.DiagnosabilityMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"oracle.jdbc.driver.LiveDMSFactory",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"oracle.jdbc.driver.Message11",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"oracle.jdbc.driver.OracleDiagnosabilityMBean",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"oracle.jdbc.driver.T4CDriverExtension",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"oracle.jdbc.internal.ACProxyable",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.AdditionalDatabaseMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.ClientDataSupport",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleArray",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleBfile",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleBlob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleCallableStatement",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleClob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleConnection",
-  "queryAllDeclaredMethods":true,
-  "methods":[{"name":"isUsable","parameterTypes":["boolean"] }]
-},
-{
-  "name":"oracle.jdbc.internal.OracleNClob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleOpaque",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleParameterMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OraclePreparedStatement",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleRef",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleResultSet",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleResultSetMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleRowId",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleSavepoint",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleStatement",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleStruct",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleTypeMetaData",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleTypeMetaData$Array",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleTypeMetaData$Opaque",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.OracleTypeMetaData$Struct",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.internal.XMLTypeIntf",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.logging.annotations.Feature",
-  "methods":[{"name":"values","parameterTypes":[] }]
-},
-{
-  "name":"oracle.jdbc.logging.annotations.Supports",
-  "methods":[{"name":"value","parameterTypes":[] }]
-},
-{
-  "name":"oracle.jdbc.logging.runtime.TraceController",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"oracle.jdbc.pool.OracleDataSource",
-  "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"oracle.jdbc.replay.ReplayStatisticsMXBean",
-  "queryAllPublicMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableArray",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableBase",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableBfile",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableBlob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableClob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableConnection",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableNClob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableOpaque",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableOthers",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableRef",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableResultSet",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableStatement",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.NonTxnReplayableStruct",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.ReplayStatisticsMBeanImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableArray",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableBase",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableBfile",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableBlob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableClob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableConnection",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableNClob",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableOpaque",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableOthers",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableRef",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableResultSet",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableSqlxml",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableStatement",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.jdbc.replay.driver.TxnReplayableStruct",
-  "queryAllDeclaredMethods":true
-},
-{
-  "name":"oracle.net.ano.Ano",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"oracle.net.ano.AuthenticationService",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"oracle.net.ano.DataIntegrityService",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"oracle.net.ano.EncryptionService",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"oracle.net.ano.SupervisorService",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"oracle.sql.AnyDataFactory"
-},
-{
-  "name":"oracle.sql.CLOB",
-  "methods":[{"name":"free","parameterTypes":[] }]
-},
-{
-  "name":"oracle.sql.TypeDescriptorFactory"
 },
 {
   "name":"org.apache.log4j.LogManager"
@@ -3573,16 +2846,8 @@
   "methods":[{"name":"activate","parameterTypes":["org.hibernate.cfg.beanvalidation.ActivationContext"] }]
 },
 {
-  "name":"org.hibernate.dialect.OracleDialect",
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }
-  ]
-},
-{
-  "name":"org.hibernate.dialect.MySQLDialect",
-  "methods":[
-    {"name":"<init>","parameterTypes":[] }
-  ]
+  "name":"org.hibernate.dialect.MySQL8Dialect",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.hibernate.engine.config.internal.ConfigurationServiceImpl",
@@ -4232,38 +3497,6 @@
   "name":"org.osgi.framework.BundleReference"
 },
 {
-  "name":"sun.management.ClassLoadingImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"sun.management.CompilationImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"sun.management.ManagementFactoryHelper$1",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"sun.management.ManagementFactoryHelper$PlatformLoggingImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"sun.management.MemoryImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"sun.management.MemoryManagerImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"sun.management.MemoryPoolImpl",
-  "queryAllPublicConstructors":true
-},
-{
-  "name":"sun.management.RuntimeImpl",
-  "queryAllPublicConstructors":true
-},
-{
   "name":"sun.misc.Unsafe",
   "fields":[{"name":"theUnsafe"}],
   "methods":[
@@ -4288,27 +3521,11 @@
   "name":"sun.reflect.annotation.AnnotationType"
 },
 {
-  "name":"sun.security.pkcs12.PKCS12KeyStore",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.pkcs12.PKCS12KeyStore$DualFormatPKCS12",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"sun.security.provider.DSA$SHA224withDSA",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"sun.security.provider.DSA$SHA256withDSA",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.provider.JavaKeyStore$JKS",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
-  "name":"sun.security.provider.MD5",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -4340,14 +3557,6 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"sun.security.provider.certpath.CollectionCertStore",
-  "methods":[{"name":"<init>","parameterTypes":["java.security.cert.CertStoreParameters"] }]
-},
-{
-  "name":"sun.security.provider.certpath.SunCertPathBuilder",
-  "methods":[{"name":"<init>","parameterTypes":[] }]
-},
-{
   "name":"sun.security.rsa.PSSParameters",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -4368,7 +3577,7 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"sun.security.rsa.RSASignature$SHA512withRSA",
+  "name":"sun.security.ssl.KeyManagerFactoryImpl$SunX509",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -4380,53 +3589,11 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"sun.security.util.ObjectIdentifier"
-},
-{
-  "name":"sun.security.x509.AuthorityInfoAccessExtension",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
   "name":"sun.security.x509.AuthorityKeyIdentifierExtension",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
 },
 {
   "name":"sun.security.x509.BasicConstraintsExtension",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
-  "name":"sun.security.x509.CRLDistributionPointsExtension",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
-  "name":"sun.security.x509.CertificateExtensions"
-},
-{
-  "name":"sun.security.x509.CertificatePoliciesExtension",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
-  "name":"sun.security.x509.ExtendedKeyUsageExtension",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
-  "name":"sun.security.x509.IssuerAlternativeNameExtension",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
-  "name":"sun.security.x509.KeyUsageExtension",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
-  "name":"sun.security.x509.NetscapeCertTypeExtension",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
-  "name":"sun.security.x509.PrivateKeyUsageExtension",
-  "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
-},
-{
-  "name":"sun.security.x509.SubjectAlternativeNameExtension",
   "methods":[{"name":"<init>","parameterTypes":["java.lang.Boolean","java.lang.Object"] }]
 },
 {

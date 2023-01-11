@@ -62,9 +62,6 @@
       "pattern":"\\QMETA-INF/services/jakarta.xml.bind.JAXBContext\\E"
     }, 
     {
-      "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
-    }, 
-    {
       "pattern":"\\QMETA-INF/services/org.eclipse.microprofile.config.spi.ConfigProviderResolver\\E"
     }, 
     {
@@ -101,6 +98,9 @@
       "pattern":"\\QMETA-INF/services/org.jboss.weld.module.WeldModule\\E"
     }, 
     {
+      "pattern":"\\Q\\E"
+    }, 
+    {
       "pattern":"\\Qapplication.yaml\\E"
     }, 
     {
@@ -113,6 +113,9 @@
       "pattern":"\\Qbeans_2_0.xsd\\E"
     }, 
     {
+      "pattern":"\\Qcom/mysql/cj/TlsSettings.properties\\E"
+    }, 
+    {
       "pattern":"\\Qhibernate.properties\\E"
     }, 
     {
@@ -123,27 +126,6 @@
     }, 
     {
       "pattern":"\\Qlogging.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qoracle/jdbc/defaultConnectionProperties.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qoracle/jdbc/driver/errorMap.xml\\E"
-    }, 
-    {
-      "pattern":"\\Qoracle/sql/converter_xcharset/lx20001.glb\\E"
-    }, 
-    {
-      "pattern":"\\Qoracle/sql/converter_xcharset/lx20002.glb\\E"
-    }, 
-    {
-      "pattern":"\\Qoracle/sql/converter_xcharset/lx2001f.glb\\E"
-    }, 
-    {
-      "pattern":"\\Qoracle/sql/converter_xcharset/lx2002e.glb\\E"
-    }, 
-    {
-      "pattern":"\\Qoracle/sql/converter_xcharset/lx200b2.glb\\E"
     }, 
     {
       "pattern":"\\Qorg/glassfish/jersey/internal/build.properties\\E"
@@ -163,15 +145,15 @@
   ]},
   "bundles":[
     {
+      "name":"com.mysql.cj.LocalizedErrorMessages",
+      "locales":[""]
+    }, 
+    {
       "name":"com.sun.org.apache.xerces.internal.impl.msg.XMLSchemaMessages",
       "locales":[""]
     }, 
     {
       "name":"com.sun.org.apache.xerces.internal.impl.xpath.regex.message",
-      "locales":[""]
-    }, 
-    {
-      "name":"oracle.jdbc.driver.Messages",
       "locales":[""]
     }, 
     {
