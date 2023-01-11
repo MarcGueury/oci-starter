@@ -3,6 +3,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 export TEST_HOME=$SCRIPT_DIR/test_group_all
 . $SCRIPT_DIR/test_suite_shared.sh
+export BUILD_COUNT=2
 
 loop_ui() {
   if [ "$OPTION_LANG" == "php" ]; then

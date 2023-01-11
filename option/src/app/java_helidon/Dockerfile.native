@@ -34,11 +34,10 @@ RUN echo "done!"
 # 2nd stage, build the runtime image
 # FROM scratch
 FROM oraclelinux:9-slim
-WORKDIR /helidon
+WORKDIR /helidon/target
 
 # Copy the binary built in the 1st stage
-COPY --from=build /helidon/target/helidon .
-COPY --from=build /helidon/target/classes /helidon/target/classes
+COPY --from=build /helidon/target /helidon/target
 
 ENTRYPOINT ["./helidon"]
 

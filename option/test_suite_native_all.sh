@@ -50,5 +50,7 @@ loop_deploy() {
 }
 
 pre_test_suite
+cd $TEST_HOME
+. ./group_common_env.sh
 loop_deploy
 post_test_suite
