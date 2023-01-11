@@ -12,7 +12,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 java_build_common
 
 # XXXX microprofile-config.properties values should all go in start.sh like JDBC_USER
-cp microprofile-config.properties src/main/resources/META-INF/microprofile-config.properties
+cp microprofile-config.properties.tmpl src/main/resources/META-INF/microprofile-config.properties
 replace_db_user_password_in_file src/main/resources/META-INF/microprofile-config.properties
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
