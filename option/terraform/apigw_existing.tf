@@ -5,8 +5,6 @@ data "oci_apigateway_gateway" "starter_apigw" {
     gateway_id = var.apigw_ocid
 }
 
-
-
 locals {
   apigw_ocid = var.apigw_ocid
 }
