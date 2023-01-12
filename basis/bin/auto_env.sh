@@ -161,7 +161,7 @@ if [ -f $STATE_FILE ]; then
   export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
 
   # API GW
-  if [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; || [ "$TF_VAR_ui_strategy" == "api" ]; then
+  if [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ] || [ "$TF_VAR_ui_strategy" == "api" ]; then
     # APIGW URL
     get_attribute_from_tfstate "APIGW_HOSTNAME" "starter_apigw" "hostname"
     # APIGW Deployment id
