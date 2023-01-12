@@ -524,16 +524,18 @@ def copy_basis(basis_dir=BASIS_DIR):
 
 def output_replace(old_string, new_string, filename):
     # Safely read the input filename using 'with'
-    with open(output_dir + os.sep + filename) as f:
-        s = f.read()
-        if old_string not in s:
-            print('"{old_string}" not found in {filename}.'.format(**locals()))
-            return
+    path = output_dir + os.sep + filename
+    if os.path.exists(path):
+        with open(path) as f:
+            s = f.read()
+            if old_string not in s:
+                print('"{old_string}" not found in {filename}.'.format(**locals()))
+                return
 
-    # Safely write the changed content, if found in the file
-    with open(output_dir + os.sep + filename, 'w') as f:
-        s = s.replace(old_string, new_string)
-        f.write(s)
+        # Safely write the changed content, if found in the file
+        with open(path, 'w') as f:
+            s = s.replace(old_string, new_string)
+            f.write(s)
 
 def cp_terraform(file1, file2=None):
     print("cp_terraform " + file1)
