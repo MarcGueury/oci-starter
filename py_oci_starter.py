@@ -97,11 +97,12 @@ allowed_values = {
     '-java_vm': {'jdk', 'graalvm', 'graalvm-native'},
     '-java_version': {'8', '11', '17'},
     '-kubernetes': {'oke', 'docker'},
-    '-ui': {'html', 'jet', 'angular', 'reactjs', 'jsp', 'php', 'none'},
+    '-ui': {'html', 'jet', 'angular', 'reactjs', 'jsp', 'php', 'api', 'none'},
     '-database': {'atp', 'database', 'pluggable', 'mysql', 'none'},
     '-license': {'included', 'LICENSE_INCLUDED', 'byol', 'BRING_YOUR_OWN_LICENSE'},
     '-infra_as_code': {'terraform_local', 'terraform_object_storage', 'resource_manager'},
-    '-mode': {CLI, GIT, ZIP}
+    '-mode': {CLI, GIT, ZIP},
+    '-shape': {'freetier'}
 }
 
 
@@ -225,6 +226,12 @@ def group_common_rules():
         global a_group_common 
         a_group_common=params['group_common'].split(',')
 
+def shape_rules():
+    if 'shape' in params:
+        params.pop('shape')
+        params['instance_shape'] = 'VM.Standard.E2.1.Micro'
+        params['instance_shape_config_memory_in_gbs'] = 1
+
 
 def apply_rules():
     zip_rules()
@@ -237,6 +244,7 @@ def apply_rules():
     auth_token_rules()
     compartment_rules()
     license_rules()
+    shape_rules()
 
 
 def error(msg):
@@ -287,6 +295,7 @@ oci-starter.sh
    -prefix (default starter)
    -public_subnet_ocid (optional)
    -private_subnet_ocid (optional)
+   -shape (optional freetier)
    -ui (default html | reactjs | jet | angular | none) 
    -vcn_ocid (optional)
 
@@ -558,6 +567,22 @@ def cp_dir_src_db(db_type):
     print("cp_dir_src_db "+db_type)
     output_copy_tree("option/src/db/"+db_type, "src/db")
 
+# Copy the terraform for APIGW
+def cp_terraform_apigw(append_tf):
+    if params['language'] == "ords":
+        app_url = "${local.ords_url}/starter/module/$${request.path[pathname]}"
+    elif params['language'] == "java" and params['java_framework'] == "tomcat":
+        app_url = "http://${local.apigw_dest_private_ip}:8080/starter-1.0/$${request.path[pathname]}"
+    else:
+        app_url = "http://${local.apigw_dest_private_ip}:8080/$${request.path[pathname]}" 
+
+    if 'apigw_ocid' in params:
+        cp_terraform("apigw_existing.tf", append_tf)
+        output_replace('##APP_URL##', app_url,"src/terraform/apigw_existing.tf")
+    else:
+        cp_terraform("apigw.tf", append_tf)
+        output_replace('##APP_URL##', app_url, "src/terraform/apigw.tf")    
+
 #----------------------------------------------------------------------------
 # Create Directory (shared for group_common and output)
 def create_dir_shared():
@@ -638,6 +663,11 @@ def create_output_dir():
     if params.get('ui') == "none":
         print("No UI")
         output_rm_tree("src/ui")
+    elif params.get('ui') == "api": 
+        print("API Only")
+        output_rm_tree("src/ui")   
+        if params.get('deploy') == "compute":
+            cp_terraform_apigw("apigw_compute_append.tf")          
     else:
         ui_lower = params.get('ui').lower()
         output_copy_tree("option/src/ui/"+ui_lower, "src/ui")
@@ -686,20 +716,7 @@ def create_output_dir():
             cp_terraform("container_instance.tf")
             # output_mkdir src/container_instance
             output_copy_tree("option/container_instance", "bin")
-
-            if params['language'] == "ords":
-                app_url = "${local.ords_url}/starter/module/$${request.path[pathname]}"
-            elif params['language'] == "java" and params['java_framework'] == "tomcat":
-                app_url = "http://${local.ci_private_ip}:8080/starter-1.0/$${request.path[pathname]}"
-            else:
-                app_url = "http://${local.ci_private_ip}:8080/$${request.path[pathname]}"
-
-            if 'apigw_ocid' in params:
-                cp_terraform("apigw_existing.tf", "apigw_ci_append.tf")
-                output_replace('##APP_URL##', app_url,"src/terraform/apigw_existing.tf")
-            else:
-                cp_terraform("apigw.tf", "apigw_ci_append.tf")
-                output_replace('##APP_URL##', app_url, "src/terraform/apigw.tf")
+            cp_terraform_apigw("apigw_ci_append.tf")          
 
     # -- Database ----------------------------------------------------------------
     if params.get('database') != "none":

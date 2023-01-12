@@ -9,7 +9,11 @@ else
 fi 
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-  get_output_from_tfstate UI_URL ui_url  
+  if [ "$TF_VAR_ui_strategy" == "api" ]; then  
+    export UI_URL=https://${APIGW_HOSTNAME}/${TF_VAR_prefix}
+  else
+    get_output_from_tfstate UI_URL ui_url  
+  fi
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   export UI_URL=http://`kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}"`/${TF_VAR_prefix}
 elif [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then  
@@ -41,10 +45,16 @@ if [ ! -z "$UI_URL" ]; then
       sleep 10  
       x=$(( $x + 1 ))
     done
-    curl $UI_URL/         -L --retry 5 --retry-max-time 20 -D /tmp/result_html.log > /tmp/result.html
+    if [ "$TF_VAR_ui_strategy" != "api" ]; then
+      curl $UI_URL/         -L --retry 5 --retry-max-time 20 -D /tmp/result_html.log > /tmp/result.html
+    else 
+      echo "OCI Starter" > /tmp/result.html
+    fi  
     curl $UI_URL/app/info -L --retry 5 --retry-max-time 20 -D /tmp/result_info.log > /tmp/result.info
   fi
-  echo - User Interface : $UI_URL/
+  if [ "$TF_VAR_ui_strategy" != "api" ]; then
+    echo - User Interface : $UI_URL/
+  fi  
   echo - Rest DB API    : $UI_URL/app/dept
   echo - Rest Info API  : $UI_URL/app/info
   if [ "$TF_VAR_language" == "php" ]; then

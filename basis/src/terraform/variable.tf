@@ -16,8 +16,9 @@ variable db_user { default="" }
 variable db_password{ default="" }
 
 # Compute Instance size
-variable "instance_ocpus" { default = 1 }
-variable "instance_shape_config_memory_in_gbs" { default = 8 }
+variable instance_shape { default = "VM.Standard.E4.Flex" }
+variable instance_ocpus { default = 1 }
+variable instance_shape_config_memory_in_gbs { default = 8 }
 
 # Landing Zones
 variable lz_appdev_cmp_ocid { default="" }

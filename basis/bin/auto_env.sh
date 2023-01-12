@@ -149,6 +149,9 @@ else
     auto_echo DOCKER_PREFIX=$DOCKER_PREFIX
     export KUBECONFIG=$ROOT_DIR/target/kubeconfig_starter
   fi
+
+  # OpenAPI Spec
+  export TF_VAR_openapi_spec=$(cat $ROOT_DIR/src/app/openapi_spec.yaml)
 fi
 
 #-- POST terraform ----------------------------------------------------------
