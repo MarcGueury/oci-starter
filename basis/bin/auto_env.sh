@@ -149,6 +149,9 @@ else
     auto_echo DOCKER_PREFIX=$DOCKER_PREFIX
     export KUBECONFIG=$ROOT_DIR/target/kubeconfig_starter
   fi
+
+  # OpenAPI Spec
+  export TF_VAR_openapi_spec=$(cat $ROOT_DIR/src/app/openapi_spec.yaml)
 fi
 
 #-- POST terraform ----------------------------------------------------------
@@ -158,7 +161,7 @@ if [ -f $STATE_FILE ]; then
   export OBJECT_STORAGE_URL=https://objectstorage.${TF_VAR_region}.oraclecloud.com
 
   # API GW
-  if [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
+  if [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ] || [ "$TF_VAR_ui_strategy" == "api" ]; then
     # APIGW URL
     get_attribute_from_tfstate "APIGW_HOSTNAME" "starter_apigw" "hostname"
     # APIGW Deployment id
@@ -184,8 +187,12 @@ if [ -f $STATE_FILE ]; then
 
   # Container Instance
   if [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
-    if [ -f $TARGET_DIR/docker_image_ui.txt ]; then
-      export TF_VAR_docker_image_ui=`cat $TARGET_DIR/docker_image_ui.txt`
+    if [ -f $TARGET_DIR/docker_image_ui.txt ] || [ -f $TARGET_DIR/docker_image_app.txt ] ; then
+      if [ -f $TARGET_DIR/docker_image_ui.txt ]; then
+        export TF_VAR_docker_image_ui=`cat $TARGET_DIR/docker_image_ui.txt`
+      else
+        export TF_VAR_docker_image_ui="busybox"      
+      fi
       if [ -f $TARGET_DIR/docker_image_app.txt ]; then
         export TF_VAR_docker_image_app=`cat $TARGET_DIR/docker_image_app.txt`
       else

@@ -1,9 +1,8 @@
 locals {
-  apigw_dest_private_ip = try(oci_container_instances_container_instance.starter_container_instance[0].vnics[0].private_ip, "")
+  apigw_dest_private_ip = oci_core_instance.starter_instance.private_ip
 }
 
 resource "oci_apigateway_deployment" "starter_apigw_deployment" {
-  count          = var.docker_image_ui == "" ? 0 : 1
   compartment_id = local.lz_appdev_cmp_ocid
   display_name   = "${var.prefix}-apigw-deployment"
   gateway_id     = local.apigw_ocid
@@ -26,14 +25,6 @@ resource "oci_apigateway_deployment" "starter_apigw_deployment" {
         url    = "##APP_URL##"
       }
     }     
-    routes {
-      path    = "/{pathname*}"
-      methods = [ "ANY" ]
-      backend {
-        type = "HTTP_BACKEND"
-        url    = "http://${local.apigw_dest_private_ip}/$${request.path[pathname]}"
-      }
-    }
   }
   freeform_tags = local.freeform_tags
 }

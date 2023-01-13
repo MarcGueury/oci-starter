@@ -25,6 +25,10 @@ loop_ui() {
       OPTION_UI=jsp
       build_option
     fi  
+    if [ "$OPTION_LANG" == "node" ] && [ "$OPTION_DB" == "atp" ]; then
+      OPTION_UI=api
+      build_option
+    fi     
   fi
 }
 
