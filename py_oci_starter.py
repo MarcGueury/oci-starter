@@ -404,10 +404,12 @@ def readme_contents():
     if TO_FILL in params.values():
         contents.append(
             "- Edit the file env.sh. Some variables need to be filled:")
+        contents.append("```")
         for param, value in params.items():
             if value == TO_FILL:
                 contents.append(
                     f'export {get_tf_var(param)}="{params[param]}"')
+        contents.append("```")
     contents.append("\n- Run:")
     if 'group_name' in params:
         contents.append("  # Build first the group common resources (group_common), then other directories")
