@@ -9,7 +9,7 @@ if [ ! -f ../group_common_env.sh ]; then
 fi
 . env.sh
 # Run Terraform
-src/terraform/apply.sh --auto-approve
+src/terraform/apply.sh --auto-approve -no-color
 exit_on_error
 
 . env.sh
