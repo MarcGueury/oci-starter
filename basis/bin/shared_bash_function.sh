@@ -6,6 +6,9 @@ java_build_common() {
     ## XX Check Java Version in env variables
     export JAVA_ID=`csruntimectl java list | grep jdk-17 | sed -e 's/^.*\(graal[^ ]*\) .*$/\1/'`
     csruntimectl java set $JAVA_ID
+    if [ "$TF_VAR_java_vm" == "graalvm-native" ]; then
+      gu install native-image
+    fi 
   fi
 
   if [ -f $TARGET_DIR/jms_agent_deploy.sh ]; then
