@@ -3,7 +3,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../bin/build_common.sh
 cd $BIN_DIR/..
 
-if [ ! -f $ROOT_DIR/src/terrafor/oke.tf ]; then
+if [ ! -f $ROOT_DIR/src/terraform/oke.tf ]; then
   echo "oke.tf not found"
   echo "Nothing to delete. This was an existing OKE installation"
   exit
