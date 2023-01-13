@@ -20,7 +20,7 @@ fi
 
 for d in */ ; do
     if [ "$d" != "group_common/" ]; then
-      echo "-- DESTROY_ALL - $d ---------------------------------"
+      echo "-- DESTROY_GROUP - $d ---------------------------------"
       cd $d
       ./destroy.sh --auto-approve
       cd $SCRIPT_DIR
