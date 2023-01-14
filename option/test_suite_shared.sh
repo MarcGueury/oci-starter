@@ -13,9 +13,9 @@ start_test() {
   echo "-- TEST: $OPTION_DEPLOY - $TEST_NAME ---------------------------------------"   
 }
 
-# Speed test of 100 calls
+# Speed test of 100 calls 
 test_run_100() {
-  SECONDS=0
+  START=$(date +%s.%N)
   UI_URL=`cat /tmp/ui_url.txt`
   x=0 
   CSV_RUN100_OK=0
@@ -27,7 +27,8 @@ test_run_100() {
       fi
       x=$(( $x + 1 ))
     done  
-  CSV_RUN100_SECOND=$SECONDS
+  END=$(date +%s.%N)
+  CSV_RUN100_SECOND=`echo "scale=2;($END-$START)/1" | bc`  
   echo "CSV_RUN100_SECOND=$CSV_RUN100_SECOND"
   echo "CSV_RUN100_OK=$OK_COUNT"
 }
