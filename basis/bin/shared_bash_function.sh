@@ -3,7 +3,8 @@
 # Java Build Common
 java_build_common() {
   if [ "${OCI_CLI_CLOUD_SHELL,,}" == "true" ]; then
-    ## XX Check Java Version in env variables
+    # csruntimectl is a function defined in /etc/bashrc.cloudshell
+    . /etc/bashrc.cloudshell
     export JAVA_ID=`csruntimectl java list | grep jdk-17 | sed -e 's/^.*\(graal[^ ]*\) .*$/\1/'`
     csruntimectl java set $JAVA_ID
   fi
