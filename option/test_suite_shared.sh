@@ -18,18 +18,18 @@ test_run_100() {
   SECONDS=0
   UI_URL=`cat /tmp/ui_url.txt`
   x=0 
-  OK_COUNT=0
+  CSV_RUN100_OK=0
   while [ $x -le 100 ]
     do
       curl $UI_URL/app/dept -s -D /tmp/speed_json.log > /tmp/speed.json
       if grep -q -i "deptno" /tmp/speed.json; then
-         OK_COUNT=$(( $OK_COUNT + 1 ))
+         CSV_RUN100_OK=$(( $CSV_RUN100_OK + 1 ))
       fi
       x=$(( $x + 1 ))
     done  
   CSV_RUN100_SECOND=$SECONDS
   echo "CSV_RUN100_SECOND=$CSV_RUN100_SECOND"
-  echo "OK_COUNT=$OK_COUNT"
+  echo "CSV_RUN100_OK=$OK_COUNT"
 }
 
 build_test () {
@@ -90,7 +90,7 @@ build_test_destroy () {
   CSV_DESTROY_SECOND=$SECONDS
   cat ${TEST_DIR}_time.txt
 
-  echo "$CSV_DATE, $OPTION_DEPLOY, $CSV_NAME, $CSV_HTML_OK, $CSV_JSON_OK, $CSV_BUILD_SECOND, $CSV_DESTROY_SECOND, $CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
+  echo "$CSV_DATE, $OPTION_DEPLOY, $CSV_NAME, $CSV_HTML_OK, $CSV_JSON_OK, $CSV_BUILD_SECOND, $CSV_DESTROY_SECOND, $CSV_RUN100_OK, $CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
 }
 
 build_option() {
@@ -155,7 +155,7 @@ pre_test_suite() {
   cd $TEST_HOME/group_common
   ./build.sh
   date
-  echo "CSV_DATE, OPTION_DEPLOY, CSV_NAME, CSV_HTML_OK, CSV_JSON_OK, CSV_BUILD_SECOND, CSV_DESTROY_SECOND, CSV_RUN100_SECOND" > $TEST_HOME/result.csv 
+  echo "CSV_DATE, OPTION_DEPLOY, CSV_NAME, CSV_HTML_OK, CSV_JSON_OK, CSV_BUILD_SECOND, CSV_DESTROY_SECOND, CSV_RUN100_OK, CSV_RUN100_SECOND" > $TEST_HOME/result.csv 
 }
 
 post_test_suite() {
