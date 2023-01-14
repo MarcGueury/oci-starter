@@ -11,16 +11,15 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 . $SCRIPT_DIR/../../bin/build_common.sh
 java_build_common
 
+if [ "$TF_VAR_java_vm" == "graalvm-native" ]; then
+  # Native Build about 14 mins. Output is ./demo
+  mvn -Pnative native:compile
+else 
+  mvn package
+fi
+exit_on_error
+
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-
-  if [ "$TF_VAR_java_vm" == "graalvm-native" ]; then
-    # Native Build about 14 mins. Output is ./demo
-    mvn -Pnative native:compile
-  else 
-    mvn package
-  fi
-  exit_on_error
-
   # Replace the user and password
   cp start.sh target/.
 
@@ -35,8 +34,6 @@ else
   else
     # It does not use mvn build image. Else no choice of the JIT
     # mvn spring-boot:build-image -Dspring-boot.build-image.imageName=${TF_VAR_prefix}-app:latest
-    mvn package
-    exit_on_error
     docker build -t ${TF_VAR_prefix}-app:latest . 
   fi
   exit_on_error
