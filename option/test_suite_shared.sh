@@ -18,13 +18,18 @@ test_run_100() {
   SECONDS=0
   UI_URL=`cat /tmp/ui_url.txt`
   x=0 
+  OK_COUNT=0
   while [ $x -le 100 ]
     do
       curl $UI_URL/app/dept -s -D /tmp/speed_json.log > /tmp/speed.json
+      if grep -q -i "deptno" /tmp/speed.json; then
+         OK_COUNT=$(( $OK_COUNT + 1 ))
+      fi
       x=$(( $x + 1 ))
     done  
   CSV_RUN100_SECOND=$SECONDS
   echo "CSV_RUN100_SECOND=$CSV_RUN100_SECOND"
+  echo "OK_COUNT=$OK_COUNT"
 }
 
 build_test () {
