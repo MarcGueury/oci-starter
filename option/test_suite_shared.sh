@@ -20,10 +20,11 @@ test_run_100() {
   x=0 
   while [ $x -le 100 ]
     do
-      curl $UI_URL/app/dept -D /tmp/speed_json.log > /tmp/speed.json
+      curl $UI_URL/app/dept -s -D /tmp/speed_json.log > /tmp/speed.json
       x=$(( $x + 1 ))
-    done
+    done  
   CSV_RUN100_SECOND=$SECONDS
+  echo "CSV_RUN100_SECOND=$CSV_RUN100_SECOND"
 }
 
 build_test () {
