@@ -13,6 +13,19 @@ start_test() {
   echo "-- TEST: $OPTION_DEPLOY - $TEST_NAME ---------------------------------------"   
 }
 
+# Speed test of 100 calls
+test_run_100() {
+  SECONDS=0
+  UI_URL=`cat /tmp/ui_url.txt`
+  x=0 
+  while [ $x -le 100 ]
+    do
+      curl $UI_URL/app/dept -D /tmp/speed_json.log > /tmp/speed.json
+      x=$(( $x + 1 ))
+    done
+  CSV_RUN100_SECOND=$SECONDS
+}
+
 build_test () {
   SECONDS=0
   # Change to the TEST_HOME directory first in case that the creation of TEST_DIR failed
@@ -27,6 +40,7 @@ build_test () {
   CSV_BUILD_SECOND=$SECONDS
   CSV_HTML_OK=0
   CSV_JSON_OK=0
+  CSV_RUN100_SECOND=0
 
   echo "build_secs_$BUILD_ID=$SECONDS" >> ${TEST_DIR}_time.txt
   if [ -f /tmp/result.html ]; then
@@ -52,6 +66,10 @@ build_test () {
   mv /tmp/result_html.log ${TEST_DIR}_result_html_$BUILD_ID.log
   mv /tmp/result_json.log ${TEST_DIR}_result_json_$BUILD_ID.log
   mv /tmp/result_info.log ${TEST_DIR}_result_info_$BUILD_ID.log
+
+  if [ "$CSV_JSON_OK" == "1" ]; then
+    test_run_100
+  fi   
 }
 
 build_test_destroy () {
@@ -66,7 +84,7 @@ build_test_destroy () {
   CSV_DESTROY_SECOND=$SECONDS
   cat ${TEST_DIR}_time.txt
 
-  echo "$CSV_DATE, $OPTION_DEPLOY, $CSV_NAME, $CSV_HTML_OK, $CSV_JSON_OK, $CSV_BUILD_SECOND, $CSV_DESTROY_SECOND" >> $TEST_HOME/result.csv 
+  echo "$CSV_DATE, $OPTION_DEPLOY, $CSV_NAME, $CSV_HTML_OK, $CSV_JSON_OK, $CSV_BUILD_SECOND, $CSV_DESTROY_SECOND, $CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
 }
 
 build_option() {
@@ -131,7 +149,7 @@ pre_test_suite() {
   cd $TEST_HOME/group_common
   ./build.sh
   date
-  echo "CSV_DATE, OPTION_DEPLOY, CSV_NAME, CSV_HTML_OK, CSV_JSON_OK, CSV_BUILD_SECOND, CSV_DESTROY_SECOND" > $TEST_HOME/result.csv 
+  echo "CSV_DATE, OPTION_DEPLOY, CSV_NAME, CSV_HTML_OK, CSV_JSON_OK, CSV_BUILD_SECOND, CSV_DESTROY_SECOND, CSV_RUN100_SECOND" > $TEST_HOME/result.csv 
 }
 
 post_test_suite() {
