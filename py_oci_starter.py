@@ -722,7 +722,7 @@ def create_output_dir():
             if params.get('database') == "none":
                 cp_terraform("container_instance_nodb.tf")
             else:
-                cp_terraform("container_instance.tf"j)
+                cp_terraform("container_instance.tf")
 
             # output_mkdir src/container_instance
             output_copy_tree("option/container_instance", "bin")
