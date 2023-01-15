@@ -718,10 +718,9 @@ def create_output_dir():
 
         elif params.get('deploy') == "container_instance":
             if params.get('database') == "none":
-                cp_terraform("container_instance_common.tf","container_instance_none.tf")
+                cp_terraform("container_instance_nodb.tf", "container_instance_common.tf")
             else:
-                cp_terraform("container_instance_common.tf", "container_instance.tf")
-
+                cp_terraform("container_instance.tf", "container_instance_common.tf")
             # output_mkdir src/container_instance
             output_copy_tree("option/container_instance", "bin")
             cp_terraform_apigw("apigw_ci_append.tf")          
