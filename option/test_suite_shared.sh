@@ -18,7 +18,7 @@ test_run_100() {
   START=$(date +%s.%N)
   UI_URL=`cat /tmp/ui_url.txt`
   x=0 
-  while [ $x -le 100 ]
+  while [ $x -lt 100 ]
     do
       curl $UI_URL/app/dept -s -D /tmp/speed_json.log > /tmp/speed.json
       if grep -q -i "deptno" /tmp/speed.json; then
