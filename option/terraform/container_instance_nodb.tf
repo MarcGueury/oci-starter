@@ -6,28 +6,6 @@ variable docker_image_app {
     default=""
 }
 
-XXXX resource_group + policies in common file ???
-XXXX do not use local.JDBC_URL directly ??? but var.JDBC_URL ?
-
-resource "oci_identity_dynamic_group" "starter_ci_dyngroup" {
-  # No prefix to share it between all container instances
-  name           = "starter-ci-dyngroup"
-  description    = "Starter - All Container Instances"
-  compartment_id = var.tenancy_ocid
-  matching_rule  = "ALL {resource.type='computecontainerinstance'}"
-  freeform_tags = local.freeform_tags
-}
-
-resource "oci_identity_policy" "starter-ci_policy" {
-  name           = "starter-fn-policy"
-  description    = "Container instance access to OCIR"
-  compartment_id = var.tenancy_ocid
-  statements = [
-    "allow dynamic-group starter-ci-dyngroup to read repos in tenancy"
-  ]
-  freeform_tags = local.freeform_tags
-}
-
 resource oci_container_instances_container_instance starter_container_instance {
   count = var.docker_image_ui == "" ? 0 : 1
   availability_domain = data.oci_identity_availability_domain.ad.name
@@ -38,12 +16,7 @@ resource oci_container_instances_container_instance starter_container_instance {
     image_url = var.docker_image_app
     is_resource_principal_disabled = "false"
     environment_variables = {
-      "DB_URL" = local.db_url,
-      "JDBC_URL" = local.jdbc_url,
-      "DB_USER" = var.db_user,
-      "DB_PASSWORD" = var.db_password,
       "SPRING_APPLICATION_JSON" = "{ \"db.info\": \"Java - SpringBoot\" }",
-      "JAVAX_SQL_DATASOURCE_DS1_DATASOURCE_URL" = local.jdbc_url
     }    
   }
   containers {

@@ -717,7 +717,11 @@ def create_output_dir():
             output_copy_tree("option/compute", "src/compute")
 
         elif params.get('deploy') == "container_instance":
-            cp_terraform("container_instance.tf")
+            if params.get('database') == "none":
+                cp_terraform("container_instance_common.tf","container_instance_none.tf")
+            else:
+                cp_terraform("container_instance_common.tf", "container_instance.tf")
+
             # output_mkdir src/container_instance
             output_copy_tree("option/container_instance", "bin")
             cp_terraform_apigw("apigw_ci_append.tf")          
@@ -815,6 +819,10 @@ def create_group_common_dir():
         else:
             cp_terraform("jms.tf")            
             cp_terraform("log_group.tf")
+
+    # Container Instance Common
+    cp_terraform("container_instance_common.tf")
+
 
     allfiles = os.listdir(output_dir)
     allfiles.remove('README.md')

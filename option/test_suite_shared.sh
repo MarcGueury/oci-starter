@@ -18,7 +18,6 @@ test_run_100() {
   START=$(date +%s.%N)
   UI_URL=`cat /tmp/ui_url.txt`
   x=0 
-  CSV_RUN100_OK=0
   while [ $x -le 100 ]
     do
       curl $UI_URL/app/dept -s -D /tmp/speed_json.log > /tmp/speed.json
@@ -30,7 +29,7 @@ test_run_100() {
   END=$(date +%s.%N)
   CSV_RUN100_SECOND=`echo "scale=2;($END-$START)/1" | bc`  
   echo "CSV_RUN100_SECOND=$CSV_RUN100_SECOND"
-  echo "CSV_RUN100_OK=$OK_COUNT"
+  echo "CSV_RUN100_OK=$CSV_RUN100_OK"
 }
 
 build_test () {
@@ -48,6 +47,7 @@ build_test () {
   CSV_HTML_OK=0
   CSV_JSON_OK=0
   CSV_RUN100_SECOND=0
+  CSV_RUN100_OK=0
 
   echo "build_secs_$BUILD_ID=$SECONDS" >> ${TEST_DIR}_time.txt
   if [ -f /tmp/result.html ]; then
