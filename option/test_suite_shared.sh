@@ -111,6 +111,7 @@ build_option() {
        -java_vm $OPTION_JAVA_VM \
        -database $OPTION_DB \
        -db_password $TEST_DB_PASSWORD \
+       -group_common dummy \
        -compartment_ocid $EX_COMPARTMENT_OCID \
        -vcn_ocid $TF_VAR_vcn_ocid \
        -public_subnet_ocid $TF_VAR_public_subnet_ocid \

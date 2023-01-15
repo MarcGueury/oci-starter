@@ -722,7 +722,7 @@ def create_output_dir():
             if params.get('database') == "none":
                 cp_terraform("container_instance_nodb.tf")
             else:
-                cp_terraform("container_instance.tf")
+                cp_terraform("container_instance.tf"j)
 
             # output_mkdir src/container_instance
             output_copy_tree("option/container_instance", "bin")
@@ -890,7 +890,7 @@ if 'group_name' in params:
 if 'group_common' in params:
     output_dir = output_dir + os.sep + params['prefix']
     # The application will use the Common Resources created by group_name above.
-    del params['group_common']
+    # del params['group_common']
     del params['group_name']    
     params['vcn_ocid'] = TO_FILL
     params['public_subnet_ocid'] = TO_FILL
@@ -898,8 +898,9 @@ if 'group_common' in params:
     params['bastion_ocid'] = TO_FILL
     to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid", "jms": "jms_ocid"}
     for x in a_group_common:
-        ocid = to_ocid[x]
-        params[ocid] = TO_FILL
+        if x in to_ocid:
+            ocid = to_ocid[x]
+            params[ocid] = TO_FILL
 
 if 'deploy' in params:
     create_output_dir()
