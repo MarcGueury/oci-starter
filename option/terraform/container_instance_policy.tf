@@ -11,7 +11,7 @@ resource "oci_identity_policy" "starter-ci_policy" {
   description    = "Container instance access to OCIR"
   compartment_id = var.tenancy_ocid
   statements = [
-    "allow dynamic-group starter-ci-dyngroup to read repos in tenancy"
+    "allow dynamic-group ${var.prefix}-ci-dyngroup to read repos in tenancy"
   ]
   freeform_tags = local.freeform_tags
 }
