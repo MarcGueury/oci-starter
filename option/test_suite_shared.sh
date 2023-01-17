@@ -91,7 +91,7 @@ build_test_destroy () {
   CSV_DESTROY_SECOND=$SECONDS
   cat ${TEST_DIR}_time.txt
 
-  echo "$CSV_DATE, $OPTION_DEPLOY, $CSV_NAME, $CSV_HTML_OK, $CSV_JSON_OK, $CSV_BUILD_SECOND, $CSV_DESTROY_SECOND, $CSV_RUN100_OK, $CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
+  echo "$CSV_DATE, $OPTION_DEPLOY, $OPTION_LANG, $OPTION_JAVA_FRAMEWORK, $OPTION_JAVA_VM, $OPTION_DB, $OPTION_UI, $CSV_NAME, $CSV_HTML_OK, $CSV_JSON_OK, $CSV_BUILD_SECOND, $CSV_DESTROY_SECOND, $CSV_RUN100_OK, $CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
 }
 
 build_option() {
@@ -152,12 +152,12 @@ pre_test_suite() {
   git clone https://github.com/mgueury/oci-starter
 
   cd $TEST_HOME/oci-starter
-  ./oci_starter.sh -group_name tsall -group_common atp,mysql,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
+  ./oci_starter.sh -group_name tsall -group_common atp,mysql,database,fnapp,apigw,oke -compartment_ocid $EX_COMPARTMENT_OCID -db_password $TEST_DB_PASSWORD -auth_token $OCI_TOKEN
   mv output/group_common ../group_common
   cd $TEST_HOME/group_common
   ./build.sh
   date
-  echo "CSV_DATE, OPTION_DEPLOY, CSV_NAME, CSV_HTML_OK, CSV_JSON_OK, CSV_BUILD_SECOND, CSV_DESTROY_SECOND, CSV_RUN100_OK, CSV_RUN100_SECOND" > $TEST_HOME/result.csv 
+  echo "CSV_DATE, OPTION_DEPLOY, OPTION_LANG, OPTION_JAVA_FRAMEWORK, OPTION_JAVA_VM, OPTION_DB, OPTION_UI, CSV_NAME, CSV_HTML_OK, CSV_JSON_OK, CSV_BUILD_SECOND, CSV_DESTROY_SECOND, CSV_RUN100_OK, CSV_RUN100_SECOND" > $TEST_HOME/result.csv 
 }
 
 post_test_suite() {
