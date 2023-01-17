@@ -6,7 +6,6 @@ import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import oracle.jdbc.pool.OracleDataSource;
 
 @RestController
 
@@ -15,36 +14,30 @@ public class DemoController {
   private String dbUser;
   private String dbPassword;
   private String dbInfo;
-  private OracleDataSource ods = new OracleDataSource();
 
   @Autowired
   public DemoController(DbProperties properties) {
     dbInfo = properties.getInfo();
-    ods.setURL(System.getenv("JDBC_URL"));
-    ods.setUser(System.getenv("DB_USER"));
-    ods.setPassword(System.getenv("DB_PASSWORD"));
+    dbUrl = System.getenv("JDBC_URL");
+    dbUser = System.getenv("DB_USER");
+    dbPassword = System.getenv("DB_PASSWORD");
   }
 
   @RequestMapping(value = "/dept", method = RequestMethod.GET, produces = { "application/json" })  
   public List<Dept> query() {
     List<Dept> depts = new ArrayList<Dept>();
-
-    Connection conn = null;
-    Statement stmt = null;
-    ResultSet rset = null;
     try {
-      conn = ods.getConnection();
-      stmt = conn.createStatement();
-      rset = stmt.executeQuery("SELECT * FROM dept");
-      while (rset.next()) {
-        depts.add(new Dept(rset.getInt(1), rset.getString(2), rset.getString(3) ));
+      Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+      Statement stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery("SELECT * FROM dept");
+      while (rs.next()) {
+        depts.add(new Dept(rs.getInt(1), rs.getString(2), rs.getString(3) ));
       }
+      rs.close();
+      stmt.close();
+      conn.close();
     } catch (SQLException e) {
       System.err.println(e.getMessage());
-    } finally {
-      if(rset!=null) rset.close();
-      if(stmt!=null) stmt.close();
-      if(conn!=null) conn.close();
     }
     return depts;
   }
