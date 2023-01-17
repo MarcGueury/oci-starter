@@ -36,6 +36,7 @@ public class DemoController {
     } catch (SQLException e) {
       System.err.println(e.getMessage());
     }
+    conn.close();
     return depts;
   }
 

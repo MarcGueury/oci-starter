@@ -118,6 +118,7 @@ build_option() {
        -private_subnet_ocid $TF_VAR_private_subnet_ocid \
        -oke_ocid $TF_VAR_oke_ocid \
        -atp_ocid $TF_VAR_atp_ocid \
+       -db_ocid $TF_VAR_db_ocid \
        -mysql_ocid $TF_VAR_mysql_ocid \
        -auth_token $OCI_TOKEN \
        -apigw_ocid $TF_VAR_apigw_ocid \
