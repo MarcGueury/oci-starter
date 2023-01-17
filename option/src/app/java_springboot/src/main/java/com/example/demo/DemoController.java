@@ -6,7 +6,8 @@ import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import oracle.jdbc.pool.OracleDataSource;
+import oracle.ucp.jdbc.PoolDataSourceFactory;
+import oracle.ucp.jdbc.PoolDataSource;
 
 @RestController
 
@@ -15,14 +16,18 @@ public class DemoController {
   private String dbUser;
   private String dbPassword;
   private String dbInfo;
-  private OracleDataSource ods = new OracleDataSource();
+  static PoolDataSource pds = PoolDataSourceFactory.getPoolDataSource();
 
   @Autowired
   public DemoController(DbProperties properties) throws SQLException {
     dbInfo = properties.getInfo();
-    ods.setURL(System.getenv("JDBC_URL"));
-    ods.setUser(System.getenv("DB_USER"));
-    ods.setPassword(System.getenv("DB_PASSWORD"));
+    pds.setConnectionFactoryClassName("oracle.jdbc.pool.OracleDataSource");
+    pds.setURL(System.getenv("JDBC_URL"));
+    pds.setUser(System.getenv("DB_USER"));
+    pds.setPassword(System.getenv("DB_PASSWORD"));
+    pds.setInitialPoolSize(1);
+    pds.setMinPoolSize(1);
+    pds.setMaxPoolSize(5);    
   }
 
   @RequestMapping(value = "/dept", method = RequestMethod.GET, produces = { "application/json" })
@@ -33,7 +38,7 @@ public class DemoController {
       Statement stmt = null;
       ResultSet rset = null;
       try {
-        conn = ods.getConnection();
+        conn = pds.getConnection();
         stmt = conn.createStatement();
         rset = stmt.executeQuery("SELECT * FROM dept");
         while (rset.next()) {
