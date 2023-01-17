@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
-export TEST_HOME=$SCRIPT_DIR/test_native_all
+export TEST_HOME=$SCRIPT_DIR/test_group_all
 . $SCRIPT_DIR/test_suite_shared.sh
 
 loop_ui() {
@@ -19,8 +19,6 @@ loop_db() {
 }
 
 loop_java_vm() {
-  OPTION_JAVA_VM=jdk 
-  loop_db
   OPTION_JAVA_VM=graalvm-native
   loop_db
 }
@@ -46,6 +44,8 @@ loop_deploy() {
   OPTION_DEPLOY=kubernetes
   loop_lang
   OPTION_DEPLOY=compute
+  loop_lang
+  OPTION_DEPLOY=container_instance
   loop_lang
 }
 

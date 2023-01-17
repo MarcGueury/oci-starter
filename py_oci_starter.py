@@ -717,7 +717,13 @@ def create_output_dir():
             output_copy_tree("option/compute", "src/compute")
 
         elif params.get('deploy') == "container_instance":
-            cp_terraform("container_instance.tf")
+            if 'group_common' not in params:
+                cp_terraform("container_instance_policy.tf")
+            if params.get('database') == "none":
+                cp_terraform("container_instance_nodb.tf")
+            else:
+                cp_terraform("container_instance.tf")
+
             # output_mkdir src/container_instance
             output_copy_tree("option/container_instance", "bin")
             cp_terraform_apigw("apigw_ci_append.tf")          
@@ -816,6 +822,10 @@ def create_group_common_dir():
             cp_terraform("jms.tf")            
             cp_terraform("log_group.tf")
 
+    # Container Instance Common
+    cp_terraform("container_instance_policy.tf")
+
+
     allfiles = os.listdir(output_dir)
     allfiles.remove('README.md')
     # Create a group directory
@@ -880,7 +890,7 @@ if 'group_name' in params:
 if 'group_common' in params:
     output_dir = output_dir + os.sep + params['prefix']
     # The application will use the Common Resources created by group_name above.
-    del params['group_common']
+    # del params['group_common']
     del params['group_name']    
     params['vcn_ocid'] = TO_FILL
     params['public_subnet_ocid'] = TO_FILL
@@ -888,8 +898,9 @@ if 'group_common' in params:
     params['bastion_ocid'] = TO_FILL
     to_ocid = { "atp": "atp_ocid", "database": "db_ocid", "mysql": "mysql_ocid", "oke": "oke_ocid", "fnapp": "fnapp_ocid", "apigw": "apigw_ocid", "jms": "jms_ocid"}
     for x in a_group_common:
-        ocid = to_ocid[x]
-        params[ocid] = TO_FILL
+        if x in to_ocid:
+            ocid = to_ocid[x]
+            params[ocid] = TO_FILL
 
 if 'deploy' in params:
     create_output_dir()

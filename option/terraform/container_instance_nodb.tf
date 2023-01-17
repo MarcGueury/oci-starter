@@ -16,12 +16,7 @@ resource oci_container_instances_container_instance starter_container_instance {
     image_url = var.docker_image_app
     is_resource_principal_disabled = "false"
     environment_variables = {
-      "DB_URL" = local.db_url,
-      "JDBC_URL" = local.jdbc_url,
-      "DB_USER" = var.db_user,
-      "DB_PASSWORD" = var.db_password,
       "SPRING_APPLICATION_JSON" = "{ \"db.info\": \"Java - SpringBoot\" }",
-      "JAVAX_SQL_DATASOURCE_DS1_DATASOURCE_URL" = local.jdbc_url
     }    
   }
   containers {
