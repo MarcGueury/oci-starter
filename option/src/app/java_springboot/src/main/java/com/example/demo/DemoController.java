@@ -33,10 +33,12 @@ public class DemoController {
       while (rs.next()) {
         depts.add(new Dept(rs.getInt(1), rs.getString(2), rs.getString(3) ));
       }
+      rs.close();
+      stmt.close();
+      conn.close();
     } catch (SQLException e) {
       System.err.println(e.getMessage());
     }
-    conn.close();
     return depts;
   }
 
