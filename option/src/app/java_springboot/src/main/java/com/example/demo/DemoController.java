@@ -6,6 +6,8 @@ import java.sql.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import oracle.ucp.jdbc.PoolDataSourceFactory;
+import oracle.ucp.jdbc.PoolDataSource;
 
 @RestController
 
@@ -14,24 +16,41 @@ public class DemoController {
   private String dbUser;
   private String dbPassword;
   private String dbInfo;
+  static PoolDataSource pds = PoolDataSourceFactory.getPoolDataSource();
 
   @Autowired
-  public DemoController(DbProperties properties) {
+  public DemoController(DbProperties properties) throws SQLException {
     dbInfo = properties.getInfo();
-    dbUrl = System.getenv("JDBC_URL");
-    dbUser = System.getenv("DB_USER");
-    dbPassword = System.getenv("DB_PASSWORD");
+    pds.setConnectionFactoryClassName("oracle.jdbc.pool.OracleDataSource");
+    pds.setURL(System.getenv("JDBC_URL"));
+    pds.setUser(System.getenv("DB_USER"));
+    pds.setPassword(System.getenv("DB_PASSWORD"));
+    pds.setInitialPoolSize(1);
+    pds.setMinPoolSize(1);
+    pds.setMaxPoolSize(5);    
   }
 
-  @RequestMapping(value = "/dept", method = RequestMethod.GET, produces = { "application/json" })  
+  @RequestMapping(value = "/dept", method = RequestMethod.GET, produces = { "application/json" })
   public List<Dept> query() {
     List<Dept> depts = new ArrayList<Dept>();
     try {
-      Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-      Statement stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery("SELECT * FROM dept");
-      while (rs.next()) {
-        depts.add(new Dept(rs.getInt(1), rs.getString(2), rs.getString(3) ));
+      Connection conn = null;
+      Statement stmt = null;
+      ResultSet rset = null;
+      try {
+        conn = pds.getConnection();
+        stmt = conn.createStatement();
+        rset = stmt.executeQuery("SELECT * FROM dept");
+        while (rset.next()) {
+          depts.add(new Dept(rset.getInt(1), rset.getString(2), rset.getString(3)));
+        }
+      } finally {
+        if (rset != null)
+          rset.close();
+        if (stmt != null)
+          stmt.close();
+        if (conn != null)
+          conn.close();
       }
     } catch (SQLException e) {
       System.err.println(e.getMessage());
@@ -39,8 +58,8 @@ public class DemoController {
     return depts;
   }
 
-  @RequestMapping(value = "/info", method = RequestMethod.GET, produces ={ "text/plain" })  
+  @RequestMapping(value = "/info", method = RequestMethod.GET, produces = { "text/plain" })
   public String info() {
-    return "Java - SpringBoot"; 
-  }  
+    return "Java - SpringBoot";
+  }
 }

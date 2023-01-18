@@ -10,6 +10,8 @@ loop_ui() {
 }
 
 loop_db() {
+  # OPTION_DB=database 
+  # loop_ui  
   OPTION_DB=atp 
   loop_ui
   OPTION_DB=mysql
@@ -34,6 +36,7 @@ loop_java_framework () {
 
 loop_lang () {
   mkdir $TEST_HOME/$OPTION_DEPLOY
+  cp $TEST_HOME/group_common_env.sh $TEST_HOME/$OPTION_DEPLOY/.
 
   OPTION_LANG=java 
   OPTION_JAVA_VM=jdk 

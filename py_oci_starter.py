@@ -884,14 +884,18 @@ print(f'params: {params}')
 # -- Copy Files -------------------------------------------------------------
 output_dir_orig = output_dir
 
+# Create a group
 if 'group_name' in params:
     create_group_common_dir()
-   
+
+# Add parameters to the creation if the project is to be used with a group
 if 'group_common' in params:
-    output_dir = output_dir + os.sep + params['prefix']
+    # For a new group, create the first application in a subdir
+    if 'group_name' in params:
+        del params['group_name']    
+        output_dir = output_dir + os.sep + params['prefix']
     # The application will use the Common Resources created by group_name above.
     # del params['group_common']
-    del params['group_name']    
     params['vcn_ocid'] = TO_FILL
     params['public_subnet_ocid'] = TO_FILL
     params['private_subnet_ocid'] = TO_FILL
