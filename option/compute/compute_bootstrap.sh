@@ -17,13 +17,13 @@ if [ "$TF_VAR_language" == "java" ]; then
   if [ "$TF_VAR_java_vm" == "graalvm" ]; then
     # graalvm
     if [ "$TF_VAR_java_version" == 8 ]; then
-      sudo yum install -y graalvm21-ee-8-jdk.x86_64 
+      sudo yum install -y graalvm21-ee-8-jdk 
       sudo update-alternatives --set java /usr/lib64/graalvm/graalvm22-ee-java8/bin/java
     elif [ "$TF_VAR_java_version" == 11 ]; then
-      sudo yum install -y graalvm22-ee-11-jdk.x86_64
+      sudo yum install -y graalvm22-ee-11-jdk
       sudo update-alternatives --set java /usr/lib64/graalvm/graalvm22-ee-java11/bin/java
     elif [ "$TF_VAR_java_version" == 17 ]; then
-      sudo yum install -y graalvm22-ee-17-jdk.x86_64 
+      sudo yum install -y graalvm22-ee-17-jdk 
       sudo update-alternatives --set java /usr/lib64/graalvm/graalvm22-ee-java17/bin/java
     fi   
   else
@@ -31,9 +31,9 @@ if [ "$TF_VAR_language" == "java" ]; then
     if [ "$TF_VAR_java_version" == 8 ]; then
       sudo yum install -y java-1.8.0-openjdk
     elif [ "$TF_VAR_java_version" == 11 ]; then
-      sudo yum install -y jdk-11.x86_64  
+      sudo yum install -y jdk-11  
     elif [ "$TF_VAR_java_version" == 17 ]; then
-      sudo yum install -y jdk-17.x86_64  
+      sudo yum install -y jdk-17  
     fi
   fi
 

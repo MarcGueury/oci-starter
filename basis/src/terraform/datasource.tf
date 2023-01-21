@@ -37,14 +37,22 @@ data "oci_core_services" "all_services" {
   }
 }
 
-# Get latest Oracle Linux image
+locals {
+  # ex: Oracle-Linux-7.9-2022.12.15-0
+  #     Oracle-Linux-7.9-aarch64-2022.12.15-0
+  regex_amd_linux = "^([a-zA-z]+)-([a-zA-z]+)-([\\.0-9]+)-([\\.0-9-]+)$"
+  regex_ampere_linux= "^([a-zA-z]+)-([a-zA-z]+)-([\\.0-9]+)-aarch64-([\\.0-9-]+)$"
+  regex_linux = (var.instance_shape=="VM.Standard.A1.Flex")?local.regex_ampere_linux:local.regex_amd_linux
+}
+
+# Get latest Oracle Linux image 
 data "oci_core_images" "oraclelinux" {
   compartment_id = var.tenancy_ocid
   operating_system = "Oracle Linux"
   operating_system_version = "7.9"
   filter {
     name = "display_name"
-    values = ["^([a-zA-z]+)-([a-zA-z]+)-([\\.0-9]+)-([\\.0-9-]+)$"]
+    values = [local.regex_linux]
     regex = true
   }
 }

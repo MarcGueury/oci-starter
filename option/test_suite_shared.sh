@@ -100,6 +100,9 @@ build_option() {
   else
     NAME=${OPTION_LANG}-${OPTION_DB}-${OPTION_UI}
   fi
+  if [ "$OPTION_SHAPE" != "amd" ]; then
+    NAME=${NAME}-$OPTION_SHAPE
+  fi  
   start_test $NAME
   cd $TEST_HOME/oci-starter
   ./oci_starter.sh \
@@ -112,6 +115,7 @@ build_option() {
        -database $OPTION_DB \
        -db_password $TEST_DB_PASSWORD \
        -group_common dummy \
+       -shape $OPTION_SHAPE
        -compartment_ocid $EX_COMPARTMENT_OCID \
        -vcn_ocid $TF_VAR_vcn_ocid \
        -public_subnet_ocid $TF_VAR_public_subnet_ocid \
@@ -125,9 +129,7 @@ build_option() {
        -bastion_ocid $TF_VAR_bastion_ocid \
        -fnapp_ocid $TF_VAR_fnapp_ocid > ${TEST_DIR}.log 2>&1 
 
-#       -db_ocid $TF_VAR_db_ocid \
-#       -db_compartment_ocid $EX_COMPARTMENT_OCID \
-
+#      -db_compartment_ocid $EX_COMPARTMENT_OCID \
 
   if [ -d output ]; then 
     mkdir output/target
@@ -159,6 +161,11 @@ pre_test_suite() {
   ./build.sh
   date
   echo "CSV_DATE, OPTION_DEPLOY, OPTION_LANG, OPTION_JAVA_FRAMEWORK, OPTION_JAVA_VM, OPTION_DB, OPTION_UI, CSV_NAME, CSV_HTML_OK, CSV_JSON_OK, CSV_BUILD_SECOND, CSV_DESTROY_SECOND, CSV_RUN100_OK, CSV_RUN100_SECOND" > $TEST_HOME/result.csv 
+}
+
+pre_git_refresh() {
+  cd $TEST_HOME/oci-starter
+  git pull origin main
 }
 
 post_test_suite() {

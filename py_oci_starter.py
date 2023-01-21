@@ -79,7 +79,7 @@ default_options = {
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid',
                       '-atp_ocid', '-db_ocid', '-db_compartment_ocid', '-pdb_ocid', '-mysql_ocid',
                       '-db_user', '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token',
-                      '-subnet_ocid','-public_subnet_ocid','-private_subnet_ocid', '-shape']
+                      '-subnet_ocid','-public_subnet_ocid','-private_subnet_ocid','-shape']
 
 # hidden_options - allowed but not advertised
 hidden_options = ['-zip', '-group_common','-group_name']
@@ -234,7 +234,7 @@ def shape_rules():
             params['instance_shape_config_memory_in_gbs'] = 1
         if params.get('shape')=='ampere':
             params['instance_shape'] = 'VM.Standard.A1.Flex'
-            params['instance_shape_config_memory_in_gbs'] = 8
+            params['instance_shape_config_memory_in_gbs'] = 6
         params.pop('shape')
 
 
