@@ -116,6 +116,7 @@ loop_deploy() {
 }
 
 pre_test_suite
+# pre_git_refresh
 cd $TEST_HOME
 . ./group_common_env.sh
 loop_deploy
