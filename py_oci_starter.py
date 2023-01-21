@@ -102,7 +102,7 @@ allowed_values = {
     '-license': {'included', 'LICENSE_INCLUDED', 'byol', 'BRING_YOUR_OWN_LICENSE'},
     '-infra_as_code': {'terraform_local', 'terraform_object_storage', 'resource_manager'},
     '-mode': {CLI, GIT, ZIP},
-    '-shape': {'freetier'}
+    '-shape': {'amd','freetier_amd','ampere'}
 }
 
 
