@@ -226,11 +226,16 @@ def group_common_rules():
         global a_group_common 
         a_group_common=params['group_common'].split(',')
 
+
 def shape_rules():
     if 'shape' in params:
+        if params.get('shape')=='freetier_x86':
+            params['instance_shape'] = 'VM.Standard.E2.1.Micro'
+            params['instance_shape_config_memory_in_gbs'] = 1
+        if params.get('shape')=='ampere':
+            params['instance_shape'] = 'VM.Standard.A1.Flex'
+            params['instance_shape_config_memory_in_gbs'] = 8
         params.pop('shape')
-        params['instance_shape'] = 'VM.Standard.E2.1.Micro'
-        params['instance_shape_config_memory_in_gbs'] = 1
 
 
 def apply_rules():
@@ -402,8 +407,10 @@ def readme_contents():
 
     contents.append('\n### Next Steps:')
     if TO_FILL in params.values():
-        contents.append(
-            "- Edit the file env.sh. Some variables need to be filled:")
+        if 'group_name' in params:
+            contents.append("- Edit the file group_common/env.sh. Some variables need to be filled:")
+        else:
+            contents.append("- Edit the file env.sh. Some variables need to be filled:")
         contents.append("```")
         for param, value in params.items():
             if value == TO_FILL:
