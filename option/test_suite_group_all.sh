@@ -37,6 +37,7 @@ loop_shape() {
   loop_ui
   if [ "$OPTION_DEPLOY" == "compute" ] && [ "$OPTION_DB" == "none" ]; then
     OPTION_SHAPE=ampere
+    loop_ui
   fi
 }
 
