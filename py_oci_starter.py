@@ -450,7 +450,7 @@ def env_sh_contents():
     contents.append(
         'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
     contents.append(f'export OCI_STARTER_CREATION_DATE={timestamp}')
-    contents.append(f'export OCI_STARTER_VERSION=1.4')
+    contents.append(f'export OCI_STARTER_VERSION=1.5')
     contents.append('')
     contents.append('# Env Variables')
     if 'group_name' in params:
