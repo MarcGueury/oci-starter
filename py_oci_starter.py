@@ -229,7 +229,7 @@ def group_common_rules():
 
 def shape_rules():
     if 'shape' in params:
-        if params.get('shape')=='freetier_x86':
+        if params.get('shape')=='freetier_amd':
             params['instance_shape'] = 'VM.Standard.E2.1.Micro'
             params['instance_shape_config_memory_in_gbs'] = 1
         if params.get('shape')=='ampere':
