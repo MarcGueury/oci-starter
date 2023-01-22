@@ -115,7 +115,7 @@ build_option() {
        -database $OPTION_DB \
        -db_password $TEST_DB_PASSWORD \
        -group_common dummy \
-       -shape $OPTION_SHAPE
+       -shape $OPTION_SHAPE \
        -compartment_ocid $EX_COMPARTMENT_OCID \
        -vcn_ocid $TF_VAR_vcn_ocid \
        -public_subnet_ocid $TF_VAR_public_subnet_ocid \

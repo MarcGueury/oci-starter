@@ -9,6 +9,7 @@ if [[ -z "$TF_VAR_language" ]]; then
   exit
 fi
 
+export ARCH=`rpm --eval '%{_arch}'`
 
 # -- Java --------------------------------------------------------------------
 # Set up the correct Java / VM version

@@ -9,9 +9,11 @@ sudo yum install -y php php-json php-oci8-19c php-mysql
 
 # sudo yum install -y php php-mysql php-json php-fpm
 # ORACLE Instant Client
-sudo yum install -y oracle-instantclient-release-el7
-sudo yum install -y oracle-instantclient-basic
-sudo yum install -y oracle-instantclient-sqlplus
+if [ "$ARCH" != "aarch64" ]; then
+  sudo yum install -y oracle-instantclient-release-el7
+  sudo yum install -y oracle-instantclient-basic
+  sudo yum install -y oracle-instantclient-sqlplus
+fi 
 
 if grep -q '##DB_URL##' php.ini.append; then
   sed -i "s!##DB_URL##!$DB_URL!" php.ini.append 
