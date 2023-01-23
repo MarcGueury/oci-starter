@@ -88,7 +88,7 @@ fi
 # -- UI --------------------------------------------------------------------
 if [ -d ui ]; then
   # Install NGINX
-  sudo dnf install nginx -y > /tmp/yum_nginx.log
+  sudo dnf install nginx -y > /tmp/dnf_nginx.log
   
   # Default: location /app/ { proxy_pass http://localhost:8080 }
   sudo cp nginx_app.locations /etc/nginx/conf.d/.
@@ -118,4 +118,4 @@ sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
 sudo firewall-cmd --reload
 
 # -- Util -------------------------------------------------------------------
-sudo yum install -y psmisc
+sudo dnf install -y psmisc

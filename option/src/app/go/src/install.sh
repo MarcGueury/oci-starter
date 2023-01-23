@@ -11,7 +11,7 @@ sudo dnf install -y oracle-instantclient-sqlplus
 # https://yum.oracle.com/oracle-linux-golang.html
 
 sudo dnf module enable go-toolset:ol8addon
-sudo dnf module install go-toolset
+sudo dnf module install -y go-toolset
 # sudo dnf install -y git gcc 
 
 go get .

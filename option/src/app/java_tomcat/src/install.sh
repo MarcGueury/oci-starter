@@ -5,7 +5,7 @@ export TOMCAT_HOME=/opt/tomcat
 sudo groupadd tomcat
 sudo useradd -g tomcat -d $TOMCAT_HOME tomcat
 
-sudo yum -y install wget
+sudo dnf install -y wget
 VER=10.0.27
 cd /tmp
 sudo mkdir -p /opt/tomcat
