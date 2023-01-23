@@ -92,11 +92,11 @@ if [ -d ui ]; then
   
   # Default: location /app/ { proxy_pass http://localhost:8080 }
   sudo cp nginx_app.locations /etc/nginx/conf.d/.
-  if grep -q nginx_app /etc/nginx/conf.d/default.conf; then
+  if grep -q nginx_app /etc/nginx/nginx.conf; then
     echo "Include is already there"
   else
      echo not found
-     sudo sed -i '/404.html/ a include conf.d/nginx_app.locations;' /etc/nginx/conf.d/default.conf
+     sudo awk -i '/404.html/ && !x {print "        include conf.d/nginx_app.locations;"; x=1} 1' /etc/nginx/nginx.conf
   fi
   
   # SE Linux (for proxy_pass)
