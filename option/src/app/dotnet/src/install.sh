@@ -2,7 +2,8 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
-sudo rpm -Uvh https://packages.microsoft.com/config/centos/7/packages-microsoft-prod.rpm
-sudo yum install -y dotnet-sdk-6.0
-
-# dotnet add package Oracle.ManagedDataAccess.Core
+# Install Dotnet
+wget https://dot.net/v1/dotnet-install.sh
+sudo chmod +x ./dotnet-install.sh
+./dotnet-install.sh --version latest
+ls $HOME/.dotnet

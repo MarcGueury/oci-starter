@@ -18,23 +18,23 @@ if [ "$TF_VAR_language" == "java" ]; then
   if [ "$TF_VAR_java_vm" == "graalvm" ]; then
     # graalvm
     if [ "$TF_VAR_java_version" == 8 ]; then
-      sudo dnf install -y graalvm21-ee-8-jdk 
+      sudo yum install -y graalvm21-ee-8-jdk 
       sudo update-alternatives --set java /usr/lib64/graalvm/graalvm22-ee-java8/bin/java
     elif [ "$TF_VAR_java_version" == 11 ]; then
-      sudo dnf install -y graalvm22-ee-11-jdk
+      sudo yum install -y graalvm22-ee-11-jdk
       sudo update-alternatives --set java /usr/lib64/graalvm/graalvm22-ee-java11/bin/java
     elif [ "$TF_VAR_java_version" == 17 ]; then
-      sudo dnf install -y graalvm22-ee-17-jdk 
+      sudo yum install -y graalvm22-ee-17-jdk 
       sudo update-alternatives --set java /usr/lib64/graalvm/graalvm22-ee-java17/bin/java
     fi   
   else
     # jdk 
     if [ "$TF_VAR_java_version" == 8 ]; then
-      sudo dnf install -y java-1.8.0-openjdk
+      sudo yum install -y java-1.8.0-openjdk
     elif [ "$TF_VAR_java_version" == 11 ]; then
-      sudo dnf install -y jdk-11  
+      sudo yum install -y jdk-11  
     elif [ "$TF_VAR_java_version" == 17 ]; then
-      sudo dnf install -y jdk-17  
+      sudo yum install -y jdk-17  
     fi
   fi
 
@@ -87,8 +87,10 @@ fi
 
 # -- UI --------------------------------------------------------------------
 if [ -d ui ]; then
+  # Install the yum repository containing nginx
+  sudo rpm -Uvh http://nginx.org/packages/rhel/7/noarch/RPMS/nginx-release-rhel-7-0.el7.ngx.noarch.rpm
   # Install NGINX
-  sudo dnf install nginx -y > /tmp/yum_nginx.log
+  sudo yum install nginx -y > /tmp/yum_nginx.log
   
   # Default: location /app/ { proxy_pass http://localhost:8080 }
   sudo cp nginx_app.locations /etc/nginx/conf.d/.

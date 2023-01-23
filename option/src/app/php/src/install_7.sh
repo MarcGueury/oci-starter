@@ -3,10 +3,17 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
 # Install last version of PHP
-# https://yum.oracle.com/oracle-linux-php.html
-sudo dnf install -y oraclelinux-developer-release-el8 oracle-instantclient-release-el8
-sudo dnf module enable php:7.4 php-oci8
-sudo dnf install -y php-oci8-21c php-mysqlnd 
+sudo yum install -y oracle-release-el7
+sudo yum install -y oracle-php-release-el7 
+sudo yum install -y php php-json php-oci8-19c php-mysql
+
+# sudo yum install -y php php-mysql php-json php-fpm
+# ORACLE Instant Client
+if [ "$ARCH" != "aarch64" ]; then
+  sudo yum install -y oracle-instantclient-release-el7
+  sudo yum install -y oracle-instantclient-basic
+  sudo yum install -y oracle-instantclient-sqlplus
+fi 
 
 if grep -q '##DB_URL##' php.ini.append; then
   sed -i "s!##DB_URL##!$DB_URL!" php.ini.append 
@@ -22,7 +29,4 @@ sudo cp app.conf /etc/httpd/conf.d/.
 # Configure the Apache Listener on 8080
 sudo sed -i "s/Listen 80$/Listen 8080/" /etc/httpd/conf/httpd.conf
 sudo systemctl restart httpd
-
-
-
 

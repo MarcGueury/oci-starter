@@ -3,13 +3,17 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
 # ORACLE Instant Client XXX test db_strategy XXX
-sudo yum install -y oracle-instantclient-release-el7
-sudo yum install -y oracle-instantclient-basic
-sudo yum install -y oracle-instantclient-sqlplus
+sudo dnf install -y oracle-instantclient-release-el8
+sudo dnf install -y oracle-instantclient-basic
+sudo dnf install -y oracle-instantclient-sqlplus
 
 # Install last version of GoLang
-sudo yum install -y oracle-golang-release-el7
-sudo yum install -y git gcc golang
+# https://yum.oracle.com/oracle-linux-golang.html
+
+sudo dnf module enable go-toolset:ol8addon
+sudo dnf module install go-toolset
+# sudo dnf install -y git gcc 
+
 go get .
 go build .
 

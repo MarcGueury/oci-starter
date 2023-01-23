@@ -234,7 +234,7 @@ def shape_rules():
             params['instance_shape_config_memory_in_gbs'] = 1
         if params.get('shape')=='ampere':
             params['instance_shape'] = 'VM.Standard.A1.Flex'
-            params['instance_shape_config_memory_in_gbs'] = 6
+            params['instance_shape_config_memory_in_gbs'] = 8
         params.pop('shape')
 
 
