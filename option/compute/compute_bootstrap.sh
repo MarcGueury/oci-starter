@@ -78,6 +78,10 @@ User=opc
 WantedBy=default.target
 EOT
 
+  # XXXXXX
+  setenforce 0
+  sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
+
   sudo cp /tmp/app.service /etc/systemd/system
   sudo chmod 664 /etc/systemd/system/app.service
   sudo systemctl daemon-reload
