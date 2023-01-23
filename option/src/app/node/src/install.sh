@@ -4,7 +4,7 @@ cd $SCRIPT_DIR
 
 # Install last version of NodeJS
 # https://yum.oracle.com/oracle-linux-nodejs.html#InstallingNodeOnOL8
-dnf module install -y nodejs
+sudo dnf module install -y nodejs
 
 # ORACLE Instant Client
 # https://docs.oracle.com/en/database/oracle/oracle-database/21/lacli/install-instant-client-using-rpm.html
