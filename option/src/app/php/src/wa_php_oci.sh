@@ -1,3 +1,5 @@
+# https://jira-sd.mc1.oracleiaas.com/browse/YUM-5781
+
 dnf install -y oracle-instantclient-release-el8
 dnf install -y oracle-instantclient-basic
 dnf install -y oracle-instantclient-devel
