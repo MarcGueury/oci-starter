@@ -86,7 +86,7 @@ build_test_destroy () {
     BUILD_ID=2
     build_test
   fi  
-  if [ -f $TEST_HOME/stop_token ]; then
+  if [ -f $TEST_HOME/stop_token ]; then
     echo "-------------------------------------------------------"
     echo "stop_token file dectected"
     echo "Exiting before destroy.sh"
@@ -103,7 +103,7 @@ build_test_destroy () {
   else
     echo "$CSV_DATE,$OPTION_DEPLOY,$OPTION_LANG,-,-,$OPTION_DB,$OPTION_UI,$OPTION_SHAPE,$CSV_NAME,$CSV_HTML_OK,$CSV_JSON_OK,$CSV_BUILD_SECOND,$CSV_DESTROY_SECOND,$CSV_RUN100_OK,$CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
   fi
-  if [ "CSV_JSON_OK" != "1" ]; then
+  if [ "$CSV_JSON_OK" != "1" ]; then
     echo "$CSV_DATE,$OPTION_DEPLOY,$OPTION_LANG,$OPTION_JAVA_FRAMEWORK,$OPTION_JAVA_VM,$OPTION_DB,$OPTION_UI,$OPTION_SHAPE,$CSV_NAME,$CSV_HTML_OK,$CSV_JSON_OK,$CSV_BUILD_SECOND,$CSV_DESTROY_SECOND,$CSV_RUN100_OK,$CSV_RUN100_SECOND" >> $TEST_HOME/errors.csv 
   fi
 }
