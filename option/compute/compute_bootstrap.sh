@@ -10,6 +10,7 @@ if [[ -z "$TF_VAR_language" ]]; then
 fi
 
 export ARCH=`rpm --eval '%{_arch}'`
+echo "ARCH=$ARCH"
 
 # -- Java --------------------------------------------------------------------
 # Set up the correct Java / VM version
@@ -90,34 +91,32 @@ EOT
 fi
 
 # -- UI --------------------------------------------------------------------
+# Install NGINX
+sudo dnf install nginx -y > /tmp/dnf_nginx.log
+
+# Default: location /app/ { proxy_pass http://localhost:8080 }
+sudo cp nginx_app.locations /etc/nginx/conf.d/.
+if grep -q nginx_app /etc/nginx/nginx.conf; then
+  echo "Include nginx_app.locations is already there"
+else
+    echo "Include nginx_app.locations not found"
+    sudo awk -i inplace '/404.html/ && !x {print "        include conf.d/nginx_app.locations;"; x=1} 1' /etc/nginx/nginx.conf
+fi
+
+# SE Linux (for proxy_pass)
+sudo setsebool -P httpd_can_network_connect 1
+
+# Start it
+sudo systemctl enable nginx
+sudo systemctl restart nginx
+
 if [ -d ui ]; then
-  # Install NGINX
-  sudo dnf install nginx -y > /tmp/dnf_nginx.log
-  
-  # Default: location /app/ { proxy_pass http://localhost:8080 }
-  sudo cp nginx_app.locations /etc/nginx/conf.d/.
-  if grep -q nginx_app /etc/nginx/nginx.conf; then
-    echo "Include nginx_app.locations is already there"
-  else
-     echo "Include nginx_app.locations not found"
-     sudo awk -i inplace '/404.html/ && !x {print "        include conf.d/nginx_app.locations;"; x=1} 1' /etc/nginx/nginx.conf
-  fi
-  
-  # SE Linux (for proxy_pass)
-  sudo setsebool -P httpd_can_network_connect 1
-
-  # Start it
-  sudo systemctl enable nginx
-  sudo systemctl restart nginx
-
   # Copy the index file after the installation of nginx
   sudo cp -r ui/* /usr/share/nginx/html/
-
-  # Firewalld
-  sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 fi
 
 # Firewalld
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
 sudo firewall-cmd --reload
 

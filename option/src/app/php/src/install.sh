@@ -4,12 +4,17 @@ cd $SCRIPT_DIR
 
 # Install last version of PHP
 # https://yum.oracle.com/oracle-linux-php.html
-sudo dnf install -y @php:7.4
+
 sudo dnf install -y oraclelinux-developer-release-el8 oracle-instantclient-release-el8
-sudo dnf module enable php:7.4 php-oci8
-sudo dnf install -y php-oci8-21c php-mysqlnd 
-sudo dnf install -y php-mysqlnd 
-sudo dnf install -y httpd
+chmod +x /wa_php_oci.sh
+sudo ./wa_php_oci.sh
+
+# sudo dnf install -y @php:7.4
+# sudo dnf install -y oraclelinux-developer-release-el8 oracle-instantclient-release-el8
+# sudo dnf module enable php:7.4 php-oci8
+# sudo dnf install -y php-oci8-21c php-mysqlnd 
+# sudo dnf install -y php-mysqlnd 
+# sudo dnf install -y httpd
 
 if grep -q '##DB_URL##' php.ini.append; then
   sed -i "s!##DB_URL##!$DB_URL!" php.ini.append 

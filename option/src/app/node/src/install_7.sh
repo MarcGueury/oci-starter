@@ -14,4 +14,3 @@ if [ "$ARCH" != "aarch64" ]; then
 fi
 
 npm install
-cat php.ini.append >> /etc/php.ini
