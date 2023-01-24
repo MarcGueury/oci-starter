@@ -63,7 +63,7 @@ build_test () {
     else
       echo "RESULT JSON: ***** BAD ******  "`cat /tmp/result.json` | cut -c 1-100 
     fi
-    echo "RESULT INFO:                   "`cat /tmp/result.info` | cut -c 1-100`
+    echo "RESULT INFO:                   "`cat /tmp/result.info` | cut -c 1-100
   else
     echo "No file /tmp/result.html"
   fi
