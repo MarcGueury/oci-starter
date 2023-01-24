@@ -12,6 +12,11 @@ fi
 export ARCH=`rpm --eval '%{_arch}'`
 echo "ARCH=$ARCH"
 
+# Disable SELinux
+# XXXXXX Since OL8, the service does not start if SELINUX=enforcing XXXXXX
+sudo setenforce 0
+sudo sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
+
 # -- Java --------------------------------------------------------------------
 # Set up the correct Java / VM version
 if [ "$TF_VAR_language" == "java" ]; then
@@ -78,10 +83,6 @@ User=opc
 [Install]
 WantedBy=default.target
 EOT
-
-  # XXXXXX
-  sudo setenforce 0
-  sudo sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
 
   sudo cp /tmp/app.service /etc/systemd/system
   sudo chmod 664 /etc/systemd/system/app.service
