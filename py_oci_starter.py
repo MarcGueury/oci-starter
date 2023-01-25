@@ -436,6 +436,8 @@ def env_param_list():
         exclude.extend(['ui', 'database', 'language', 'deploy', 'db_user', 'group_name'])
     else:
         exclude.append('group_common')
+    if params.get('database')=='none':
+        exclude.append('db_password')
     print(exclude)
     for x in exclude:
         if x in env_params:
@@ -614,7 +616,10 @@ def create_dir_shared():
     if 'vcn_ocid' in params:
         cp_terraform("network_existing.tf")
     else:
-        cp_terraform("network.tf")
+        if params.get('shape') == "freetier_amd" or params.get('shape') == "ampere"  :
+            cp_terraform("network.tf","network_append_freetier.tf")
+        else:
+            cp_terraform("network.tf","network_append.tf")
 
     # -- Bastion ------------------------------------------------------------
     if 'bastion_ocid' in params:
