@@ -9,11 +9,7 @@ else
 fi 
 
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-  if [ "$TF_VAR_ui_strategy" == "api" ]; then  
-    export UI_URL=https://${APIGW_HOSTNAME}/${TF_VAR_prefix}
-  else
-    get_output_from_tfstate UI_URL ui_url  
-  fi
+  get_output_from_tfstate UI_URL ui_url  
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
   export UI_URL=http://`kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath="{.status.loadBalancer.ingress[0].ip}"`/${TF_VAR_prefix}
 elif [ "$TF_VAR_deploy_strategy" == "function" ] || [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then  
@@ -55,14 +51,17 @@ if [ ! -z "$UI_URL" ]; then
     curl $UI_URL/app/info -L --retry 5 --retry-max-time 20 -D /tmp/result_info.log > /tmp/result.info
   fi
   if [ "$TF_VAR_ui_strategy" != "api" ]; then
-    echo - User Interface : $UI_URL/
+    echo - User Interface  : $UI_URL/
   fi  
-  echo - Rest DB API    : $UI_URL/app/dept
-  echo - Rest Info API  : $UI_URL/app/info
+  echo - Rest DB API     : $UI_URL/app/dept
+  echo - Rest Info API   : $UI_URL/app/info
   if [ "$TF_VAR_language" == "php" ]; then
-    echo - PHP Page       : $UI_URL/app/index.php
+    echo - PHP Page        : $UI_URL/app/index.php
   elif [ "$TF_VAR_language" == "java" ] && [ "$TF_VAR_java_framework" == "tomcat" ] ; then
-    echo - JSP Page       : $UI_URL/app/index.jsp
+    echo - JSP Page        : $UI_URL/app/index.jsp
+  elif [ "$TF_VAR_deploy_strategy" == "compute" ] && [ "$TF_VAR_ui_strategy" == "api" ]; then   
+    export APIGW_URL=https://${APIGW_HOSTNAME}/${TF_VAR_prefix}  
+    echo - API Gateway URL : $APIGW_URL/app/dept
   fi
 fi
 

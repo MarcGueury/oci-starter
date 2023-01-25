@@ -9,6 +9,13 @@ if [[ -z "$TF_VAR_language" ]]; then
   exit
 fi
 
+export ARCH=`rpm --eval '%{_arch}'`
+echo "ARCH=$ARCH"
+
+# Disable SELinux
+# XXXXXX Since OL8, the service does not start if SELINUX=enforcing XXXXXX
+sudo setenforce 0
+sudo sed -i s/^SELINUX=.*$/SELINUX=permissive/ /etc/selinux/config
 
 # -- Java --------------------------------------------------------------------
 # Set up the correct Java / VM version
@@ -17,23 +24,23 @@ if [ "$TF_VAR_language" == "java" ]; then
   if [ "$TF_VAR_java_vm" == "graalvm" ]; then
     # graalvm
     if [ "$TF_VAR_java_version" == 8 ]; then
-      sudo yum install -y graalvm21-ee-8-jdk.x86_64 
+      sudo dnf install -y graalvm21-ee-8-jdk 
       sudo update-alternatives --set java /usr/lib64/graalvm/graalvm22-ee-java8/bin/java
     elif [ "$TF_VAR_java_version" == 11 ]; then
-      sudo yum install -y graalvm22-ee-11-jdk.x86_64
+      sudo dnf install -y graalvm22-ee-11-jdk
       sudo update-alternatives --set java /usr/lib64/graalvm/graalvm22-ee-java11/bin/java
     elif [ "$TF_VAR_java_version" == 17 ]; then
-      sudo yum install -y graalvm22-ee-17-jdk.x86_64 
+      sudo dnf install -y graalvm22-ee-17-jdk 
       sudo update-alternatives --set java /usr/lib64/graalvm/graalvm22-ee-java17/bin/java
     fi   
   else
     # jdk 
     if [ "$TF_VAR_java_version" == 8 ]; then
-      sudo yum install -y java-1.8.0-openjdk
+      sudo dnf install -y java-1.8.0-openjdk
     elif [ "$TF_VAR_java_version" == 11 ]; then
-      sudo yum install -y jdk-11.x86_64  
+      sudo dnf install -y jdk-11  
     elif [ "$TF_VAR_java_version" == 17 ]; then
-      sudo yum install -y jdk-17.x86_64  
+      sudo dnf install -y jdk-17  
     fi
   fi
 
@@ -85,38 +92,34 @@ EOT
 fi
 
 # -- UI --------------------------------------------------------------------
+# Install NGINX
+sudo dnf install nginx -y > /tmp/dnf_nginx.log
+
+# Default: location /app/ { proxy_pass http://localhost:8080 }
+sudo cp nginx_app.locations /etc/nginx/conf.d/.
+if grep -q nginx_app /etc/nginx/nginx.conf; then
+  echo "Include nginx_app.locations is already there"
+else
+    echo "Include nginx_app.locations not found"
+    sudo awk -i inplace '/404.html/ && !x {print "        include conf.d/nginx_app.locations;"; x=1} 1' /etc/nginx/nginx.conf
+fi
+
+# SE Linux (for proxy_pass)
+sudo setsebool -P httpd_can_network_connect 1
+
+# Start it
+sudo systemctl enable nginx
+sudo systemctl restart nginx
+
 if [ -d ui ]; then
-  # Install the yum repository containing nginx
-  sudo rpm -Uvh http://nginx.org/packages/rhel/7/noarch/RPMS/nginx-release-rhel-7-0.el7.ngx.noarch.rpm
-  # Install NGINX
-  sudo yum install nginx -y > /tmp/yum_nginx.log
-  
-  # Default: location /app/ { proxy_pass http://localhost:8080 }
-  sudo cp nginx_app.locations /etc/nginx/conf.d/.
-  if grep -q nginx_app /etc/nginx/conf.d/default.conf; then
-    echo "Include is already there"
-  else
-     echo not found
-     sudo sed -i '/404.html/ a include conf.d/nginx_app.locations;' /etc/nginx/conf.d/default.conf
-  fi
-  
-  # SE Linux (for proxy_pass)
-  sudo setsebool -P httpd_can_network_connect 1
-
-  # Start it
-  sudo systemctl enable nginx
-  sudo systemctl restart nginx
-
   # Copy the index file after the installation of nginx
   sudo cp -r ui/* /usr/share/nginx/html/
-
-  # Firewalld
-  sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 fi
 
 # Firewalld
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
 sudo firewall-cmd --reload
 
 # -- Util -------------------------------------------------------------------
-sudo yum install -y psmisc
+sudo dnf install -y psmisc

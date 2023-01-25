@@ -69,6 +69,7 @@ resource "oci_core_subnet" "starter_private_subnet" {
   route_table_id    = oci_core_route_table.starter_route_private.id
   dhcp_options_id   = oci_core_vcn.starter_vcn.default_dhcp_options_id
   freeform_tags     = local.freeform_tags
+  prohibit_public_ip_on_vnic = true
 }
 
 resource "oci_core_security_list" "starter_security_list" {

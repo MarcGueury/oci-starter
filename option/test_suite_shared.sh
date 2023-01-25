@@ -58,12 +58,12 @@ build_test () {
       echo "RESULT HTML: ***** BAD ******"
     fi
     if grep -q -i "deptno" /tmp/result.json; then
-      echo "RESULT JSON: OK                "`cat /tmp/result.json | cut -c 1-80`... 
+      echo "RESULT JSON: OK                "`cat /tmp/result.json` | cut -c 1-100  
       CSV_JSON_OK=1
     else
-      echo "RESULT JSON: ***** BAD ******  "`cat /tmp/result.json | cut -c 1-80`... 
+      echo "RESULT JSON: ***** BAD ******  "`cat /tmp/result.json` | cut -c 1-100 
     fi
-    echo "RESULT INFO:                   "`cat /tmp/result.info | cut -c 1-80`
+    echo "RESULT INFO:                   "`cat /tmp/result.info` | cut -c 1-100
   else
     echo "No file /tmp/result.html"
   fi
@@ -86,12 +86,26 @@ build_test_destroy () {
     BUILD_ID=2
     build_test
   fi  
+  if [ -f $TEST_HOME/stop_token ]; then
+    echo "-------------------------------------------------------"
+    echo "stop_token file dectected"
+    echo "Exiting before destroy.sh"
+    echo "Last directory: $TEST_DIR"
+    exit
+  fi  
   ./destroy.sh --auto-approve > destroy.log 2>&1  
   echo "destroy_secs=$SECONDS" >> ${TEST_DIR}_time.txt
   CSV_DESTROY_SECOND=$SECONDS
   cat ${TEST_DIR}_time.txt
 
-  echo "$CSV_DATE, $OPTION_DEPLOY, $OPTION_LANG, $OPTION_JAVA_FRAMEWORK, $OPTION_JAVA_VM, $OPTION_DB, $OPTION_UI, $CSV_NAME, $CSV_HTML_OK, $CSV_JSON_OK, $CSV_BUILD_SECOND, $CSV_DESTROY_SECOND, $CSV_RUN100_OK, $CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
+  if [ "$OPTION_LANG" == "java" ]; then
+    echo "$CSV_DATE,$OPTION_DEPLOY,$OPTION_LANG,$OPTION_JAVA_FRAMEWORK,$OPTION_JAVA_VM,$OPTION_DB,$OPTION_UI,$OPTION_SHAPE,$CSV_NAME,$CSV_HTML_OK,$CSV_JSON_OK,$CSV_BUILD_SECOND,$CSV_DESTROY_SECOND,$CSV_RUN100_OK,$CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
+  else
+    echo "$CSV_DATE,$OPTION_DEPLOY,$OPTION_LANG,-,-,$OPTION_DB,$OPTION_UI,$OPTION_SHAPE,$CSV_NAME,$CSV_HTML_OK,$CSV_JSON_OK,$CSV_BUILD_SECOND,$CSV_DESTROY_SECOND,$CSV_RUN100_OK,$CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
+  fi
+  if [ "$CSV_JSON_OK" != "1" ]; then
+    echo "$CSV_DATE,$OPTION_DEPLOY,$OPTION_LANG,$OPTION_JAVA_FRAMEWORK,$OPTION_JAVA_VM,$OPTION_DB,$OPTION_UI,$OPTION_SHAPE,$CSV_NAME,$CSV_HTML_OK,$CSV_JSON_OK,$CSV_BUILD_SECOND,$CSV_DESTROY_SECOND,$CSV_RUN100_OK,$CSV_RUN100_SECOND" >> $TEST_HOME/errors.csv 
+  fi
 }
 
 build_option() {
@@ -100,6 +114,9 @@ build_option() {
   else
     NAME=${OPTION_LANG}-${OPTION_DB}-${OPTION_UI}
   fi
+  if [ "$OPTION_SHAPE" != "amd" ]; then
+    NAME=${NAME}-$OPTION_SHAPE
+  fi  
   start_test $NAME
   cd $TEST_HOME/oci-starter
   ./oci_starter.sh \
@@ -112,6 +129,7 @@ build_option() {
        -database $OPTION_DB \
        -db_password $TEST_DB_PASSWORD \
        -group_common dummy \
+       -shape $OPTION_SHAPE \
        -compartment_ocid $EX_COMPARTMENT_OCID \
        -vcn_ocid $TF_VAR_vcn_ocid \
        -public_subnet_ocid $TF_VAR_public_subnet_ocid \
@@ -125,9 +143,7 @@ build_option() {
        -bastion_ocid $TF_VAR_bastion_ocid \
        -fnapp_ocid $TF_VAR_fnapp_ocid > ${TEST_DIR}.log 2>&1 
 
-#       -db_ocid $TF_VAR_db_ocid \
-#       -db_compartment_ocid $EX_COMPARTMENT_OCID \
-
+#      -db_compartment_ocid $EX_COMPARTMENT_OCID \
 
   if [ -d output ]; then 
     mkdir output/target
@@ -158,7 +174,12 @@ pre_test_suite() {
   cd $TEST_HOME/group_common
   ./build.sh
   date
-  echo "CSV_DATE, OPTION_DEPLOY, OPTION_LANG, OPTION_JAVA_FRAMEWORK, OPTION_JAVA_VM, OPTION_DB, OPTION_UI, CSV_NAME, CSV_HTML_OK, CSV_JSON_OK, CSV_BUILD_SECOND, CSV_DESTROY_SECOND, CSV_RUN100_OK, CSV_RUN100_SECOND" > $TEST_HOME/result.csv 
+  echo "CSV_DATE,OPTION_DEPLOY,OPTION_LANG,OPTION_JAVA_FRAMEWORK,OPTION_JAVA_VM,OPTION_DB,OPTION_UI,OPTION_SHAPE,CSV_NAME,CSV_HTML_OK,CSV_JSON_OK,CSV_BUILD_SECOND,CSV_DESTROY_SECOND,CSV_RUN100_OK,CSV_RUN100_SECOND" > $TEST_HOME/result.csv 
+}
+
+pre_git_refresh() {
+  cd $TEST_HOME/oci-starter
+  git pull origin main
 }
 
 post_test_suite() {

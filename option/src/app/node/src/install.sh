@@ -3,12 +3,13 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
 # Install last version of NodeJS
-sudo yum install -y oracle-nodejs-release-el7 oracle-release-el7
-sudo yum install -y nodejs
-# ORACLE Instant Client
-sudo yum install -y oracle-instantclient-release-el7
-sudo yum install -y oracle-instantclient-basic
-sudo yum install -y oracle-instantclient-sqlplus
-npm install
+# https://yum.oracle.com/oracle-linux-nodejs.html#InstallingNodeOnOL8
+sudo dnf module install -y nodejs
 
-cat php.ini.append >> /etc/php.ini
+# ORACLE Instant Client
+# https://docs.oracle.com/en/database/oracle/oracle-database/21/lacli/install-instant-client-using-rpm.html
+sudo dnf install -y oracle-instantclient-release-el8
+sudo dnf install -y oracle-instantclient-basic
+sudo dnf install -y oracle-instantclient-sqlplus
+
+npm install

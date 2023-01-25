@@ -79,7 +79,7 @@ default_options = {
 no_default_options = ['-compartment_ocid', '-oke_ocid', '-vcn_ocid',
                       '-atp_ocid', '-db_ocid', '-db_compartment_ocid', '-pdb_ocid', '-mysql_ocid',
                       '-db_user', '-fnapp_ocid', '-apigw_ocid', '-bastion_ocid', '-auth_token',
-                      '-subnet_ocid','-public_subnet_ocid','-private_subnet_ocid']
+                      '-subnet_ocid','-public_subnet_ocid','-private_subnet_ocid','-shape']
 
 # hidden_options - allowed but not advertised
 hidden_options = ['-zip', '-group_common','-group_name']
@@ -102,7 +102,7 @@ allowed_values = {
     '-license': {'included', 'LICENSE_INCLUDED', 'byol', 'BRING_YOUR_OWN_LICENSE'},
     '-infra_as_code': {'terraform_local', 'terraform_object_storage', 'resource_manager'},
     '-mode': {CLI, GIT, ZIP},
-    '-shape': {'freetier'}
+    '-shape': {'amd','freetier_amd','ampere'}
 }
 
 
@@ -226,11 +226,16 @@ def group_common_rules():
         global a_group_common 
         a_group_common=params['group_common'].split(',')
 
+
 def shape_rules():
     if 'shape' in params:
+        if params.get('shape')=='freetier_amd':
+            params['instance_shape'] = 'VM.Standard.E2.1.Micro'
+            params['instance_shape_config_memory_in_gbs'] = 1
+        if params.get('shape')=='ampere':
+            params['instance_shape'] = 'VM.Standard.A1.Flex'
+            params['instance_shape_config_memory_in_gbs'] = 8
         params.pop('shape')
-        params['instance_shape'] = 'VM.Standard.E2.1.Micro'
-        params['instance_shape_config_memory_in_gbs'] = 1
 
 
 def apply_rules():
@@ -402,8 +407,10 @@ def readme_contents():
 
     contents.append('\n### Next Steps:')
     if TO_FILL in params.values():
-        contents.append(
-            "- Edit the file env.sh. Some variables need to be filled:")
+        if 'group_name' in params:
+            contents.append("- Edit the file group_common/env.sh. Some variables need to be filled:")
+        else:
+            contents.append("- Edit the file env.sh. Some variables need to be filled:")
         contents.append("```")
         for param, value in params.items():
             if value == TO_FILL:
@@ -443,7 +450,7 @@ def env_sh_contents():
     contents.append(
         'SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )')
     contents.append(f'export OCI_STARTER_CREATION_DATE={timestamp}')
-    contents.append(f'export OCI_STARTER_VERSION=1.4')
+    contents.append(f'export OCI_STARTER_VERSION=1.5')
     contents.append('')
     contents.append('# Env Variables')
     if 'group_name' in params:
