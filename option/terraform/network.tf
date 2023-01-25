@@ -14,13 +14,6 @@ resource "oci_core_internet_gateway" "starter_internet_gateway" {
   freeform_tags  = local.freeform_tags
 }
 
-resource "oci_core_nat_gateway" "starter_nat_gateway" {
-  compartment_id = local.lz_network_cmp_ocid
-  vcn_id         = oci_core_vcn.starter_vcn.id
-  display_name   = "${var.prefix}-nat-gateway"
-  freeform_tags  = local.freeform_tags
-}
-
 resource "oci_core_default_route_table" "default_route_table" {
   manage_default_resource_id = oci_core_vcn.starter_vcn.default_route_table_id
   display_name               = "DefaultRouteTable"
@@ -31,18 +24,6 @@ resource "oci_core_default_route_table" "default_route_table" {
     network_entity_id = oci_core_internet_gateway.starter_internet_gateway.id
   }
   freeform_tags = local.freeform_tags
-}
-
-resource "oci_core_route_table" "starter_route_private" {
-  compartment_id = local.lz_network_cmp_ocid
-  vcn_id         = oci_core_vcn.starter_vcn.id
-  display_name   = "${var.prefix}-route-private"
-
-  route_rules {
-    destination       = "0.0.0.0/0"
-    destination_type  = "CIDR_BLOCK"
-    network_entity_id = oci_core_nat_gateway.starter_nat_gateway.id
-  }
 }
 
 # Public Subnet
