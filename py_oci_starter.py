@@ -150,6 +150,8 @@ def db_rules():
         default_users = {'autonomous': 'admin', 'database': 'system',
                          'pluggable': 'system',  'mysql': 'root', 'none': ''}
         params['db_user'] = default_users[params['database']]
+    if params.get('database')=='none':
+        params.pop('db_password')   
 
 
 def language_rules():
@@ -235,7 +237,6 @@ def shape_rules():
         if params.get('shape')=='ampere':
             params['instance_shape'] = 'VM.Standard.A1.Flex'
             params['instance_shape_config_memory_in_gbs'] = 8
-        params.pop('shape')
 
 
 def apply_rules():
@@ -429,15 +430,13 @@ def readme_contents():
 
 def env_param_list():
     env_params = list(params.keys())
-    exclude = ['mode', 'infra_as_code', 'zip', 'prefix']
+    exclude = ['mode', 'infra_as_code', 'zip', 'prefix', 'shape']
     if params.get('language') != 'java' or 'group_name' in params:
         exclude.extend(['java_vm', 'java_framework', 'java_version'])
     if 'group_name' in params:
         exclude.extend(['ui', 'database', 'language', 'deploy', 'db_user', 'group_name'])
     else:
         exclude.append('group_common')
-    if params.get('database')=='none':
-        exclude.append('db_password')
     print(exclude)
     for x in exclude:
         if x in env_params:
