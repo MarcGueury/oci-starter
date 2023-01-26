@@ -29,6 +29,9 @@ variable lz_security_cmp_ocid { default="" }
 # OCIR
 variable username { default="" }
 
+# Availabily Domain
+variable availability_domain_number { default = 1 }
+
 # BRING_YOUR_OWN_LICENSE or LICENSE_INCLUDED
 variable license_model {
   default="BRING_YOUR_OWN_LICENSE"

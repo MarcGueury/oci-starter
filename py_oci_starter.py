@@ -621,9 +621,11 @@ def create_dir_shared():
             cp_terraform("network.tf","network_append.tf")
 
     # -- Bastion ------------------------------------------------------------
+    # Currently limited to provision the database ? 
+    # XXXX In the future maybe as build machine ?
     if 'bastion_ocid' in params:
         cp_terraform("bastion_existing.tf")
-    else:
+    elif params.get('database')!='none':
         cp_terraform("bastion.tf")
 
 #----------------------------------------------------------------------------

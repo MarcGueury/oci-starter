@@ -44,6 +44,7 @@ if ! command -v jq &> /dev/null; then
   exit 1
 fi
 
+
 export TARGET_DIR=$ROOT_DIR/target
 if [ ! -d $TARGET_DIR ]; then
   mkdir $TARGET_DIR
@@ -86,6 +87,11 @@ else
     # echo TF_VAR_user_ocid=$TF_VAR_user_ocid
     # echo TF_VAR_fingerprint=$TF_VAR_fingerprint
     # echo TF_VAR_private_key_path=$TF_VAR_private_key_path
+  fi
+
+  # Availability Domain for FreeTier E2.1 Micro
+  if [ "$TF_VAR_instance_shape" == "VM.Standard.E2.1.Micro" ]; then
+     find_availabilty_domain_for_shape $TF_VAR_instance_shape
   fi
 
   # SSH keys
