@@ -53,9 +53,8 @@ fi
 #-- PRE terraform ----------------------------------------------------------
 if [ "$OCI_STARTER_VARIABLES_SET" == "$OCI_STARTER_CREATION_DATE" ]; then
   echo "Variables already set"
-else 
-  export OCI_STARTER_VARIABLES_SET=$OCI_STARTER_VARIABLES_SET
-
+else
+  export OCI_STARTER_VARIABLES_SET=$OCI_STARTER_CREATION_DATE
 
   if [ "$OCI_CLI_CLOUD_SHELL" == "True" ];  then
     # Cloud Shell
