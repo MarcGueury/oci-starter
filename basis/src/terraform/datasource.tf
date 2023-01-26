@@ -62,6 +62,7 @@ data "oci_core_images" "oraclelinux" {
   }
 }
 
+/*
 # Oracle-Linux-Cloud-Developer-8.5-2022.05.22-0
 # Oracle-Linux-Cloud-Developer-8.5-aarch64-2022.05.22-0
 data "oci_core_images" "oracledevlinux" {
@@ -78,6 +79,7 @@ data "oci_core_images" "oracledevlinux" {
 output "oracle-dev-linux-latest-name" {
   value = data.oci_core_images.oracledevlinux.images.0.display_name
 }
+*/
 
 output "oracle-linux-latest-name" {
   value = data.oci_core_images.oraclelinux.images.0.display_name

@@ -13,3 +13,4 @@ sudo dnf install -y oracle-instantclient-basic
 sudo dnf install -y oracle-instantclient-sqlplus
 
 npm install
+

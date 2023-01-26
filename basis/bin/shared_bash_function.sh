@@ -140,7 +140,7 @@ group_common_contain() {
 # Find the availability domain for a shape (ex: "VM.Standard.E2.1.Micro")
 # ex: find_availabilty_domain_for_shape "VM.Standard.E2.1.Micro"
 find_availabilty_domain_for_shape() {
-  if [ $TF_VAR_availability_domain_number != "" ]; then
+  if [ "$TF_VAR_availability_domain_number" != "" ]; then
     return 0
   fi
   echo "Searching for shape $1 in Availability Domains"  
