@@ -8,11 +8,9 @@ sudo dnf module install -y nodejs
 
 # ORACLE Instant Client
 # https://docs.oracle.com/en/database/oracle/oracle-database/21/lacli/install-instant-client-using-rpm.html
-if [ "$ARCH" != "aarch64" ]; then
-    sudo dnf install -y oracle-instantclient-release-el8
-    sudo dnf install -y oracle-instantclient-basic
-    sudo dnf install -y oracle-instantclient-sqlplus
-fi
+sudo dnf install -y oracle-instantclient-release-el8
+sudo dnf install -y oracle-instantclient-basic
+sudo dnf install -y oracle-instantclient-sqlplus
 
 npm install
 
