@@ -137,3 +137,23 @@ group_common_contain() {
   fi
 }
 
+# Find the availability domain for a shape (ex: "VM.Standard.E2.1.Micro")
+# ex: find_availabilty_domain_for_shape "VM.Standard.E2.1.Micro"
+find_availabilty_domain_for_shape() {
+  echo "Searching for shape $1 in Availabity Domains"  
+  i=1
+  for ad in `oci iam availability-domain list --compartment-id=$TF_VAR_tenancy_ocid | jq -r ".data[].name"` 
+  do
+    echo "Checking in $ad"
+    TEST=`oci compute shape list --compartment-id=$TF_VAR_tenancy_ocid --availability-domain $ad | jq ".data[] | select( .shape==\"$1\" )"`
+    if [[ "$TEST" != "" ]]; then
+        echo "Found in $ad"
+        export TF_VAR_availability_domain_number=$i
+        return 0
+    fi
+    i=$((i+1))
+  done
+  echo "Error shape $1 not found" 
+  exit 1
+}
+
