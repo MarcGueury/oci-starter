@@ -92,7 +92,7 @@ def allowed_options():
 
 allowed_values = {
     '-language': {'java', 'node', 'python', 'dotnet', 'go', 'php', 'ords', 'none'},
-    '-deploy': {'compute', 'kubernetes', 'function', 'container_instance', 'ci'},
+    '-deploy': {'compute', 'kubernetes', 'function', 'container_instance', 'ci', 'hpc'},
     '-java_framework': {'springboot', 'helidon', 'tomcat', 'micronaut'},
     '-java_vm': {'jdk', 'graalvm', 'graalvm-native'},
     '-java_version': {'8', '11', '17'},
@@ -690,7 +690,9 @@ def create_output_dir():
         output_copy_tree("option/src/ui/"+ui_lower, "src/ui")
 
     # -- Deployment ---------------------------------------------------------
-    if params['language'] != "none":
+    if params.get('deploy') == "hpc":
+        output_copy_tree("option/hpc", "src/hpc")
+    elif params['language'] != "none":
         if params.get('deploy') == "kubernetes":
             if 'oke_ocid' in params:
                 cp_terraform("oke_existing.tf", "oke_append.tf")
