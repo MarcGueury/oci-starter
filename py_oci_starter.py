@@ -572,7 +572,7 @@ def output_move(src, target):
 def output_mkdir(src):
     os.mkdir(output_dir+ os.sep + src)
 
-def output_remove(src, target):
+def output_remove(src):
     os.remove(output_dir + os.sep + src)
 
 def output_rm_tree(src):
