@@ -158,7 +158,7 @@ build_option() {
 # Create the $OPTION_DEPLOY directory
 mkdir_deploy() {
   mkdir $TEST_HOME/$OPTION_DEPLOY
-  echo ". ../../group_common_env.sh" $TEST_HOME/$OPTION_DEPLOY/group_common_env.sh
+  echo ". ../../group_common_env.sh" > $TEST_HOME/$OPTION_DEPLOY/group_common_env.sh
   chmod +x $TEST_HOME/$OPTION_DEPLOY/group_common_env.sh
 }
 
