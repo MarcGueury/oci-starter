@@ -193,7 +193,7 @@ def ui_rules():
 
 
 def auth_token_rules():
-    if params.get('deploy') != 'compute' and params.get('auth_token') is None:
+    if params.get('deploy') not in [ 'compute', 'hpc', 'datascience' ] and params.get('auth_token') is None:
         warning('-auth_token is not set. Will need to be set in env.sh')
         params['auth_token'] = TO_FILL
 
