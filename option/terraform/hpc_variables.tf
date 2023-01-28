@@ -5,7 +5,7 @@ variable "ad" { default= "1" }
 variable "secondary_ad" { default = "" }
 variable "third_ad" { default = "" }
 variable "use_multiple_ads" { default = false }
-variable "ssh_key" { }
+variable "ssh_key" {  }
 # Changed
 variable "cluster_network" { default = false } 
 variable "use_custom_name" { default = false }
