@@ -694,9 +694,15 @@ def create_output_dir():
 
     # -- Deployment ---------------------------------------------------------
     if params.get('deploy') == "hpc":
-        output_remove( "src/terraform/*.tf" )
+        # remove normal shared terraform file
+        output_terraform_dir = output_dir + os.sep + "src/terraform"
+        for fname in os.listdir(output_terraform_dir):
+            if fname.endswith(".tf"):
+                os.remove(os.path.join(output_terraform_dir, fname))
         output_copy_tree("../oci-hpc", "src/terraform")
+        # remove the original variables files
         output_remove( "src/terraform/variables.tf" )
+        # replace with a prefilled one
         cp_terraform("hpc_variables.tf")
     elif params.get('data') == "datascience":
         cp_terraform("datascience.tf")
