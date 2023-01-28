@@ -1,7 +1,7 @@
 variable "region" {}
 variable "tenancy_ocid" {} 
 variable "targetCompartment" {} 
-variable "ad" {}
+variable "ad" { default= "1" }
 variable "secondary_ad" { default = "" }
 variable "third_ad" { default = "" }
 variable "use_multiple_ads" { default = false }
@@ -10,7 +10,7 @@ variable "ssh_key" { }
 variable "cluster_network" { default = false } 
 variable "use_custom_name" { default = false }
 variable "cluster_name" { default = "" }
-variable "bastion_ad" {}
+variable "bastion_ad" { default= "1" }
 # Changed
 variable "bastion_shape" { default = "VM.StandardE4.Flex" }
 variable "use_standard_image" { default= true }
@@ -18,7 +18,7 @@ variable "custom_bastion_image" {
   type = string
   default = "image.ocid" 
 }
-variable "bastion_boot_volume_size" {}
+variable "bastion_boot_volume_size" { default="50" }
 variable "cluster_network_shape" { default = "BM.HPC2.36" }
 # Changed
 variable "instance_pool_shape" { default = "VM.StandardE4.Flex" }

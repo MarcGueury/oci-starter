@@ -157,6 +157,11 @@ else
 
   # OpenAPI Spec
   export TF_VAR_openapi_spec=$(cat $ROOT_DIR/src/app/openapi_spec.yaml)
+
+  if [ "$TF_VAR_deploy_strategy" == "hpc" ]; then
+    # Create synonyms for variables with another name in the oci-hpc stack
+    export TF_VAR_ssh_key=$TF_VAR_ssh_public_key
+  fi 
 fi
 
 #-- POST terraform ----------------------------------------------------------
