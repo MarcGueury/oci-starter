@@ -35,8 +35,7 @@ loop_java_framework () {
 }
 
 loop_lang () {
-  mkdir $TEST_HOME/$OPTION_DEPLOY
-  cp $TEST_HOME/group_common_env.sh $TEST_HOME/$OPTION_DEPLOY/.
+  mkdir_deploy
 
   OPTION_LANG=java 
   OPTION_JAVA_VM=jdk 

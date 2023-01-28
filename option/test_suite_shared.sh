@@ -155,6 +155,14 @@ build_option() {
   fi  
 }
 
+# Create the $OPTION_DEPLOY directory
+mkdir_deploy {
+  mkdir $TEST_HOME/$OPTION_DEPLOY
+  echo ". ../../group_common_env.sh" $TEST_HOME/$OPTION_DEPLOY/group_common_env.sh
+  chmod +x $TEST_HOME/$OPTION_DEPLOY/group_common_env.sh
+}
+
+
 pre_test_suite() {
   if [ -d $TEST_HOME ]; then
     echo "$TEST_HOME directory already exists"

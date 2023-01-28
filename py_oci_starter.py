@@ -92,7 +92,7 @@ def allowed_options():
 
 allowed_values = {
     '-language': {'java', 'node', 'python', 'dotnet', 'go', 'php', 'ords', 'none'},
-    '-deploy': {'compute', 'kubernetes', 'function', 'container_instance', 'ci', 'hpc'},
+    '-deploy': {'compute', 'kubernetes', 'function', 'container_instance', 'ci', 'hpc', 'datascience'},
     '-java_framework': {'springboot', 'helidon', 'tomcat', 'micronaut'},
     '-java_vm': {'jdk', 'graalvm', 'graalvm-native'},
     '-java_version': {'8', '11', '17'},
@@ -572,6 +572,9 @@ def output_move(src, target):
 def output_mkdir(src):
     os.mkdir(output_dir+ os.sep + src)
 
+def output_remove(src, target):
+    os.remove(output_dir + os.sep + src)
+
 def output_rm_tree(src):
     shutil.rmtree(output_dir + os.sep + src)
  
@@ -691,7 +694,11 @@ def create_output_dir():
 
     # -- Deployment ---------------------------------------------------------
     if params.get('deploy') == "hpc":
-        output_copy_tree("option/hpc", "src/hpc")
+        output_copy_tree("../oci-hpc", "src/terraform")
+        output_remove( "src/terraform/variables.tf" )
+        cp_terraform("hpc_variables.tf")
+    elif params.get('data') == "datascience":
+        cp_terraform("datascience.tf")
     elif params['language'] != "none":
         if params.get('deploy') == "kubernetes":
             if 'oke_ocid' in params:
