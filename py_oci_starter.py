@@ -694,6 +694,7 @@ def create_output_dir():
 
     # -- Deployment ---------------------------------------------------------
     if params.get('deploy') == "hpc":
+        output_remove( "src/terraform/*.tf" )
         output_copy_tree("../oci-hpc", "src/terraform")
         output_remove( "src/terraform/variables.tf" )
         cp_terraform("hpc_variables.tf")
