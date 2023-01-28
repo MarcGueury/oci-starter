@@ -196,17 +196,3 @@ variable cluster_nfs_export {default = ""}
 variable "private_deployment" { default = false }
 
 variable "localdisk" { default = true }
-
-## Availability domains
-data "oci_identity_availability_domain" "ad" {
-  compartment_id = var.tenancy_ocid
-  ad_number      = var.availability_domain_number
-}
-
-output toto {
-  value = data.oci_identity_availability_domain.ad.name
-}
-
-output toto2 {
-  value = var.ad
-}
