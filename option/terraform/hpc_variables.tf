@@ -1,7 +1,7 @@
 variable "region" {}
 variable "tenancy_ocid" {} 
 variable "targetCompartment" {} 
-variable "ad" { default= "1" }
+variable "ad" {}
 variable "secondary_ad" { default = "" }
 variable "third_ad" { default = "" }
 variable "use_multiple_ads" { default = false }
@@ -10,9 +10,9 @@ variable "ssh_key" {  }
 variable "cluster_network" { default = false } 
 variable "use_custom_name" { default = false }
 variable "cluster_name" { default = "" }
-variable "bastion_ad" { default= "1" }
+variable "bastion_ad" {}
 # Changed
-variable "bastion_shape" { default = "VM.StandardE4.Flex" }
+variable "bastion_shape" { default = "VM.Standard.E4.Flex" }
 variable "use_standard_image" { default= true }
 variable "custom_bastion_image" { 
   type = string
@@ -21,7 +21,7 @@ variable "custom_bastion_image" {
 variable "bastion_boot_volume_size" { default="50" }
 variable "cluster_network_shape" { default = "BM.HPC2.36" }
 # Changed
-variable "instance_pool_shape" { default = "VM.StandardE4.Flex" }
+variable "instance_pool_shape" { default ="VM.Standard.E4.Flex" }
 variable "node_count" { default = 2 }
 variable "boot_volume_size" { default = 50 }
 variable "use_marketplace_image" { default = true}
@@ -196,3 +196,17 @@ variable cluster_nfs_export {default = ""}
 variable "private_deployment" { default = false }
 
 variable "localdisk" { default = true }
+
+## Availability domains
+data "oci_identity_availability_domain" "ad" {
+  compartment_id = var.tenancy_ocid
+  ad_number      = var.availability_domain_number
+}
+
+output toto {
+  value = data.oci_identity_availability_domain.ad.name
+}
+
+output toto2 {
+  value = var.ad
+}

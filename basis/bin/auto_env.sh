@@ -156,11 +156,16 @@ else
   fi
 
   # OpenAPI Spec
-  export TF_VAR_openapi_spec=$(cat $ROOT_DIR/src/app/openapi_spec.yaml)
+  if [ -f $ROOT_DIR/src/app/openapi_spec.yaml ]; then
+    export TF_VAR_openapi_spec=$(cat $ROOT_DIR/src/app/openapi_spec.yaml)
+  fi
 
   if [ "$TF_VAR_deploy_strategy" == "hpc" ]; then
     # Create synonyms for variables with another name in the oci-hpc stack
     export TF_VAR_ssh_key=$TF_VAR_ssh_public_key
+    export TF_VAR_targetCompartment=$TF_VAR_compartment_ocid
+    export TF_VAR_ad=`oci iam availability-domain list --compartment-id=$TF_VAR_tenancy_ocid | jq -r .data[0].name`
+    export TF_VAR_bastion_ad=$TF_VAR_ad
   fi 
 fi
 
