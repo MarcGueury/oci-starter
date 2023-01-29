@@ -30,7 +30,7 @@ resource "oci_core_default_route_table" "default_route_table" {
 resource "oci_core_subnet" "starter_public_subnet" {
   cidr_block        = "10.0.1.0/24"
   display_name      = "${var.prefix}-pub-subnet"
-  dns_label         = "${var.prefix}pubsub"
+  dns_label         = "${var.prefix}pub"
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id, oci_core_security_list.starter_security_list.id]
   compartment_id    = local.lz_network_cmp_ocid
   vcn_id            = oci_core_vcn.starter_vcn.id
@@ -43,7 +43,7 @@ resource "oci_core_subnet" "starter_public_subnet" {
 resource "oci_core_subnet" "starter_private_subnet" {
   cidr_block        = "10.0.2.0/24"
   display_name      = "${var.prefix}-priv-subnet"
-  dns_label         = "${var.prefix}privsub"
+  dns_label         = "${var.prefix}priv"
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id, oci_core_security_list.starter_security_list.id]
   compartment_id    = local.lz_network_cmp_ocid
   vcn_id            = oci_core_vcn.starter_vcn.id
