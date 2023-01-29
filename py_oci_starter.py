@@ -92,7 +92,7 @@ def allowed_options():
 
 allowed_values = {
     '-language': {'java', 'node', 'python', 'dotnet', 'go', 'php', 'ords', 'none'},
-    '-deploy': {'compute', 'kubernetes', 'function', 'container_instance', 'ci'},
+    '-deploy': {'compute', 'kubernetes', 'function', 'container_instance', 'ci', 'hpc', 'datascience'},
     '-java_framework': {'springboot', 'helidon', 'tomcat', 'micronaut'},
     '-java_vm': {'jdk', 'graalvm', 'graalvm-native'},
     '-java_version': {'8', '11', '17'},
@@ -193,7 +193,7 @@ def ui_rules():
 
 
 def auth_token_rules():
-    if params.get('deploy') != 'compute' and params.get('auth_token') is None:
+    if params.get('deploy') not in [ 'compute', 'hpc', 'datascience' ] and params.get('auth_token') is None:
         warning('-auth_token is not set. Will need to be set in env.sh')
         params['auth_token'] = TO_FILL
 
@@ -572,6 +572,9 @@ def output_move(src, target):
 def output_mkdir(src):
     os.mkdir(output_dir+ os.sep + src)
 
+def output_remove(src):
+    os.remove(output_dir + os.sep + src)
+
 def output_rm_tree(src):
     shutil.rmtree(output_dir + os.sep + src)
  
@@ -690,7 +693,20 @@ def create_output_dir():
         output_copy_tree("option/src/ui/"+ui_lower, "src/ui")
 
     # -- Deployment ---------------------------------------------------------
-    if params['language'] != "none":
+    if params.get('deploy') == "hpc":
+        # remove normal shared terraform file
+        output_terraform_dir = output_dir + os.sep + "src/terraform"
+        for fname in os.listdir(output_terraform_dir):
+            if fname.endswith(".tf"):
+                os.remove(os.path.join(output_terraform_dir, fname))
+        output_copy_tree("../oci-hpc", "src/terraform")
+        # remove the original variables files
+        output_remove( "src/terraform/variables.tf" )
+        # replace with a prefilled one
+        cp_terraform("hpc_variables.tf")
+    elif params.get('data') == "datascience":
+        cp_terraform("datascience.tf")
+    elif params['language'] != "none":
         if params.get('deploy') == "kubernetes":
             if 'oke_ocid' in params:
                 cp_terraform("oke_existing.tf", "oke_append.tf")

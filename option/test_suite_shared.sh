@@ -103,7 +103,7 @@ build_test_destroy () {
   else
     echo "$CSV_DATE,$OPTION_DEPLOY,$OPTION_LANG,-,-,$OPTION_DB,$OPTION_UI,$OPTION_SHAPE,$CSV_NAME,$CSV_HTML_OK,$CSV_JSON_OK,$CSV_BUILD_SECOND,$CSV_DESTROY_SECOND,$CSV_RUN100_OK,$CSV_RUN100_SECOND" >> $TEST_HOME/result.csv 
   fi
-  if [ "$CSV_JSON_OK" != "1" ]; then
+  if [ "$CSV_JSON_OK" != "1" ] || [ "$CSV_HTML_OK" != "1" ]; then
     echo "$CSV_DATE,$OPTION_DEPLOY,$OPTION_LANG,$OPTION_JAVA_FRAMEWORK,$OPTION_JAVA_VM,$OPTION_DB,$OPTION_UI,$OPTION_SHAPE,$CSV_NAME,$CSV_HTML_OK,$CSV_JSON_OK,$CSV_BUILD_SECOND,$CSV_DESTROY_SECOND,$CSV_RUN100_OK,$CSV_RUN100_SECOND" >> $TEST_HOME/errors.csv 
   fi
 }
@@ -154,6 +154,14 @@ build_option() {
     echo "Error: no output directory"  
   fi  
 }
+
+# Create the $OPTION_DEPLOY directory
+mkdir_deploy() {
+  mkdir $TEST_HOME/$OPTION_DEPLOY
+  echo ". ../../group_common_env.sh" > $TEST_HOME/$OPTION_DEPLOY/group_common_env.sh
+  chmod +x $TEST_HOME/$OPTION_DEPLOY/group_common_env.sh
+}
+
 
 pre_test_suite() {
   if [ -d $TEST_HOME ]; then
