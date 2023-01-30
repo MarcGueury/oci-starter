@@ -136,7 +136,7 @@ variable "nfs_target_path" { default = "/app"}
 variable "nfs_source_IP" { default = ""}
 variable "nfs_source_path" { default = "/app"}
 variable "nfs_options" {default = ""}
-variable "monitoring" { default = true }
+variable "monitoring" { default = false }
 variable "enroot" { default = false }
 variable "pyxis" { default = false }
 
