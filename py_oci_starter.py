@@ -704,7 +704,7 @@ def create_output_dir():
         output_remove( "src/terraform/variables.tf" )
         # replace with a prefilled one
         cp_terraform("hpc_variables.tf")
-    elif params.get('data') == "datascience":
+    elif params.get('deploy') == "datascience":
         cp_terraform("datascience.tf")
     elif params['language'] != "none":
         if params.get('deploy') == "kubernetes":
