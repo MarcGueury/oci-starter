@@ -406,6 +406,8 @@ def readme_contents():
             contents.append(
                 "  - oke         : Contains the deployment files to Kubernetes")
 
+    contents.append("\nHelp (Tutorial + How to customize): https://starter.wedoteam.io/help")
+
     contents.append('\n### Next Steps:')
     if TO_FILL in params.values():
         if 'group_name' in params:
