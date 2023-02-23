@@ -3,7 +3,7 @@
 ## Usage:
 ### 1. Website 
 
-Go to: [starter.oracloud.be](http://starter.oracloud.be/)
+Go to: [starter.wedoteam.io](https://starter.wedoteam.io/)
 
 - Make your choices.
 - Generate. You will get a zip file. ( ex:starter.zip )
