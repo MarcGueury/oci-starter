@@ -4,7 +4,7 @@ cd $SCRIPT_DIR
 
 # Build all
 # Generate sshkeys if not part of a Common Resources project 
-if [ ! -f ../group_common_env.sh ]; then
+if [ "$TF_VAR_ssh_private_path" == "" ]; then
   . bin/sshkey_generate.sh
 fi
 . env.sh
