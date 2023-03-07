@@ -224,9 +224,8 @@ def zip_rules():
 
 
 def group_common_rules():
-    if 'group_name' in params:
-        global a_group_common 
-        a_group_common=params['group_common'].split(',')
+    global a_group_common 
+    a_group_common=params['group_common'].split(',')
 
 
 def shape_rules():
