@@ -224,8 +224,9 @@ def zip_rules():
 
 
 def group_common_rules():
-    global a_group_common 
-    a_group_common=params['group_common'].split(',')
+    if  params.get('group_common'):
+       global a_group_common 
+       a_group_common=params.get('group_common').split(',')
 
 
 def shape_rules():
@@ -405,7 +406,7 @@ def readme_contents():
             contents.append(
                 "  - oke         : Contains the deployment files to Kubernetes")
 
-    contents.append("\nHelp (Tutorial + How to customize): https://starter.wedoteam.io/help")
+    contents.append("\nHelp (Tutorial + How to customize): https://starter.oracloud.be/help")
 
     contents.append('\n### Next Steps:')
     if TO_FILL in params.values():
