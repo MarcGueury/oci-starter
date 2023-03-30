@@ -47,7 +47,7 @@ locals {
 #----------------------------------------------------------------------------
 
 resource "oci_core_security_list" "starter_seclist_lb" {
-  compartment_id = var.compartment_ocid
+  compartment_id = local.lz_network_cmp_ocid
   vcn_id         = oci_core_vcn.starter_vcn.id
   display_name   = "${var.prefix}-seclist-lb"
 
@@ -72,12 +72,14 @@ resource "oci_core_security_list" "starter_seclist_lb" {
       max = 80
     }
   }
+
+  freeform_tags = local.freeform_tags
 }
 
-#---------------
+#----------------------------------------------------------------------------
 
 resource "oci_core_security_list" "starter_seclist_node" {
-  compartment_id = var.compartment_ocid
+  compartment_id = local.lz_network_cmp_ocid
   vcn_id         = oci_core_vcn.starter_vcn.id
   display_name   = "${var.prefix}-seclist-node"
 
@@ -123,7 +125,7 @@ resource "oci_core_security_list" "starter_seclist_node" {
   }
   egress_security_rules {
     description      = "Allow nodes to communicate with OKE to ensure correct start-up and continued functioning"
-    destination      = "all-fra-services-in-oracle-services-network"
+    destination      = data.oci_core_services.all_services.services[0].cidr_block
     destination_type = "SERVICE_CIDR_BLOCK"
     protocol  = "6"
     stateless = "false"
@@ -187,18 +189,20 @@ resource "oci_core_security_list" "starter_seclist_node" {
       min = "22"
     }
   }
+
+  freeform_tags = local.freeform_tags
 }
 
-#---------------
+#----------------------------------------------------------------------------
 
 resource oci_core_security_list starter_seclist_api {
-  compartment_id = var.compartment_ocid
+  compartment_id = local.lz_network_cmp_ocid
   vcn_id         = oci_core_vcn.starter_vcn.id
   display_name   = "${var.prefix}-seclist-node"
 
   egress_security_rules {
     description      = "Allow Kubernetes Control Plane to communicate with OKE"
-    destination      = "all-fra-services-in-oracle-services-network"
+    destination      = data.oci_core_services.all_services.services[0].cidr_block
     destination_type = "SERVICE_CIDR_BLOCK"
     protocol  = "6"
     stateless = "false"
@@ -259,6 +263,8 @@ resource oci_core_security_list starter_seclist_api {
     source_type = "CIDR_BLOCK"
     stateless   = "false"
   }
+
+  freeform_tags = local.freeform_tags
 }
 
 #----------------------------------------------------------------------------
@@ -267,44 +273,52 @@ resource "oci_core_subnet" "starter_nodepool_subnet" {
   #Required
   availability_domain = data.oci_identity_availability_domain.ad1.name
   cidr_block          = "10.0.10.0/24"
-  compartment_id      = var.compartment_ocid
+  compartment_id      = local.lz_network_cmp_ocid
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_security_list.starter_seclist_node.id,oci_core_vcn.starter_vcn.default_security_list_id,oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-nodepool-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
+
+  freeform_tags = local.freeform_tags
 }
 
 resource "oci_core_subnet" "starter_lb_subnet" {
   #Required
   cidr_block          = "10.0.20.0/24"
-  compartment_id      = var.compartment_ocid
+  compartment_id      = local.lz_network_cmp_ocid
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_vcn.starter_vcn.default_security_list_id, oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-lb-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
+
+
+  freeform_tags     = local.freeform_tags
 }
 
 resource "oci_core_subnet" "starter_api_subnet" {
   #Required
   cidr_block          = "10.0.30.0/24"
-  compartment_id      = var.compartment_ocid
+  compartment_id      = local.lz_network_cmp_ocid
   vcn_id              = oci_core_vcn.starter_vcn.id
 
   # Provider code tries to maintain compatibility with old versions.
   security_list_ids = [oci_core_security_list.starter_seclist_api.id,oci_core_vcn.starter_vcn.default_security_list_id,oci_core_security_list.starter_security_list.id]
   display_name      = "${var.prefix}-oke-api-subnet"
   route_table_id    = oci_core_vcn.starter_vcn.default_route_table_id
+
+
+  freeform_tags     = local.freeform_tags
 }
 
 #----------------------------------------------------------------------------
 
 resource "oci_containerengine_cluster" "starter_oke" {
   #Required
-  compartment_id     = var.compartment_ocid
+  compartment_id     = local.lz_appdev_cmp_ocid
   kubernetes_version = data.oci_containerengine_cluster_option.starter_cluster_option.kubernetes_versions[length(data.oci_containerengine_cluster_option.starter_cluster_option.kubernetes_versions)-1]
   name               = "${var.prefix}-oke"
   vcn_id             = oci_core_vcn.starter_vcn.id
@@ -336,12 +350,14 @@ resource "oci_containerengine_cluster" "starter_oke" {
       services_cidr = "10.2.0.0/16"
     }
   }
+
+  freeform_tags = local.freeform_tags
 }
 
 resource "oci_containerengine_node_pool" "starter_node_pool" {
   #Required
   cluster_id         = oci_containerengine_cluster.starter_oke.id
-  compartment_id     = var.compartment_ocid
+  compartment_id     = local.lz_appdev_cmp_ocid
   kubernetes_version = data.oci_containerengine_node_pool_option.starter_node_pool_option.kubernetes_versions[length(data.oci_containerengine_node_pool_option.starter_node_pool_option.kubernetes_versions)-1]
   name               = "${var.prefix}-pool"
   node_shape         = var.oke_shape
@@ -363,8 +379,9 @@ resource "oci_containerengine_node_pool" "starter_node_pool" {
     }
     size = var.node_pool_node_config_details_size
   }
-
   ssh_public_key      = var.ssh_public_key
+
+  freeform_tags = local.freeform_tags
 }
 
 #----------------------------------------------------------------------------

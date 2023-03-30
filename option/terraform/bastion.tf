@@ -1,18 +1,9 @@
-# Defines the number of instances to deploy
-variable "instance_ocpus" {
-  default = 1
-}
-
-variable "instance_shape_config_memory_in_gbs" {
-  default = 8
-}
-
 resource "oci_core_instance" "starter_bastion" {
 
   availability_domain = data.oci_identity_availability_domain.ad.name
-  compartment_id      = var.compartment_ocid
+  compartment_id      = local.lz_appdev_cmp_ocid
   display_name        = "${var.prefix}-bastion"
-  shape               = "VM.Standard.E4.Flex"
+  shape               = var.instance_shape
 
   shape_config {
     ocpus         = var.instance_ocpus
@@ -20,7 +11,7 @@ resource "oci_core_instance" "starter_bastion" {
   }
 
   create_vnic_details {
-    subnet_id                 = data.oci_core_subnet.starter_subnet.id
+    subnet_id                 = data.oci_core_subnet.starter_public_subnet.id
     display_name              = "Primaryvnic"
     assign_public_ip          = true
     assign_private_dns_record = true
@@ -49,6 +40,8 @@ resource "oci_core_instance" "starter_bastion" {
       "date"
     ]
   }
+
+  freeform_tags = local.freeform_tags   
 }
 
 # Output the private and public IPs of the instance

@@ -3,21 +3,44 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 
 # Build all
-. bin/sshkey_generate.sh
+# Generate sshkeys if not part of a Common Resources project 
+if [ "$TF_VAR_ssh_private_path" == "" ]; then
+  . bin/sshkey_generate.sh
+fi
 . env.sh
 # Run Terraform
-terraform/apply.sh --auto-approve
+src/terraform/apply.sh --auto-approve -no-color
+exit_on_error
+
 . env.sh
 # Build the DB (via Bastion), the APP and the UI
-bin/deploy_bastion.sh
-app_src/build_app.sh 
-ui_src/build_ui.sh 
+if [ -d src/db ]; then
+  bin/deploy_bastion.sh
+fi  
+
+# Init target/compute
+if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
+    mkdir -p target/compute
+    cp src/compute/* target/compute/.
+fi
+
+if [ -f src/app/build_app.sh ]; then
+    src/app/build_app.sh 
+    exit_on_error
+fi
+
+if [ -f src/ui/build_ui.sh ]; then
+    src/ui/build_ui.sh 
+    exit_on_error
+fi
 
 # Deploy
 if [ "$TF_VAR_deploy_strategy" == "compute" ]; then
-  bin/deploy_compute.sh
+    bin/deploy_compute.sh
 elif [ "$TF_VAR_deploy_strategy" == "kubernetes" ]; then
-  oke/oke_deploy.sh
+    bin/oke_deploy.sh
+elif [ "$TF_VAR_deploy_strategy" == "container_instance" ]; then
+    bin/ci_deploy.sh
 fi
 
 bin/done.sh

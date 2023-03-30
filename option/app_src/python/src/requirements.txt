@@ -1,4 +1,0 @@
-oracledb
-Flask
-flask-cors
-flask-mysql

@@ -12,7 +12,7 @@ steps:
     name: "Define unique image tag"
     timeoutInSeconds: 140
     command: |
-      . app_src/build_app.sh docker
+      . src/app/build_app.sh docker
       
 outputArtifacts:
   - name: output_fn_default_image
